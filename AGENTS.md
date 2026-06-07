@@ -1,5 +1,7 @@
 # AGENTS.md
 
+- Don't start dev server. Assume it's already running.
+
 ## PRIORITY
 - Performance first.
 - Reliability first.
