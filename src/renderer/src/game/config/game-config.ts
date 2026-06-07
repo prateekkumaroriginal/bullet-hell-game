@@ -8,6 +8,7 @@ export const MILLISECONDS_PER_SECOND = 1000;
 export const PLAYER_START_X = 640;
 export const PLAYER_START_Y = 560;
 export const PLAYER_SIZE = 28;
+export const PLAYER_RADIUS = PLAYER_SIZE / 2;
 export const PLAYER_MOVE_SPEED = 360;
 export const PLAYER_FILL_COLOR = 0x5df2a8;
 export const PLAYER_STROKE_COLOR = 0xd7ffe8;
@@ -26,7 +27,7 @@ export const BULLET_DEFAULT_DIRECTION_X = 0;
 export const BULLET_DEFAULT_DIRECTION_Y = -1;
 
 export const AIM_GUIDE_LENGTH = 120;
-export const AIM_GUIDE_START_OFFSET = PLAYER_SIZE / 2 + 10;
+export const AIM_GUIDE_START_OFFSET = PLAYER_RADIUS + 10;
 export const AIM_GUIDE_DOT_RADIUS = 2;
 export const AIM_GUIDE_DOT_SPACING = 18;
 export const AIM_GUIDE_COLOR = 0xeaf2ff;

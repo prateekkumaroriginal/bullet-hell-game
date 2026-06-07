@@ -12,6 +12,7 @@ import {
 } from "../config/game-config";
 
 type Bullet = Phaser.GameObjects.Ellipse & {
+  poolIndex: number;
   velocity: Phaser.Math.Vector2;
 };
 
@@ -24,47 +25,58 @@ type SpawnBulletInput = {
 
 export class BulletPool {
   private readonly bullets: Bullet[];
+  private readonly activeBullets: Bullet[] = [];
+  private readonly freeBulletIndexes: number[] = [];
+  private readonly spawnDirection = new Phaser.Math.Vector2();
 
   constructor(private readonly scene: Phaser.Scene) {
-    this.bullets = Array.from({ length: BULLET_POOL_SIZE }, () =>
-      this.createBullet(),
+    this.bullets = Array.from({ length: BULLET_POOL_SIZE }, (_, index) =>
+      this.createBullet(index),
     );
+
+    for (const bullet of this.bullets) {
+      this.freeBulletIndexes.push(bullet.poolIndex);
+    }
   }
 
   spawn(input: SpawnBulletInput): void {
-    const bullet = this.bullets.find((candidate) => !candidate.active);
+    const bulletIndex = this.freeBulletIndexes.pop();
 
-    if (!bullet) {
+    if (bulletIndex === undefined) {
       return;
     }
 
-    const direction = new Phaser.Math.Vector2(input.directionX, input.directionY);
+    const bullet = this.bullets[bulletIndex];
+    this.spawnDirection.set(input.directionX, input.directionY);
 
-    if (direction.lengthSq() === 0) {
+    if (this.spawnDirection.lengthSq() === 0) {
+      this.freeBulletIndexes.push(bulletIndex);
       return;
     }
 
-    direction.normalize();
-    bullet.velocity.set(direction.x * BULLET_SPEED, direction.y * BULLET_SPEED);
+    this.spawnDirection.normalize();
+    bullet.velocity.set(
+      this.spawnDirection.x * BULLET_SPEED,
+      this.spawnDirection.y * BULLET_SPEED,
+    );
     bullet.setPosition(input.x, input.y);
-    bullet.setRotation(direction.angle());
+    bullet.setRotation(this.spawnDirection.angle());
     bullet.setActive(true);
     bullet.setVisible(true);
+    this.activeBullets.push(bullet);
   }
 
   update(delta: number): void {
     const deltaSeconds = delta / MILLISECONDS_PER_SECOND;
 
-    for (const bullet of this.bullets) {
-      if (!bullet.active) {
-        continue;
-      }
+    for (let index = this.activeBullets.length - 1; index >= 0; index -= 1) {
+      const bullet = this.activeBullets[index];
 
       bullet.x += bullet.velocity.x * deltaSeconds;
       bullet.y += bullet.velocity.y * deltaSeconds;
 
       if (this.isOutsideArena(bullet)) {
-        this.deactivate(bullet);
+        this.deactivateActiveBullet(index);
       }
     }
   }
@@ -73,9 +85,12 @@ export class BulletPool {
     for (const bullet of this.bullets) {
       bullet.destroy();
     }
+
+    this.activeBullets.length = 0;
+    this.freeBulletIndexes.length = 0;
   }
 
-  private createBullet(): Bullet {
+  private createBullet(poolIndex: number): Bullet {
     const bullet = this.scene.add.ellipse(
       0,
       0,
@@ -84,17 +99,27 @@ export class BulletPool {
       BULLET_FILL_COLOR,
     ) as Bullet;
 
+    bullet.poolIndex = poolIndex;
     bullet.velocity = new Phaser.Math.Vector2();
     bullet.setStrokeStyle(BULLET_STROKE_WIDTH, BULLET_STROKE_COLOR);
-    this.deactivate(bullet);
+    bullet.setActive(false);
+    bullet.setVisible(false);
 
     return bullet;
   }
 
-  private deactivate(bullet: Bullet): void {
+  private deactivateActiveBullet(activeBulletIndex: number): void {
+    const bullet = this.activeBullets[activeBulletIndex];
+    const lastActiveBullet = this.activeBullets.pop();
+
+    if (lastActiveBullet && lastActiveBullet !== bullet) {
+      this.activeBullets[activeBulletIndex] = lastActiveBullet;
+    }
+
     bullet.velocity.set(0, 0);
     bullet.setActive(false);
     bullet.setVisible(false);
+    this.freeBulletIndexes.push(bullet.poolIndex);
   }
 
   private isOutsideArena(bullet: Bullet): boolean {
