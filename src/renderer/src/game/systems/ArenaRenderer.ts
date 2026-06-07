@@ -8,11 +8,15 @@ import {
   GRID_LINE_WIDTH,
   GRID_SPACING,
 } from "../config/game-config";
+import { ArenaBounds } from "./ArenaBounds";
 
 export class ArenaRenderer {
   private readonly guide: Phaser.GameObjects.Graphics;
 
-  constructor(private readonly scene: Phaser.Scene) {
+  constructor(
+    private readonly scene: Phaser.Scene,
+    private readonly arenaBounds: ArenaBounds,
+  ) {
     this.guide = scene.add.graphics();
     this.draw();
   }
@@ -21,8 +25,8 @@ export class ArenaRenderer {
     this.guide.clear();
     this.guide.lineStyle(GRID_LINE_WIDTH, GRID_COLOR, GRID_ALPHA);
 
-    const arenaWidth = this.scene.scale.width;
-    const arenaHeight = this.scene.scale.height;
+    const arenaWidth = this.arenaBounds.width;
+    const arenaHeight = this.arenaBounds.height;
 
     for (let x = 0; x <= arenaWidth; x += GRID_SPACING) {
       this.guide.lineBetween(x, 0, x, arenaHeight);

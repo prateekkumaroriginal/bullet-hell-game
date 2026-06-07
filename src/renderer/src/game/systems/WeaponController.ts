@@ -10,6 +10,7 @@ import {
   BULLET_DEFAULT_DIRECTION_Y,
   BULLET_FIRE_COOLDOWN_MS,
 } from "../config/game-config";
+import { ArenaBounds } from "./ArenaBounds";
 import { BulletPool } from "./BulletPool";
 
 export class WeaponController {
@@ -20,9 +21,10 @@ export class WeaponController {
 
   constructor(
     private readonly scene: Phaser.Scene,
+    arenaBounds: ArenaBounds,
     private readonly getPlayer: () => Phaser.GameObjects.Arc,
   ) {
-    this.bulletPool = new BulletPool(scene);
+    this.bulletPool = new BulletPool(scene, arenaBounds);
     this.aimGuide = scene.add.graphics();
     this.fireTimer = scene.time.addEvent({
       delay: BULLET_FIRE_COOLDOWN_MS,

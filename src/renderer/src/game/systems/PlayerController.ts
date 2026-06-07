@@ -9,6 +9,7 @@ import {
   PLAYER_STROKE_COLOR,
   PLAYER_STROKE_WIDTH,
 } from "../config/game-config";
+import { ArenaBounds } from "./ArenaBounds";
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
@@ -23,7 +24,10 @@ export class PlayerController {
   private readonly cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private readonly movementKeys?: MovementKeys;
 
-  constructor(private readonly scene: Phaser.Scene) {
+  constructor(
+    private readonly scene: Phaser.Scene,
+    private readonly arenaBounds: ArenaBounds,
+  ) {
     this.player = scene.add.circle(
       PLAYER_START_X,
       PLAYER_START_Y,
@@ -62,19 +66,13 @@ export class PlayerController {
     const deltaSeconds = delta / MILLISECONDS_PER_SECOND;
     const nextX = this.player.x + this.movement.x * PLAYER_MOVE_SPEED * deltaSeconds;
     const nextY = this.player.y + this.movement.y * PLAYER_MOVE_SPEED * deltaSeconds;
-
-    this.player.setPosition(
-      Phaser.Math.Clamp(
-        nextX,
-        PLAYER_RADIUS,
-        this.scene.scale.width - PLAYER_RADIUS,
-      ),
-      Phaser.Math.Clamp(
-        nextY,
-        PLAYER_RADIUS,
-        this.scene.scale.height - PLAYER_RADIUS,
-      ),
+    const clampedPosition = this.arenaBounds.clampCircle(
+      nextX,
+      nextY,
+      PLAYER_RADIUS,
     );
+
+    this.player.setPosition(clampedPosition.x, clampedPosition.y);
   }
 
   destroy(): void {

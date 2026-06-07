@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import {
+  BULLET_DEFAULT_DAMAGE,
   BULLET_DESPAWN_PADDING,
   BULLET_FILL_COLOR,
   BULLET_HEIGHT,
@@ -10,10 +11,19 @@ import {
   BULLET_WIDTH,
   MILLISECONDS_PER_SECOND,
 } from "../config/game-config";
+import { ArenaBounds } from "./ArenaBounds";
 
-type Bullet = Phaser.GameObjects.Ellipse & {
+type BulletTeam = "PLAYER";
+
+type Bullet = {
+  view: Phaser.GameObjects.Ellipse;
   poolIndex: number;
-  velocity: Phaser.Math.Vector2;
+  x: number;
+  y: number;
+  velocityX: number;
+  velocityY: number;
+  damage: number;
+  team: BulletTeam;
 };
 
 type SpawnBulletInput = {
@@ -29,7 +39,10 @@ export class BulletPool {
   private readonly freeBulletIndexes: number[] = [];
   private readonly spawnDirection = new Phaser.Math.Vector2();
 
-  constructor(private readonly scene: Phaser.Scene) {
+  constructor(
+    private readonly scene: Phaser.Scene,
+    private readonly arenaBounds: ArenaBounds,
+  ) {
     this.bullets = Array.from({ length: BULLET_POOL_SIZE }, (_, index) =>
       this.createBullet(index),
     );
@@ -55,14 +68,14 @@ export class BulletPool {
     }
 
     this.spawnDirection.normalize();
-    bullet.velocity.set(
-      this.spawnDirection.x * BULLET_SPEED,
-      this.spawnDirection.y * BULLET_SPEED,
-    );
-    bullet.setPosition(input.x, input.y);
-    bullet.setRotation(this.spawnDirection.angle());
-    bullet.setActive(true);
-    bullet.setVisible(true);
+    bullet.x = input.x;
+    bullet.y = input.y;
+    bullet.velocityX = this.spawnDirection.x * BULLET_SPEED;
+    bullet.velocityY = this.spawnDirection.y * BULLET_SPEED;
+    bullet.view.setPosition(bullet.x, bullet.y);
+    bullet.view.setRotation(this.spawnDirection.angle());
+    bullet.view.setActive(true);
+    bullet.view.setVisible(true);
     this.activeBullets.push(bullet);
   }
 
@@ -72,10 +85,15 @@ export class BulletPool {
     for (let index = this.activeBullets.length - 1; index >= 0; index -= 1) {
       const bullet = this.activeBullets[index];
 
-      bullet.x += bullet.velocity.x * deltaSeconds;
-      bullet.y += bullet.velocity.y * deltaSeconds;
+      bullet.x += bullet.velocityX * deltaSeconds;
+      bullet.y += bullet.velocityY * deltaSeconds;
+      bullet.view.setPosition(bullet.x, bullet.y);
 
-      if (this.isOutsideArena(bullet)) {
+      if (!this.arenaBounds.containsWithPadding(
+        bullet.x,
+        bullet.y,
+        BULLET_DESPAWN_PADDING,
+      )) {
         this.deactivateActiveBullet(index);
       }
     }
@@ -83,7 +101,7 @@ export class BulletPool {
 
   destroy(): void {
     for (const bullet of this.bullets) {
-      bullet.destroy();
+      bullet.view.destroy();
     }
 
     this.activeBullets.length = 0;
@@ -91,21 +109,28 @@ export class BulletPool {
   }
 
   private createBullet(poolIndex: number): Bullet {
-    const bullet = this.scene.add.ellipse(
+    const view = this.scene.add.ellipse(
       0,
       0,
       BULLET_WIDTH,
       BULLET_HEIGHT,
       BULLET_FILL_COLOR,
-    ) as Bullet;
+    );
 
-    bullet.poolIndex = poolIndex;
-    bullet.velocity = new Phaser.Math.Vector2();
-    bullet.setStrokeStyle(BULLET_STROKE_WIDTH, BULLET_STROKE_COLOR);
-    bullet.setActive(false);
-    bullet.setVisible(false);
+    view.setStrokeStyle(BULLET_STROKE_WIDTH, BULLET_STROKE_COLOR);
+    view.setActive(false);
+    view.setVisible(false);
 
-    return bullet;
+    return {
+      view,
+      poolIndex,
+      x: 0,
+      y: 0,
+      velocityX: 0,
+      velocityY: 0,
+      damage: BULLET_DEFAULT_DAMAGE,
+      team: "PLAYER",
+    };
   }
 
   private deactivateActiveBullet(activeBulletIndex: number): void {
@@ -116,18 +141,13 @@ export class BulletPool {
       this.activeBullets[activeBulletIndex] = lastActiveBullet;
     }
 
-    bullet.velocity.set(0, 0);
-    bullet.setActive(false);
-    bullet.setVisible(false);
+    bullet.x = 0;
+    bullet.y = 0;
+    bullet.velocityX = 0;
+    bullet.velocityY = 0;
+    bullet.view.setPosition(bullet.x, bullet.y);
+    bullet.view.setActive(false);
+    bullet.view.setVisible(false);
     this.freeBulletIndexes.push(bullet.poolIndex);
-  }
-
-  private isOutsideArena(bullet: Bullet): boolean {
-    return (
-      bullet.x < -BULLET_DESPAWN_PADDING ||
-      bullet.x > this.scene.scale.width + BULLET_DESPAWN_PADDING ||
-      bullet.y < -BULLET_DESPAWN_PADDING ||
-      bullet.y > this.scene.scale.height + BULLET_DESPAWN_PADDING
-    );
   }
 }

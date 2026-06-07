@@ -1,10 +1,12 @@
 import Phaser from "phaser";
 import { GAME_SCENE_KEY } from "../config/scene-keys";
+import { ArenaBounds } from "../systems/ArenaBounds";
 import { ArenaRenderer } from "../systems/ArenaRenderer";
 import { PlayerController } from "../systems/PlayerController";
 import { WeaponController } from "../systems/WeaponController";
 
 export class GameScene extends Phaser.Scene {
+  private arenaBounds?: ArenaBounds;
   private arenaRenderer?: ArenaRenderer;
   private playerController?: PlayerController;
   private weaponController?: WeaponController;
@@ -14,10 +16,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.arenaRenderer = new ArenaRenderer(this);
-    this.playerController = new PlayerController(this);
+    this.arenaBounds = new ArenaBounds(this);
+    this.arenaRenderer = new ArenaRenderer(this, this.arenaBounds);
+    this.playerController = new PlayerController(this, this.arenaBounds);
     this.weaponController = new WeaponController(
       this,
+      this.arenaBounds,
       () => this.getPlayerControllerOrThrow().gameObject,
     );
     this.scale.on(Phaser.Scale.Events.RESIZE, this.handleResize, this);
@@ -27,6 +31,7 @@ export class GameScene extends Phaser.Scene {
       this.weaponController?.destroy();
       this.playerController?.destroy();
       this.arenaRenderer?.destroy();
+      this.arenaBounds = undefined;
       this.weaponController = undefined;
       this.playerController = undefined;
       this.arenaRenderer = undefined;
