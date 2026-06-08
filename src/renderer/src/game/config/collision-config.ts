@@ -1,0 +1,37 @@
+export const COLLISION_CATEGORIES = {
+  PLAYER: "PLAYER",
+  PLAYER_BULLET: "PLAYER_BULLET",
+  ENEMY: "ENEMY",
+  ENEMY_BULLET: "ENEMY_BULLET",
+  PICKUP: "PICKUP",
+  ARENA: "ARENA",
+} as const;
+
+export type CollisionCategory =
+  (typeof COLLISION_CATEGORIES)[keyof typeof COLLISION_CATEGORIES];
+
+export const COLLISION_RULES = {
+  [COLLISION_CATEGORIES.PLAYER]: [
+    COLLISION_CATEGORIES.ENEMY,
+    COLLISION_CATEGORIES.ENEMY_BULLET,
+    COLLISION_CATEGORIES.PICKUP,
+  ],
+  [COLLISION_CATEGORIES.PLAYER_BULLET]: [COLLISION_CATEGORIES.ENEMY],
+  [COLLISION_CATEGORIES.ENEMY]: [
+    COLLISION_CATEGORIES.PLAYER,
+    COLLISION_CATEGORIES.PLAYER_BULLET,
+    COLLISION_CATEGORIES.ARENA,
+  ],
+  [COLLISION_CATEGORIES.ENEMY_BULLET]: [COLLISION_CATEGORIES.PLAYER],
+  [COLLISION_CATEGORIES.PICKUP]: [COLLISION_CATEGORIES.PLAYER],
+  [COLLISION_CATEGORIES.ARENA]: [COLLISION_CATEGORIES.ENEMY],
+} as const satisfies Record<CollisionCategory, readonly CollisionCategory[]>;
+
+export function canCollide(
+  source: CollisionCategory,
+  target: CollisionCategory,
+): boolean {
+  const validTargets: readonly CollisionCategory[] = COLLISION_RULES[source];
+
+  return validTargets.includes(target);
+}

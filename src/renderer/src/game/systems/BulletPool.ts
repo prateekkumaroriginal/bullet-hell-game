@@ -11,9 +11,8 @@ import {
   BULLET_WIDTH,
   MILLISECONDS_PER_SECOND,
 } from "../config/game-config";
+import { COLLISION_CATEGORIES, type CollisionCategory } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
-
-type BulletTeam = "PLAYER";
 
 type Bullet = {
   view: Phaser.GameObjects.Ellipse;
@@ -23,7 +22,7 @@ type Bullet = {
   velocityX: number;
   velocityY: number;
   damage: number;
-  team: BulletTeam;
+  collisionCategory: CollisionCategory;
 };
 
 type SpawnBulletInput = {
@@ -129,7 +128,7 @@ export class BulletPool {
       velocityX: 0,
       velocityY: 0,
       damage: BULLET_DEFAULT_DAMAGE,
-      team: "PLAYER",
+      collisionCategory: COLLISION_CATEGORIES.PLAYER_BULLET,
     };
   }
 
