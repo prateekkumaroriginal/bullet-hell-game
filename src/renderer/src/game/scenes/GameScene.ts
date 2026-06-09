@@ -3,14 +3,18 @@ import { GAME_SCENE_KEY } from "../config/scene-keys";
 import { AimController } from "../systems/AimController";
 import { ArenaBounds } from "../systems/ArenaBounds";
 import { ArenaRenderer } from "../systems/ArenaRenderer";
+import { EnemyController } from "../systems/EnemyController";
 import { PlayerController } from "../systems/PlayerController";
+import { WaveController } from "../systems/WaveController";
 import { WeaponController } from "../systems/WeaponController";
 
 export class GameScene extends Phaser.Scene {
   private arenaBounds?: ArenaBounds;
   private arenaRenderer?: ArenaRenderer;
   private aimController?: AimController;
+  private enemyController?: EnemyController;
   private playerController?: PlayerController;
+  private waveController?: WaveController;
   private weaponController?: WeaponController;
 
   constructor() {
@@ -32,16 +36,29 @@ export class GameScene extends Phaser.Scene {
       () => this.getAimControllerOrThrow().updateAimDirection(),
       () => this.getAimControllerOrThrow().direction,
     );
+    this.enemyController = new EnemyController(
+      this,
+      this.arenaBounds,
+      () => this.getPlayerControllerOrThrow().gameObject,
+    );
+    this.waveController = new WaveController(
+      this,
+      this.enemyController,
+    );
     this.scale.on(Phaser.Scale.Events.RESIZE, this.handleResize, this);
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.scale.off(Phaser.Scale.Events.RESIZE, this.handleResize, this);
+      this.waveController?.destroy();
+      this.enemyController?.destroy();
       this.weaponController?.destroy();
       this.aimController?.destroy();
       this.playerController?.destroy();
       this.arenaRenderer?.destroy();
       this.arenaBounds = undefined;
       this.weaponController = undefined;
+      this.waveController = undefined;
+      this.enemyController = undefined;
       this.aimController = undefined;
       this.playerController = undefined;
       this.arenaRenderer = undefined;
@@ -65,12 +82,18 @@ export class GameScene extends Phaser.Scene {
     this.weaponController?.update(delta);
   }
 
-  private updateEnemies(_: number): void {
-    // Enemy systems will update here once the first enemy slice lands.
+  private updateEnemies(delta: number): void {
+    this.enemyController?.update(delta);
+    this.waveController?.update();
   }
 
   private resolveCombatCollisions(_: number): void {
-    // Bullet/enemy/player collision passes belong here after movement updates.
+    if (!this.weaponController || !this.enemyController || !this.playerController) {
+      return;
+    }
+
+    this.enemyController.resolveBulletHits(this.weaponController.bullets);
+    this.enemyController.resolvePlayerContact(this.playerController);
   }
 
   private updateEffects(_: number): void {

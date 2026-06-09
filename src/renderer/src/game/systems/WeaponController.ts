@@ -31,6 +31,10 @@ export class WeaponController {
     this.bulletPool.update(delta);
   }
 
+  get bullets(): BulletPool {
+    return this.bulletPool;
+  }
+
   destroy(): void {
     this.fireTimer.remove();
     this.bulletPool.destroy();

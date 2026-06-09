@@ -14,7 +14,7 @@ import {
 import { COLLISION_CATEGORIES, type CollisionCategory } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
 
-type Bullet = {
+export type Bullet = {
   view: Phaser.GameObjects.Ellipse;
   poolIndex: number;
   x: number;
@@ -49,6 +49,10 @@ export class BulletPool {
     for (const bullet of this.bullets) {
       this.freeBulletIndexes.push(bullet.poolIndex);
     }
+  }
+
+  get active(): readonly Bullet[] {
+    return this.activeBullets;
   }
 
   spawn(input: SpawnBulletInput): void {
@@ -105,6 +109,16 @@ export class BulletPool {
 
     this.activeBullets.length = 0;
     this.freeBulletIndexes.length = 0;
+  }
+
+  deactivate(bullet: Bullet): void {
+    const activeBulletIndex = this.activeBullets.indexOf(bullet);
+
+    if (activeBulletIndex === -1) {
+      return;
+    }
+
+    this.deactivateActiveBullet(activeBulletIndex);
   }
 
   private createBullet(poolIndex: number): Bullet {
