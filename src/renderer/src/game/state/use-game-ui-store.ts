@@ -27,6 +27,7 @@ export type GameUiState = {
   setPlayerHealth: (playerHealth: PlayerHealthState) => void;
   setWave: (wave: WaveState) => void;
   setWaveAnnouncement: (waveAnnouncement: WaveAnnouncementState) => void;
+  resetGameUiState: () => void;
 };
 
 const INITIAL_PLAYER_HEALTH: PlayerHealthState = {
@@ -60,5 +61,12 @@ export const useGameUiStore = create<GameUiState>((set) => ({
   },
   setWaveAnnouncement: (waveAnnouncement) => {
     set({ waveAnnouncement });
+  },
+  resetGameUiState: () => {
+    set({
+      playerHealth: INITIAL_PLAYER_HEALTH,
+      wave: INITIAL_WAVE_STATE,
+      waveAnnouncement: INITIAL_WAVE_ANNOUNCEMENT_STATE,
+    });
   },
 }));

@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { GAME_SCENE_KEY } from "../config/scene-keys";
+import { useGameUiStore } from "../state/use-game-ui-store";
 import { AimController } from "../systems/AimController";
 import { ArenaBounds } from "../systems/ArenaBounds";
 import { ArenaRenderer } from "../systems/ArenaRenderer";
@@ -22,6 +23,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
+    useGameUiStore.getState().resetGameUiState();
     this.arenaBounds = new ArenaBounds(this);
     this.arenaRenderer = new ArenaRenderer(this, this.arenaBounds);
     this.playerController = new PlayerController(this, this.arenaBounds);
