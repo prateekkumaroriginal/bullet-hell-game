@@ -1,3 +1,4 @@
+// Window config
 export const GAME_DESIGN_WIDTH = 1280;
 export const GAME_DESIGN_HEIGHT = 720;
 export const GAME_BACKGROUND_COLOR = "#101318";
@@ -5,6 +6,7 @@ export const GAME_FPS_TARGET = 60;
 export const GAME_FPS_MIN = 30;
 export const MILLISECONDS_PER_SECOND = 1000;
 
+// Player config
 export const PLAYER_START_X = 640;
 export const PLAYER_START_Y = 560;
 export const PLAYER_SIZE = 28;
@@ -17,6 +19,7 @@ export const PLAYER_FILL_COLOR = 0x5df2a8;
 export const PLAYER_STROKE_COLOR = 0xd7ffe8;
 export const PLAYER_STROKE_WIDTH = 2;
 
+// Bullet config
 export const BULLET_POOL_SIZE = 96;
 export const BULLET_WIDTH = 16;
 export const BULLET_HEIGHT = 6;
@@ -31,6 +34,7 @@ export const BULLET_DEFAULT_DIRECTION_X = 0;
 export const BULLET_DEFAULT_DIRECTION_Y = -1;
 export const BULLET_HIT_RADIUS = BULLET_WIDTH / 2;
 
+// Enemy config
 export const ENEMY_POOL_SIZE = 48;
 export const ENEMY_RADIUS = 18;
 export const ENEMY_MOVE_SPEED = 95;
@@ -42,8 +46,25 @@ export const ENEMY_FILL_COLOR = 0xff5c7a;
 export const ENEMY_STROKE_COLOR = 0xffd6df;
 export const ENEMY_STROKE_WIDTH = 2;
 
+// Wave config
 export const WAVE_ADVANCE_DELAY_MS = 1600;
-export const WAVE_ANNOUNCEMENT_DURATION_MS = 1800;
+export const WAVE_ANNOUNCEMENT_BASE_DURATION_MS = 1800;
+export const WAVE_ANNOUNCEMENT_FULL_CLEAR_EXTENSION_MS = 1500;
+export const WAVE_ANNOUNCEMENT_DURATION_MS =
+  WAVE_ANNOUNCEMENT_BASE_DURATION_MS + WAVE_ANNOUNCEMENT_FULL_CLEAR_EXTENSION_MS;
+export const WAVE_ANNOUNCEMENT_HEARTBEAT_START_PERCENT = 14;
+export const WAVE_ANNOUNCEMENT_HEARTBEAT_END_PERCENT = 75;
+export const WAVE_ANNOUNCEMENT_HEARTBEAT_WINDOW_PERCENT =
+  WAVE_ANNOUNCEMENT_HEARTBEAT_END_PERCENT -
+  WAVE_ANNOUNCEMENT_HEARTBEAT_START_PERCENT;
+export const WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_COUNT = 2;
+export const PERCENT_DIVISOR = 100;
+export const WAVE_ANNOUNCEMENT_HEARTBEAT_DURATION_MS =
+  WAVE_ANNOUNCEMENT_DURATION_MS *
+  (WAVE_ANNOUNCEMENT_HEARTBEAT_WINDOW_PERCENT / PERCENT_DIVISOR);
+export const WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_DURATION_MS =
+  WAVE_ANNOUNCEMENT_HEARTBEAT_DURATION_MS /
+  WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_COUNT;
 export const WAVE_DEFINITIONS = [
   {
     enemyCount: 4,
@@ -59,6 +80,7 @@ export const WAVE_DEFINITIONS = [
   },
 ] as const;
 
+// Aim guide config
 export const AIM_GUIDE_LENGTH = 120;
 export const AIM_GUIDE_START_OFFSET = PLAYER_RADIUS + 10;
 export const AIM_GUIDE_DOT_RADIUS = 2;
@@ -66,10 +88,12 @@ export const AIM_GUIDE_DOT_SPACING = 18;
 export const AIM_GUIDE_COLOR = 0xeaf2ff;
 export const AIM_GUIDE_ALPHA = 0.72;
 
+// Arena config
 export const ARENA_BORDER_COLOR = 0x34404a;
 export const ARENA_BORDER_ALPHA = 0.7;
 export const ARENA_BORDER_WIDTH = 2;
 
+// Grid config
 export const GRID_SPACING = 48;
 export const GRID_COLOR = 0x24303a;
 export const GRID_ALPHA = 0.32;

@@ -1,8 +1,16 @@
 import type { CSSProperties } from "react";
 import { Crosshair, Heart } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import {
+  WAVE_ANNOUNCEMENT_DURATION_MS,
+  WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_COUNT,
+  WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_DURATION_MS,
+  WAVE_ANNOUNCEMENT_HEARTBEAT_END_PERCENT,
+  WAVE_ANNOUNCEMENT_HEARTBEAT_START_PERCENT,
+} from "@/game/config/game-config";
 import { useGameUiState } from "@/game/state/use-game-ui-state";
 
+const WAVE_DEBUG_QUERY_PARAM = "waveDebug";
 const HEALTH_PERCENT_MULTIPLIER = 100;
 const MIN_HEALTH_PERCENT = 0;
 const MAX_HEALTH_PERCENT = 100;
@@ -26,6 +34,9 @@ export const GameHud = () => {
     Math.max(MIN_HEALTH_PERCENT, (current / max) * HEALTH_PERCENT_MULTIPLIER),
   );
   const isLowHealth = healthPercent < LOW_HEALTH_PERCENT;
+  const isWaveAnnouncementDebugEnabled =
+    import.meta.env.DEV &&
+    new URLSearchParams(window.location.search).has(WAVE_DEBUG_QUERY_PARAM);
   const healthFillClassName = isLowHealth
     ? "[&_[data-slot=progress-indicator]]:bg-rose-400 [&_[data-slot=progress-indicator]]:shadow-[0_0_16px_rgba(255,64,112,0.78)]"
     : "[&_[data-slot=progress-indicator]]:bg-emerald-300 [&_[data-slot=progress-indicator]]:shadow-[0_0_16px_rgba(94,242,168,0.72)]";
@@ -137,7 +148,14 @@ export const GameHud = () => {
           className="absolute inset-0 grid place-items-center"
           key={waveAnnouncement.id}
         >
-          <div className="wave-announcement relative grid w-[min(30rem,calc(100vw-2rem))] place-items-center text-center">
+          <div
+            className="wave-announcement relative grid w-[min(30rem,calc(100vw-2rem))] place-items-center text-center"
+            style={
+              {
+                "--wave-announcement-duration": `${WAVE_ANNOUNCEMENT_DURATION_MS}ms`,
+              } as CSSProperties
+            }
+          >
             <svg
               aria-hidden="true"
               className="absolute top-2 h-52 w-80 max-w-[74vw] overflow-visible"
@@ -178,6 +196,35 @@ export const GameHud = () => {
             >
               Incoming !!!
             </div>
+          </div>
+        </section>
+      ) : null}
+
+      {isWaveAnnouncementDebugEnabled ? (
+        <section className="pointer-events-none absolute inset-x-6 bottom-6 z-20 max-w-xl border border-cyan-300/35 bg-black/72 p-4 font-mono text-xs text-cyan-100 shadow-[0_0_24px_rgba(45,255,231,0.24)]">
+          <div className="mb-3 flex flex-wrap gap-x-5 gap-y-1">
+            <span>duration {WAVE_ANNOUNCEMENT_DURATION_MS}ms</span>
+            <span>
+              heartbeat {WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_COUNT}x @{" "}
+              {Math.round(WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_DURATION_MS)}ms
+            </span>
+            <span>
+              window {WAVE_ANNOUNCEMENT_HEARTBEAT_START_PERCENT}%-
+              {WAVE_ANNOUNCEMENT_HEARTBEAT_END_PERCENT}%
+            </span>
+          </div>
+          <div
+            className="wave-announcement-debug-timeline relative h-3 overflow-hidden border border-cyan-300/40 bg-cyan-950/60"
+            style={
+              {
+                "--wave-announcement-duration": `${WAVE_ANNOUNCEMENT_DURATION_MS}ms`,
+                "--wave-announcement-heartbeat-start": `${WAVE_ANNOUNCEMENT_HEARTBEAT_START_PERCENT}%`,
+                "--wave-announcement-heartbeat-end": `${WAVE_ANNOUNCEMENT_HEARTBEAT_END_PERCENT}%`,
+              } as CSSProperties
+            }
+          >
+            <span className="wave-announcement-debug-heartbeat absolute inset-y-0 bg-rose-400/45" />
+            <span className="wave-announcement-debug-progress absolute inset-y-0 left-0 w-px bg-white shadow-[0_0_10px_rgba(255,255,255,0.95)]" />
           </div>
         </section>
       ) : null}

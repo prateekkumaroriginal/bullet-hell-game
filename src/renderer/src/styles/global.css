@@ -129,29 +129,149 @@
   }
 }
 
-@keyframes wave-announcement-sweep {
+@keyframes wave-announcement-visibility {
   0% {
     opacity: 0;
-    filter: blur(10px);
-    transform: scale(0.76);
   }
-  18% {
+  14% {
     opacity: 1;
-    filter: blur(0);
-    transform: scale(1.04);
   }
-  68% {
+  75% {
     opacity: 1;
-    filter: blur(0);
-    transform: scale(1);
   }
   100% {
     opacity: 0;
-    filter: blur(8px);
-    transform: scale(1.18);
+  }
+}
+
+@keyframes wave-announcement-scale {
+  0% {
+    transform: scale(0.76);
+  }
+  4% {
+    transform: scale(0.93);
+  }
+  8% {
+    transform: scale(1.02);
+  }
+  11% {
+    transform: scale(1.065);
+  }
+  14% {
+    transform: scale(var(--wave-announcement-max-scale));
+  }
+  17.8% {
+    transform: scale(1.075);
+  }
+  21.6% {
+    transform: scale(1.065);
+  }
+  25.4% {
+    transform: scale(1.055);
+  }
+  29.25% {
+    transform: scale(var(--wave-announcement-rest-scale));
+  }
+  33.1% {
+    transform: scale(1.055);
+  }
+  36.9% {
+    transform: scale(1.065);
+  }
+  40.7% {
+    transform: scale(1.075);
+  }
+  44.5% {
+    transform: scale(var(--wave-announcement-max-scale));
+  }
+  48.3% {
+    transform: scale(1.075);
+  }
+  52.1% {
+    transform: scale(1.065);
+  }
+  55.9% {
+    transform: scale(1.055);
+  }
+  59.75% {
+    transform: scale(var(--wave-announcement-rest-scale));
+  }
+  63.6% {
+    transform: scale(1.055);
+  }
+  67.4% {
+    transform: scale(1.065);
+  }
+  71.2% {
+    transform: scale(1.075);
+  }
+  75% {
+    transform: scale(var(--wave-announcement-max-scale));
+  }
+  81.5% {
+    transform: scale(1.095);
+  }
+  88% {
+    transform: scale(1.1);
+  }
+  94% {
+    transform: scale(1.11);
+  }
+  100% {
+    transform: scale(1.12);
   }
 }
 
 .wave-announcement {
-  animation: wave-announcement-sweep 1.8s cubic-bezier(0.19, 1, 0.22, 1) both;
+  --wave-announcement-max-scale: 1.08;
+  --wave-announcement-rest-scale: 1.05;
+  backface-visibility: hidden;
+  transform-origin: center;
+  will-change: opacity, transform;
+  animation:
+    wave-announcement-visibility var(--wave-announcement-duration)
+      cubic-bezier(0.45, 0, 0.2, 1) both,
+    wave-announcement-scale var(--wave-announcement-duration)
+      linear both;
+}
+
+@keyframes wave-announcement-debug-progress {
+  from {
+    left: 0;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+.wave-announcement-debug-heartbeat {
+  left: var(--wave-announcement-heartbeat-start);
+  right: calc(100% - var(--wave-announcement-heartbeat-end));
+}
+
+.wave-announcement-debug-progress {
+  animation: wave-announcement-debug-progress var(--wave-announcement-duration)
+    linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes wave-announcement-visibility {
+    0% {
+      opacity: 0;
+    }
+    14%,
+    75% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes wave-announcement-scale {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+  }
 }
