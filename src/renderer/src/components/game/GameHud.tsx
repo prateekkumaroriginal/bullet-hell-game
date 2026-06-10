@@ -8,7 +8,7 @@ import {
   WAVE_ANNOUNCEMENT_HEARTBEAT_END_PERCENT,
   WAVE_ANNOUNCEMENT_HEARTBEAT_START_PERCENT,
 } from "@/game/config/game-config";
-import { useGameUiState } from "@/game/state/use-game-ui-state";
+import { useGameUiStore } from "@/game/state/use-game-ui-store";
 
 const WAVE_DEBUG_QUERY_PARAM = "waveDebug";
 const HEALTH_PERCENT_MULTIPLIER = 100;
@@ -24,19 +24,22 @@ const WAVE_ANNOUNCEMENT_ARC_FILTER =
   "drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(255,22,54,0.98)) drop-shadow(0 0 28px rgba(120,0,14,0.92))";
 
 export const GameHud = () => {
-  const {
-    playerHealth: { current, max },
-    wave,
-    waveAnnouncement,
-  } = useGameUiState();
+  const playerHealth = useGameUiStore((state) => state.playerHealth);
+  const wave = useGameUiStore((state) => state.wave);
+  const waveAnnouncement = useGameUiStore((state) => state.waveAnnouncement);
+  const { current, max } = playerHealth;
+
   const healthPercent = Math.min(
     MAX_HEALTH_PERCENT,
     Math.max(MIN_HEALTH_PERCENT, (current / max) * HEALTH_PERCENT_MULTIPLIER),
   );
+
   const isLowHealth = healthPercent < LOW_HEALTH_PERCENT;
+
   const isWaveAnnouncementDebugEnabled =
     import.meta.env.DEV &&
     new URLSearchParams(window.location.search).has(WAVE_DEBUG_QUERY_PARAM);
+
   const healthFillClassName = isLowHealth
     ? "[&_[data-slot=progress-indicator]]:bg-rose-400 [&_[data-slot=progress-indicator]]:shadow-[0_0_16px_rgba(255,64,112,0.78)]"
     : "[&_[data-slot=progress-indicator]]:bg-emerald-300 [&_[data-slot=progress-indicator]]:shadow-[0_0_16px_rgba(94,242,168,0.72)]";
@@ -103,15 +106,9 @@ export const GameHud = () => {
               Wave
             </span>
             <div className="font-mono text-4xl font-black leading-none tracking-wide text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.35)] max-md:text-3xl">
-              {wave.isComplete ? (
-                "Clear"
-              ) : (
-                <>
-                  {wave.current}
-                  <span className="mx-3 text-cyan-300">/</span>
-                  {wave.total}
-                </>
-              )}
+              {wave.current}
+              <span className="mx-3 text-cyan-300">/</span>
+              {wave.total}
             </div>
           </div>
 

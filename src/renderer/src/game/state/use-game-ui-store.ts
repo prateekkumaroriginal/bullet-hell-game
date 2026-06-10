@@ -1,3 +1,4 @@
+import { create } from "zustand";
 import { PLAYER_MAX_HEALTH, WAVE_DEFINITIONS } from "../config/game-config";
 
 export type PlayerHealthState = {
@@ -23,9 +24,10 @@ export type GameUiState = {
   playerHealth: PlayerHealthState;
   wave: WaveState;
   waveAnnouncement: WaveAnnouncementState;
+  setPlayerHealth: (playerHealth: PlayerHealthState) => void;
+  setWave: (wave: WaveState) => void;
+  setWaveAnnouncement: (waveAnnouncement: WaveAnnouncementState) => void;
 };
-
-type GameUiStateListener = () => void;
 
 const INITIAL_PLAYER_HEALTH: PlayerHealthState = {
   current: PLAYER_MAX_HEALTH,
@@ -46,57 +48,17 @@ const INITIAL_WAVE_ANNOUNCEMENT_STATE: WaveAnnouncementState = {
   isVisible: false,
 };
 
-let gameUiState: GameUiState = {
+export const useGameUiStore = create<GameUiState>((set) => ({
   playerHealth: INITIAL_PLAYER_HEALTH,
   wave: INITIAL_WAVE_STATE,
   waveAnnouncement: INITIAL_WAVE_ANNOUNCEMENT_STATE,
-};
-
-const listeners = new Set<GameUiStateListener>();
-
-export function getGameUiStateSnapshot(): GameUiState {
-  return gameUiState;
-}
-
-export function subscribeToGameUiState(listener: GameUiStateListener): () => void {
-  listeners.add(listener);
-
-  return () => {
-    listeners.delete(listener);
-  };
-}
-
-export function setPlayerHealthState(playerHealth: PlayerHealthState): void {
-  gameUiState = {
-    ...gameUiState,
-    playerHealth,
-  };
-
-  notifyListeners();
-}
-
-export function setWaveState(wave: WaveState): void {
-  gameUiState = {
-    ...gameUiState,
-    wave,
-  };
-
-  notifyListeners();
-}
-
-export function setWaveAnnouncementState(
-  waveAnnouncement: WaveAnnouncementState,
-): void {
-  gameUiState = {
-    ...gameUiState,
-    waveAnnouncement,
-  };
-
-  notifyListeners();
-}
-
-function notifyListeners(): void {
-  for (const listener of listeners) {
-    listener();
-  }
-}
+  setPlayerHealth: (playerHealth) => {
+    set({ playerHealth });
+  },
+  setWave: (wave) => {
+    set({ wave });
+  },
+  setWaveAnnouncement: (waveAnnouncement) => {
+    set({ waveAnnouncement });
+  },
+}));

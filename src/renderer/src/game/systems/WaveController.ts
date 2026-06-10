@@ -4,10 +4,7 @@ import {
   WAVE_ADVANCE_DELAY_MS,
   WAVE_DEFINITIONS,
 } from "../config/game-config";
-import {
-  setWaveAnnouncementState,
-  setWaveState,
-} from "../state/game-ui-state";
+import { useGameUiStore } from "../state/use-game-ui-store";
 import { EnemyController } from "./EnemyController";
 
 type WaveDefinition = (typeof WAVE_DEFINITIONS)[number];
@@ -177,13 +174,13 @@ export class WaveController {
     }
 
     this.lastPublishedWaveState = nextWaveState;
-    setWaveState(nextWaveState);
+    useGameUiStore.getState().setWave(nextWaveState);
   }
 
   private showWaveAnnouncement(): void {
     this.announcementId += 1;
 
-    setWaveAnnouncementState({
+    useGameUiStore.getState().setWaveAnnouncement({
       id: this.announcementId,
       waveNumber: this.currentWaveIndex + 1,
       totalWaves: WAVE_DEFINITIONS.length,
@@ -192,7 +189,7 @@ export class WaveController {
   }
 
   private hideWaveAnnouncement(): void {
-    setWaveAnnouncementState({
+    useGameUiStore.getState().setWaveAnnouncement({
       id: this.announcementId,
       waveNumber: this.currentWaveIndex + 1,
       totalWaves: WAVE_DEFINITIONS.length,

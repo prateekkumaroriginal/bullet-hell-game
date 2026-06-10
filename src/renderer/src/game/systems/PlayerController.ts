@@ -11,7 +11,7 @@ import {
   PLAYER_STROKE_COLOR,
   PLAYER_STROKE_WIDTH,
 } from "../config/game-config";
-import { setPlayerHealthState } from "../state/game-ui-state";
+import { useGameUiStore } from "../state/use-game-ui-store";
 import { ArenaBounds } from "./ArenaBounds";
 
 type MovementKeys = {
@@ -122,7 +122,7 @@ export class PlayerController {
   }
 
   private publishHealth(): void {
-    setPlayerHealthState({
+    useGameUiStore.getState().setPlayerHealth({
       current: this.currentHealth,
       max: PLAYER_MAX_HEALTH,
     });
