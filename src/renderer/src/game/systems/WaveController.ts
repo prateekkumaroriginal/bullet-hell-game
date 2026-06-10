@@ -1,9 +1,13 @@
 import Phaser from "phaser";
 import {
+  WAVE_ANNOUNCEMENT_DURATION_MS,
   WAVE_ADVANCE_DELAY_MS,
   WAVE_DEFINITIONS,
 } from "../config/game-config";
-import { setWaveState } from "../state/game-ui-state";
+import {
+  setWaveAnnouncementState,
+  setWaveState,
+} from "../state/game-ui-state";
 import { EnemyController } from "./EnemyController";
 
 type WaveDefinition = (typeof WAVE_DEFINITIONS)[number];
@@ -12,7 +16,9 @@ export class WaveController {
   private currentWaveIndex = 0;
   private spawnedEnemyCount = 0;
   private isWaitingForNextWave = false;
+  private isAnnouncingWave = false;
   private isComplete = false;
+  private announcementId = 0;
   private lastPublishedWaveState?: {
     current: number;
     total: number;
@@ -21,6 +27,7 @@ export class WaveController {
   };
   private spawnTimer?: Phaser.Time.TimerEvent;
   private advanceTimer?: Phaser.Time.TimerEvent;
+  private announcementTimer?: Phaser.Time.TimerEvent;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -46,14 +53,32 @@ export class WaveController {
   destroy(): void {
     this.spawnTimer?.remove();
     this.advanceTimer?.remove();
+    this.announcementTimer?.remove();
   }
 
   private startCurrentWave(): void {
     this.spawnedEnemyCount = 0;
     this.isWaitingForNextWave = false;
+    this.isAnnouncingWave = true;
     this.spawnTimer?.remove();
+    this.announcementTimer?.remove();
     this.spawnTimer = undefined;
+    this.announcementTimer = undefined;
     this.publishWaveState();
+    this.showWaveAnnouncement();
+
+    this.announcementTimer = this.scene.time.delayedCall(
+      WAVE_ANNOUNCEMENT_DURATION_MS,
+      () => {
+        this.isAnnouncingWave = false;
+        this.announcementTimer = undefined;
+        this.hideWaveAnnouncement();
+        this.beginCurrentWaveSpawns();
+      },
+    );
+  }
+
+  private beginCurrentWaveSpawns(): void {
     this.spawnEnemyForCurrentWave();
 
     const currentWave = this.getCurrentWave();
@@ -111,6 +136,7 @@ export class WaveController {
 
   private hasCurrentWaveFinished(): boolean {
     return (
+      !this.isAnnouncingWave &&
       this.spawnedEnemyCount >= this.getCurrentWave().enemyCount &&
       this.enemyController.activeEnemyCount === 0
     );
@@ -152,5 +178,25 @@ export class WaveController {
 
     this.lastPublishedWaveState = nextWaveState;
     setWaveState(nextWaveState);
+  }
+
+  private showWaveAnnouncement(): void {
+    this.announcementId += 1;
+
+    setWaveAnnouncementState({
+      id: this.announcementId,
+      waveNumber: this.currentWaveIndex + 1,
+      totalWaves: WAVE_DEFINITIONS.length,
+      isVisible: true,
+    });
+  }
+
+  private hideWaveAnnouncement(): void {
+    setWaveAnnouncementState({
+      id: this.announcementId,
+      waveNumber: this.currentWaveIndex + 1,
+      totalWaves: WAVE_DEFINITIONS.length,
+      isVisible: false,
+    });
   }
 }

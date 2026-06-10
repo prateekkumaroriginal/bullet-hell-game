@@ -128,3 +128,30 @@
     @apply font-sans;
   }
 }
+
+@keyframes wave-announcement-sweep {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(0.76);
+  }
+  18% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1.04);
+  }
+  68% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(8px);
+    transform: scale(1.18);
+  }
+}
+
+.wave-announcement {
+  animation: wave-announcement-sweep 1.8s cubic-bezier(0.19, 1, 0.22, 1) both;
+}

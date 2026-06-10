@@ -10,11 +10,16 @@ const LOW_HEALTH_PERCENT = 40;
 const HP_BAR_SLANT_PERCENT = "3.6%";
 const HP_BAR_CLIP_PATH =
   "polygon(var(--hp-bar-slant) 0, 100% 0, calc(100% - var(--hp-bar-slant)) 100%, 0 100%)";
+const WAVE_ANNOUNCEMENT_TEXT_SHADOW =
+  "0 0 3px rgba(255,255,255,0.95), 0 0 10px rgba(255,22,54,0.98), 0 0 26px rgba(155,0,22,0.92), 0 0 54px rgba(80,0,8,0.78)";
+const WAVE_ANNOUNCEMENT_ARC_FILTER =
+  "drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(255,22,54,0.98)) drop-shadow(0 0 28px rgba(120,0,14,0.92))";
 
 export const GameHud = () => {
   const {
     playerHealth: { current, max },
     wave,
+    waveAnnouncement,
   } = useGameUiState();
   const healthPercent = Math.min(
     MAX_HEALTH_PERCENT,
@@ -126,6 +131,56 @@ export const GameHud = () => {
           <Crosshair className="relative size-8 stroke-[2.5] drop-shadow-[0_0_12px_rgba(255,64,112,0.95)] max-md:size-6" />
         </div>
       </section>
+
+      {waveAnnouncement.isVisible ? (
+        <section
+          className="absolute inset-0 grid place-items-center"
+          key={waveAnnouncement.id}
+        >
+          <div className="wave-announcement relative grid w-[min(30rem,calc(100vw-2rem))] place-items-center text-center">
+            <svg
+              aria-hidden="true"
+              className="absolute top-2 h-52 w-80 max-w-[74vw] overflow-visible"
+              preserveAspectRatio="none"
+              style={{ filter: WAVE_ANNOUNCEMENT_ARC_FILTER }}
+              viewBox="0 0 320 208"
+            >
+              <path
+                className="fill-none stroke-white"
+                d="M 92 20 C 48 48 32 92 40 148"
+                strokeLinecap="round"
+                strokeWidth="4"
+                vectorEffect="non-scaling-stroke"
+              />
+              <path
+                className="fill-none stroke-white"
+                d="M 228 20 C 272 48 288 92 280 148"
+                strokeLinecap="round"
+                strokeWidth="4"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
+            <div
+              className="relative text-3xl font-black uppercase italic tracking-[0.34em] text-white max-md:text-xl"
+              style={{ textShadow: WAVE_ANNOUNCEMENT_TEXT_SHADOW }}
+            >
+              Wave
+            </div>
+            <div
+              className="relative mt-2 font-mono text-[8.5rem] font-black italic leading-[0.78] text-white max-md:text-[5.75rem]"
+              style={{ textShadow: WAVE_ANNOUNCEMENT_TEXT_SHADOW }}
+            >
+              {waveAnnouncement.waveNumber}
+            </div>
+            <div
+              className="relative mt-6 whitespace-nowrap text-5xl font-black uppercase italic tracking-[0.14em] text-white max-md:text-3xl"
+              style={{ textShadow: WAVE_ANNOUNCEMENT_TEXT_SHADOW }}
+            >
+              Incoming !!!
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/24 to-transparent" />
     </div>

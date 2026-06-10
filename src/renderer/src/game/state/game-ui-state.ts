@@ -12,9 +12,17 @@ export type WaveState = {
   isComplete: boolean;
 };
 
+export type WaveAnnouncementState = {
+  id: number;
+  waveNumber: number;
+  totalWaves: number;
+  isVisible: boolean;
+};
+
 export type GameUiState = {
   playerHealth: PlayerHealthState;
   wave: WaveState;
+  waveAnnouncement: WaveAnnouncementState;
 };
 
 type GameUiStateListener = () => void;
@@ -31,9 +39,17 @@ const INITIAL_WAVE_STATE: WaveState = {
   isComplete: false,
 };
 
+const INITIAL_WAVE_ANNOUNCEMENT_STATE: WaveAnnouncementState = {
+  id: 0,
+  waveNumber: 1,
+  totalWaves: WAVE_DEFINITIONS.length,
+  isVisible: false,
+};
+
 let gameUiState: GameUiState = {
   playerHealth: INITIAL_PLAYER_HEALTH,
   wave: INITIAL_WAVE_STATE,
+  waveAnnouncement: INITIAL_WAVE_ANNOUNCEMENT_STATE,
 };
 
 const listeners = new Set<GameUiStateListener>();
@@ -63,6 +79,17 @@ export function setWaveState(wave: WaveState): void {
   gameUiState = {
     ...gameUiState,
     wave,
+  };
+
+  notifyListeners();
+}
+
+export function setWaveAnnouncementState(
+  waveAnnouncement: WaveAnnouncementState,
+): void {
+  gameUiState = {
+    ...gameUiState,
+    waveAnnouncement,
   };
 
   notifyListeners();

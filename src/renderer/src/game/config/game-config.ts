@@ -43,6 +43,7 @@ export const ENEMY_STROKE_COLOR = 0xffd6df;
 export const ENEMY_STROKE_WIDTH = 2;
 
 export const WAVE_ADVANCE_DELAY_MS = 1600;
+export const WAVE_ANNOUNCEMENT_DURATION_MS = 1800;
 export const WAVE_DEFINITIONS = [
   {
     enemyCount: 4,
