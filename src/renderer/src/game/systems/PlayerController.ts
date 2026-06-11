@@ -16,6 +16,7 @@ import {
   GAMEPLAY_EVENTS,
 } from "../events/gameplay-events";
 import { ArenaBounds } from "./ArenaBounds";
+import { type GameplayController } from "./GameplayController";
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
@@ -24,7 +25,7 @@ type MovementKeys = {
   right: Phaser.Input.Keyboard.Key;
 };
 
-export class PlayerController {
+export class PlayerController implements GameplayController {
   private readonly movement = new Phaser.Math.Vector2();
   private readonly player: Phaser.GameObjects.Arc;
   private readonly cursors?: Phaser.Types.Input.Keyboard.CursorKeys;

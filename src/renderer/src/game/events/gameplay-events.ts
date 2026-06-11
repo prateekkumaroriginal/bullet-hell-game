@@ -1,6 +1,11 @@
 import Phaser from "phaser";
 
 export const GAMEPLAY_EVENTS = {
+  GAME_STARTED: "game:started",
+  GAME_PAUSED: "game:paused",
+  GAME_RESUMED: "game:resumed",
+  GAME_OVER: "game:over",
+  LEVEL_COMPLETE: "level:complete",
   PLAYER_HEALTH_CHANGED: "player:health-changed",
   WAVE_CHANGED: "wave:changed",
   WAVE_ANNOUNCEMENT_CHANGED: "wave:announcement-changed",
@@ -11,6 +16,23 @@ export type GameplayEventName = (typeof GAMEPLAY_EVENTS)[keyof typeof GAMEPLAY_E
 export type PlayerHealthChangedPayload = {
   current: number;
   max: number;
+};
+
+export type GameStartedPayload = {
+  selectedLevelId: string;
+  currentWave: number;
+  totalWaves: number;
+};
+
+export type GameOverPayload = {
+  selectedLevelId: string;
+  currentWave: number;
+};
+
+export type LevelCompletePayload = {
+  selectedLevelId: string;
+  currentWave: number;
+  totalWaves: number;
 };
 
 export type WaveChangedPayload = {
@@ -28,6 +50,11 @@ export type WaveAnnouncementChangedPayload = {
 };
 
 export type GameplayEventPayloads = {
+  [GAMEPLAY_EVENTS.GAME_STARTED]: GameStartedPayload;
+  [GAMEPLAY_EVENTS.GAME_PAUSED]: undefined;
+  [GAMEPLAY_EVENTS.GAME_RESUMED]: undefined;
+  [GAMEPLAY_EVENTS.GAME_OVER]: GameOverPayload;
+  [GAMEPLAY_EVENTS.LEVEL_COMPLETE]: LevelCompletePayload;
   [GAMEPLAY_EVENTS.PLAYER_HEALTH_CHANGED]: PlayerHealthChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_CHANGED]: WaveChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_ANNOUNCEMENT_CHANGED]: WaveAnnouncementChangedPayload;

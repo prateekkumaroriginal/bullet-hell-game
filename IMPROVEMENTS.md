@@ -2,18 +2,18 @@
 
 ### 1. Restart-Safe Cleanup
 
-- [ ] Standardize controller lifecycle with a small shared interface:
+- [x] Standardize controller lifecycle with a small shared interface:
   - `update(delta)`
   - `destroy()`
-- [ ] Make every event subscription return or store a cleanup function.
-- [ ] Ensure scene restart, game over, and returning to menu leave no timers, listeners, or pooled objects active.
+- [x] Make every event subscription return or store a cleanup function.
+- [x] Ensure scene restart, game over, and returning to menu leave no timers, listeners, or pooled objects active.
 
 ### 2. Formalize Gameplay State
 
-- [ ] Add explicit gameplay/session state models instead of keeping state spread across controllers.
-- [ ] Create a `GameSessionState` model for run-level state such as playing, paused, game over, level complete, selected level, and current wave.
-- [ ] Keep Phaser as the source of truth for real-time simulation state.
-- [ ] Keep Zustand as the source of truth for React app/UI state.
+- [x] Add explicit gameplay/session state models instead of keeping state spread across controllers.
+- [x] Create a `GameSessionState` model for run-level state such as playing, paused, game over, level complete, selected level, and current wave.
+- [x] Keep Phaser as the source of truth for real-time simulation state.
+- [x] Keep Zustand as the source of truth for React app/UI state.
 
 ### 3. Expand Typed Gameplay Events
 

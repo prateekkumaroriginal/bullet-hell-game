@@ -9,9 +9,10 @@ import { COLLISION_CATEGORIES, canCollide } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
 import { type BulletPool } from "./BulletPool";
 import { EnemyPool } from "./EnemyPool";
+import { type GameplayController } from "./GameplayController";
 import { PlayerController } from "./PlayerController";
 
-export class EnemyController {
+export class EnemyController implements GameplayController {
   private readonly enemyPool: EnemyPool;
 
   constructor(

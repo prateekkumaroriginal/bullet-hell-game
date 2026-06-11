@@ -19,11 +19,6 @@
       "onFail": "download"
     }
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "electron"
-    ]
-  },
   "type": "module",
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",

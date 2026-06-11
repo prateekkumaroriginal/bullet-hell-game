@@ -8,11 +8,13 @@ import {
   emitGameplayEvent,
   GAMEPLAY_EVENTS,
 } from "../events/gameplay-events";
+import { DEFAULT_LEVEL_ID } from "../state/game-session-state";
 import { EnemyController } from "./EnemyController";
+import { type GameplayController } from "./GameplayController";
 
 type WaveDefinition = (typeof WAVE_DEFINITIONS)[number];
 
-export class WaveController {
+export class WaveController implements GameplayController {
   private currentWaveIndex = 0;
   private spawnedEnemyCount = 0;
   private isWaitingForNextWave = false;
@@ -36,7 +38,15 @@ export class WaveController {
     this.startCurrentWave();
   }
 
-  update(): void {
+  get currentWaveNumber(): number {
+    return this.currentWaveIndex + 1;
+  }
+
+  get totalWaves(): number {
+    return WAVE_DEFINITIONS.length;
+  }
+
+  update(_: number): void {
     this.publishWaveState();
 
     if (this.isComplete || this.isWaitingForNextWave) {
@@ -120,6 +130,11 @@ export class WaveController {
     if (nextWaveIndex >= WAVE_DEFINITIONS.length) {
       this.isComplete = true;
       this.publishWaveState();
+      emitGameplayEvent(GAMEPLAY_EVENTS.LEVEL_COMPLETE, {
+        selectedLevelId: DEFAULT_LEVEL_ID,
+        currentWave: this.currentWaveNumber,
+        totalWaves: this.totalWaves,
+      });
       return;
     }
 
@@ -161,7 +176,7 @@ export class WaveController {
 
     const nextWaveState = {
       current: this.currentWaveIndex + 1,
-      total: WAVE_DEFINITIONS.length,
+      total: this.totalWaves,
       enemiesRemaining: Math.max(0, enemiesRemaining),
       isComplete: this.isComplete,
     };
@@ -186,7 +201,7 @@ export class WaveController {
     emitGameplayEvent(GAMEPLAY_EVENTS.WAVE_ANNOUNCEMENT_CHANGED, {
       id: this.announcementId,
       waveNumber: this.currentWaveIndex + 1,
-      totalWaves: WAVE_DEFINITIONS.length,
+      totalWaves: this.totalWaves,
       isVisible: true,
     });
   }
@@ -195,7 +210,7 @@ export class WaveController {
     emitGameplayEvent(GAMEPLAY_EVENTS.WAVE_ANNOUNCEMENT_CHANGED, {
       id: this.announcementId,
       waveNumber: this.currentWaveIndex + 1,
-      totalWaves: WAVE_DEFINITIONS.length,
+      totalWaves: this.totalWaves,
       isVisible: false,
     });
   }

@@ -7,8 +7,9 @@ import {
   AIM_GUIDE_LENGTH,
   AIM_GUIDE_START_OFFSET,
 } from "../config/aim-config";
+import { type GameplayController } from "./GameplayController";
 
-export class AimController {
+export class AimController implements GameplayController {
   private readonly aimDirection = new Phaser.Math.Vector2();
   private readonly aimGuide: Phaser.GameObjects.Graphics;
 
@@ -23,7 +24,7 @@ export class AimController {
     return this.aimDirection;
   }
 
-  update(): void {
+  update(_: number): void {
     const player = this.getPlayer();
 
     this.aimGuide.clear();

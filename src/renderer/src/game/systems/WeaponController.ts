@@ -6,8 +6,9 @@ import {
 } from "../config/bullet-config";
 import { ArenaBounds } from "./ArenaBounds";
 import { BulletPool } from "./BulletPool";
+import { type GameplayController } from "./GameplayController";
 
-export class WeaponController {
+export class WeaponController implements GameplayController {
   private readonly bulletPool: BulletPool;
   private readonly fireTimer: Phaser.Time.TimerEvent;
 
