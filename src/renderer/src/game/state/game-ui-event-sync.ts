@@ -2,6 +2,7 @@ import {
   GAMEPLAY_EVENTS,
   onGameplayEvent,
 } from "../events/gameplay-events";
+import { GAME_SESSION_PHASES } from "./game-session-state";
 import { useGameUiStore } from "./use-game-ui-store";
 
 export function bindGameUiStoreToGameplayEvents(): () => void {
@@ -9,8 +10,8 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     GAMEPLAY_EVENTS.GAME_STARTED,
     (gameSession) => {
       useGameUiStore.getState().setGameSession({
-        phase: "playing",
-        selectedLevelId: gameSession.selectedLevelId,
+        phase: GAME_SESSION_PHASES.PLAYING,
+        selectedStageId: gameSession.selectedStageId,
         currentWave: gameSession.currentWave,
         totalWaves: gameSession.totalWaves,
       });
@@ -22,8 +23,8 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
       const totalWaves = useGameUiStore.getState().gameSession.totalWaves;
 
       useGameUiStore.getState().setGameSession({
-        phase: "gameOver",
-        selectedLevelId: gameSession.selectedLevelId,
+        phase: GAME_SESSION_PHASES.GAME_OVER,
+        selectedStageId: gameSession.selectedStageId,
         currentWave: gameSession.currentWave,
         totalWaves,
       });
@@ -32,21 +33,21 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
   const removeGamePausedListener = onGameplayEvent(
     GAMEPLAY_EVENTS.GAME_PAUSED,
     () => {
-      useGameUiStore.getState().setGameSessionPhase("paused");
+      useGameUiStore.getState().setGameSessionPhase(GAME_SESSION_PHASES.PAUSED);
     },
   );
   const removeGameResumedListener = onGameplayEvent(
     GAMEPLAY_EVENTS.GAME_RESUMED,
     () => {
-      useGameUiStore.getState().setGameSessionPhase("playing");
+      useGameUiStore.getState().setGameSessionPhase(GAME_SESSION_PHASES.PLAYING);
     },
   );
-  const removeLevelCompleteListener = onGameplayEvent(
-    GAMEPLAY_EVENTS.LEVEL_COMPLETE,
+  const removeStageCompleteListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.STAGE_COMPLETE,
     (gameSession) => {
       useGameUiStore.getState().setGameSession({
-        phase: "levelComplete",
-        selectedLevelId: gameSession.selectedLevelId,
+        phase: GAME_SESSION_PHASES.STAGE_COMPLETE,
+        selectedStageId: gameSession.selectedStageId,
         currentWave: gameSession.currentWave,
         totalWaves: gameSession.totalWaves,
       });
@@ -77,7 +78,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     removeGameOverListener();
     removeGamePausedListener();
     removeGameResumedListener();
-    removeLevelCompleteListener();
+    removeStageCompleteListener();
     removeHealthListener();
     removeWaveListener();
     removeWaveAnnouncementListener();

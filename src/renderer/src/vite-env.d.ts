@@ -3,5 +3,6 @@
 interface Window {
   electron: {
     platform: NodeJS.Platform;
+    quit: () => Promise<void>;
   };
 }

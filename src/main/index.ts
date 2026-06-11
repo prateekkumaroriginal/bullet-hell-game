@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "node:path";
 import {
   ELECTRON_WINDOW_HEIGHT,
@@ -36,6 +36,10 @@ const createMainWindow = (): void => {
 };
 
 void app.whenReady().then(() => {
+  ipcMain.handle("app:quit", () => {
+    app.quit();
+  });
+
   createMainWindow();
 
   app.on("activate", () => {

@@ -5,7 +5,7 @@ export const GAMEPLAY_EVENTS = {
   GAME_PAUSED: "game:paused",
   GAME_RESUMED: "game:resumed",
   GAME_OVER: "game:over",
-  LEVEL_COMPLETE: "level:complete",
+  STAGE_COMPLETE: "stage:complete",
   PLAYER_HEALTH_CHANGED: "player:health-changed",
   WAVE_CHANGED: "wave:changed",
   WAVE_ANNOUNCEMENT_CHANGED: "wave:announcement-changed",
@@ -19,18 +19,18 @@ export type PlayerHealthChangedPayload = {
 };
 
 export type GameStartedPayload = {
-  selectedLevelId: string;
+  selectedStageId: string;
   currentWave: number;
   totalWaves: number;
 };
 
 export type GameOverPayload = {
-  selectedLevelId: string;
+  selectedStageId: string;
   currentWave: number;
 };
 
-export type LevelCompletePayload = {
-  selectedLevelId: string;
+export type StageCompletePayload = {
+  selectedStageId: string;
   currentWave: number;
   totalWaves: number;
 };
@@ -54,7 +54,7 @@ export type GameplayEventPayloads = {
   [GAMEPLAY_EVENTS.GAME_PAUSED]: undefined;
   [GAMEPLAY_EVENTS.GAME_RESUMED]: undefined;
   [GAMEPLAY_EVENTS.GAME_OVER]: GameOverPayload;
-  [GAMEPLAY_EVENTS.LEVEL_COMPLETE]: LevelCompletePayload;
+  [GAMEPLAY_EVENTS.STAGE_COMPLETE]: StageCompletePayload;
   [GAMEPLAY_EVENTS.PLAYER_HEALTH_CHANGED]: PlayerHealthChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_CHANGED]: WaveChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_ANNOUNCEMENT_CHANGED]: WaveAnnouncementChangedPayload;

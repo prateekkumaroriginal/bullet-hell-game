@@ -46,3 +46,4 @@
 ## UI & Shadcn
 
 - Use shadcn cli for installing components. Don't create them.
+- Use flex and gap as much as possible. Only exceptions are shadcn components.
