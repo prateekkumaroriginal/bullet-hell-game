@@ -5,7 +5,7 @@ import {
   GAME_DESIGN_WIDTH,
   GAME_FPS_MIN,
   GAME_FPS_TARGET,
-} from "./config/game-config";
+} from "./config/game-window-config";
 import { GameScene } from "./scenes/GameScene";
 
 export const createGame = (parent: HTMLElement): Phaser.Game => {

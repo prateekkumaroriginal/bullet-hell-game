@@ -3,7 +3,7 @@ import {
   BULLET_DEFAULT_DIRECTION_X,
   BULLET_DEFAULT_DIRECTION_Y,
   BULLET_FIRE_COOLDOWN_MS,
-} from "../config/game-config";
+} from "../config/bullet-config";
 import { ArenaBounds } from "./ArenaBounds";
 import { BulletPool } from "./BulletPool";
 

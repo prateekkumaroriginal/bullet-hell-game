@@ -1,0 +1,10 @@
+export const ENEMY_POOL_SIZE = 48;
+export const ENEMY_RADIUS = 18;
+export const ENEMY_MOVE_SPEED = 95;
+export const ENEMY_MAX_HEALTH = 2;
+export const ENEMY_SEPARATION_RADIUS = ENEMY_RADIUS * 2.35;
+export const ENEMY_SEPARATION_STRENGTH = 0.5;
+export const ENEMY_OVERLAP_FALLBACK_DISTANCE = 1;
+export const ENEMY_FILL_COLOR = 0xff5c7a;
+export const ENEMY_STROKE_COLOR = 0xffd6df;
+export const ENEMY_STROKE_WIDTH = 2;

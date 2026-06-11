@@ -7,7 +7,7 @@ import {
   WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_DURATION_MS,
   WAVE_ANNOUNCEMENT_HEARTBEAT_END_PERCENT,
   WAVE_ANNOUNCEMENT_HEARTBEAT_START_PERCENT,
-} from "@/game/config/game-config";
+} from "@/game/config/wave-config";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
 
 const WAVE_DEBUG_QUERY_PARAM = "waveDebug";

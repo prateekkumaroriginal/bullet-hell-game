@@ -7,7 +7,7 @@ import {
   GRID_COLOR,
   GRID_LINE_WIDTH,
   GRID_SPACING,
-} from "../config/game-config";
+} from "../config/arena-config";
 import { ArenaBounds } from "./ArenaBounds";
 
 export class ArenaRenderer {

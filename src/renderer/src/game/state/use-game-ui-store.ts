@@ -1,24 +1,15 @@
 import { create } from "zustand";
-import { PLAYER_MAX_HEALTH, WAVE_DEFINITIONS } from "../config/game-config";
+import { PLAYER_MAX_HEALTH } from "../config/player-config";
+import { WAVE_DEFINITIONS } from "../config/wave-config";
+import {
+  type PlayerHealthChangedPayload,
+  type WaveAnnouncementChangedPayload,
+  type WaveChangedPayload,
+} from "../events/gameplay-events";
 
-export type PlayerHealthState = {
-  current: number;
-  max: number;
-};
-
-export type WaveState = {
-  current: number;
-  total: number;
-  enemiesRemaining: number;
-  isComplete: boolean;
-};
-
-export type WaveAnnouncementState = {
-  id: number;
-  waveNumber: number;
-  totalWaves: number;
-  isVisible: boolean;
-};
+export type PlayerHealthState = PlayerHealthChangedPayload;
+export type WaveState = WaveChangedPayload;
+export type WaveAnnouncementState = WaveAnnouncementChangedPayload;
 
 export type GameUiState = {
   playerHealth: PlayerHealthState;

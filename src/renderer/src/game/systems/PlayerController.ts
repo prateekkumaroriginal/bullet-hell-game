@@ -1,6 +1,5 @@
 import Phaser from "phaser";
 import {
-  MILLISECONDS_PER_SECOND,
   PLAYER_DAMAGE_INVULNERABILITY_MS,
   PLAYER_FILL_COLOR,
   PLAYER_MAX_HEALTH,
@@ -10,8 +9,12 @@ import {
   PLAYER_START_Y,
   PLAYER_STROKE_COLOR,
   PLAYER_STROKE_WIDTH,
-} from "../config/game-config";
-import { useGameUiStore } from "../state/use-game-ui-store";
+} from "../config/player-config";
+import { MILLISECONDS_PER_SECOND } from "../config/time-config";
+import {
+  emitGameplayEvent,
+  GAMEPLAY_EVENTS,
+} from "../events/gameplay-events";
 import { ArenaBounds } from "./ArenaBounds";
 
 type MovementKeys = {
@@ -122,7 +125,7 @@ export class PlayerController {
   }
 
   private publishHealth(): void {
-    useGameUiStore.getState().setPlayerHealth({
+    emitGameplayEvent(GAMEPLAY_EVENTS.PLAYER_HEALTH_CHANGED, {
       current: this.currentHealth,
       max: PLAYER_MAX_HEALTH,
     });

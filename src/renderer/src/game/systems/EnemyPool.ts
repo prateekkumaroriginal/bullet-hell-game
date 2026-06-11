@@ -10,8 +10,8 @@ import {
   ENEMY_SEPARATION_STRENGTH,
   ENEMY_STROKE_COLOR,
   ENEMY_STROKE_WIDTH,
-  MILLISECONDS_PER_SECOND,
-} from "../config/game-config";
+} from "../config/enemy-config";
+import { MILLISECONDS_PER_SECOND } from "../config/time-config";
 import { COLLISION_CATEGORIES, type CollisionCategory } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
 

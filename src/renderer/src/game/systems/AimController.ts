@@ -6,7 +6,7 @@ import {
   AIM_GUIDE_DOT_SPACING,
   AIM_GUIDE_LENGTH,
   AIM_GUIDE_START_OFFSET,
-} from "../config/game-config";
+} from "../config/aim-config";
 
 export class AimController {
   private readonly aimDirection = new Phaser.Math.Vector2();

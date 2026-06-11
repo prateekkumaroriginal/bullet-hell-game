@@ -1,10 +1,10 @@
 import Phaser from "phaser";
+import { BULLET_HIT_RADIUS } from "../config/bullet-config";
+import { ENEMY_RADIUS } from "../config/enemy-config";
 import {
-  BULLET_HIT_RADIUS,
-  ENEMY_RADIUS,
   PLAYER_ENEMY_CONTACT_DAMAGE,
   PLAYER_RADIUS,
-} from "../config/game-config";
+} from "../config/player-config";
 import { COLLISION_CATEGORIES, canCollide } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
 import { type BulletPool } from "./BulletPool";

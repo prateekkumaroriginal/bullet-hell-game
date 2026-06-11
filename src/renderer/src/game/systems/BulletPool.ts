@@ -9,8 +9,8 @@ import {
   BULLET_STROKE_COLOR,
   BULLET_STROKE_WIDTH,
   BULLET_WIDTH,
-  MILLISECONDS_PER_SECOND,
-} from "../config/game-config";
+} from "../config/bullet-config";
+import { MILLISECONDS_PER_SECOND } from "../config/time-config";
 import { COLLISION_CATEGORIES, type CollisionCategory } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
 

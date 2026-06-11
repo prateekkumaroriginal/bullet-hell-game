@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { GAME_SCENE_KEY } from "../config/scene-keys";
+import { bindGameUiStoreToGameplayEvents } from "../state/game-ui-event-sync";
 import { useGameUiStore } from "../state/use-game-ui-store";
 import { AimController } from "../systems/AimController";
 import { ArenaBounds } from "../systems/ArenaBounds";
@@ -17,6 +18,7 @@ export class GameScene extends Phaser.Scene {
   private playerController?: PlayerController;
   private waveController?: WaveController;
   private weaponController?: WeaponController;
+  private disposeGameUiEventSync?: () => void;
 
   constructor() {
     super(GAME_SCENE_KEY);
@@ -24,6 +26,7 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     useGameUiStore.getState().resetGameUiState();
+    this.disposeGameUiEventSync = bindGameUiStoreToGameplayEvents();
     this.arenaBounds = new ArenaBounds(this);
     this.arenaRenderer = new ArenaRenderer(this, this.arenaBounds);
     this.playerController = new PlayerController(this, this.arenaBounds);
@@ -51,6 +54,7 @@ export class GameScene extends Phaser.Scene {
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.scale.off(Phaser.Scale.Events.RESIZE, this.handleResize, this);
+      this.disposeGameUiEventSync?.();
       this.waveController?.destroy();
       this.enemyController?.destroy();
       this.weaponController?.destroy();
@@ -59,6 +63,7 @@ export class GameScene extends Phaser.Scene {
       this.arenaRenderer?.destroy();
       this.arenaBounds = undefined;
       this.weaponController = undefined;
+      this.disposeGameUiEventSync = undefined;
       this.waveController = undefined;
       this.enemyController = undefined;
       this.aimController = undefined;
