@@ -1,0 +1,13 @@
+export const BULLET_POOL_SIZE = 96;
+export const BULLET_WIDTH = 16;
+export const BULLET_HEIGHT = 6;
+export const BULLET_SPEED = 520;
+export const BULLET_FILL_COLOR = 0xffe66d;
+export const BULLET_STROKE_COLOR = 0xffffff;
+export const BULLET_STROKE_WIDTH = 1;
+export const BULLET_DEFAULT_DAMAGE = 1;
+export const BULLET_FIRE_COOLDOWN_MS = 1000;
+export const BULLET_DESPAWN_PADDING = 32;
+export const BULLET_DEFAULT_DIRECTION_X = 0;
+export const BULLET_DEFAULT_DIRECTION_Y = -1;
+export const BULLET_HIT_RADIUS = BULLET_WIDTH / 2;

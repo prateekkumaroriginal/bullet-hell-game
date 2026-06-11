@@ -3,11 +3,12 @@ import {
   BULLET_DEFAULT_DIRECTION_X,
   BULLET_DEFAULT_DIRECTION_Y,
   BULLET_FIRE_COOLDOWN_MS,
-} from "../config/game-config";
+} from "../config/bullet-config";
 import { ArenaBounds } from "./ArenaBounds";
 import { BulletPool } from "./BulletPool";
+import { type GameplayController } from "./GameplayController";
 
-export class WeaponController {
+export class WeaponController implements GameplayController {
   private readonly bulletPool: BulletPool;
   private readonly fireTimer: Phaser.Time.TimerEvent;
 
@@ -29,6 +30,10 @@ export class WeaponController {
 
   update(delta: number): void {
     this.bulletPool.update(delta);
+  }
+
+  get bullets(): BulletPool {
+    return this.bulletPool;
   }
 
   destroy(): void {

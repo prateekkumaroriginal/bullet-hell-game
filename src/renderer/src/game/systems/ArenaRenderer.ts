@@ -7,10 +7,11 @@ import {
   GRID_COLOR,
   GRID_LINE_WIDTH,
   GRID_SPACING,
-} from "../config/game-config";
+} from "../config/arena-config";
 import { ArenaBounds } from "./ArenaBounds";
+import { type GameplayController } from "./GameplayController";
 
-export class ArenaRenderer {
+export class ArenaRenderer implements GameplayController {
   private readonly guide: Phaser.GameObjects.Graphics;
 
   constructor(
@@ -43,6 +44,8 @@ export class ArenaRenderer {
     );
     this.guide.strokeRect(0, 0, arenaWidth, arenaHeight);
   }
+
+  update(_: number): void {}
 
   destroy(): void {
     this.guide.destroy();
