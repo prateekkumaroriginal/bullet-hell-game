@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow } from "electron";
 import { join } from "node:path";
 import {
   ELECTRON_WINDOW_HEIGHT,
@@ -6,6 +6,7 @@ import {
   ELECTRON_WINDOW_MIN_WIDTH,
   ELECTRON_WINDOW_WIDTH,
 } from "./config/electron-window";
+import { registerAppIpcHandlers } from "./ipc/app-ipc";
 
 const createMainWindow = (): void => {
   const mainWindow = new BrowserWindow({
@@ -16,7 +17,7 @@ const createMainWindow = (): void => {
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: join(__dirname, "../preload/index.js"),
+      preload: join(__dirname, "../preload/index.mjs"),
       sandbox: false,
       contextIsolation: true,
       nodeIntegration: false,
@@ -36,9 +37,7 @@ const createMainWindow = (): void => {
 };
 
 void app.whenReady().then(() => {
-  ipcMain.handle("app:quit", () => {
-    app.quit();
-  });
+  registerAppIpcHandlers();
 
   createMainWindow();
 

@@ -28,6 +28,7 @@
     "vite.config.ts",
     "src/main/**/*.ts",
     "src/preload/**/*.ts",
+    "src/shared/**/*.ts",
     "src/renderer/src/**/*.ts",
     "src/renderer/src/**/*.tsx"
   ]

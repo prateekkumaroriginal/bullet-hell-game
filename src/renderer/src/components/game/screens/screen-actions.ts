@@ -1,3 +1,7 @@
 export const quitToDesktop = () => {
-  void window.electron.quit();
+  if (!window.electron) {
+    return;
+  }
+
+  void window.electron.requestQuit();
 };

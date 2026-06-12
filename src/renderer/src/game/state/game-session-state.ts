@@ -16,14 +16,14 @@ export type GameSessionPhase =
 
 export type GameSessionState = {
   phase: GameSessionPhase;
-  selectedStageId: string;
+  selectedStageId: string | null;
   currentWave: number;
   totalWaves: number;
 };
 
 export const INITIAL_GAME_SESSION_STATE: GameSessionState = {
   phase: GAME_SESSION_PHASES.IDLE,
-  selectedStageId: DEFAULT_STAGE_ID,
+  selectedStageId: null,
   currentWave: INITIAL_WAVE_NUMBER,
   totalWaves: WAVE_DEFINITIONS.length,
 };

@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
 
 interface Window {
-  electron: {
+  electron?: {
     platform: NodeJS.Platform;
-    quit: () => Promise<void>;
+    requestQuit: () => Promise<void>;
   };
 }

@@ -56,6 +56,7 @@ export const ScreenCenter = ({ children }: { children: ReactNode }) => (
 );
 
 export const ScreenButton = ({
+  children,
   className,
   onMouseEnter,
   ...props
@@ -70,7 +71,9 @@ export const ScreenButton = ({
     }}
     size="screen"
     variant="screen"
-  />
+  >
+    {children}
+  </Button>
 );
 
 export const StageDivider = ({ label }: { label: string }) => (
