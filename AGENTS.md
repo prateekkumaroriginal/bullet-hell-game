@@ -24,7 +24,7 @@
 ## Constants
 
 - Do not use magic numbers.
-- Any numeric value that represents gameplay tuning, timing, sizing, physics, limits, spawn behavior, scoring, z-depth, or UI layout behavior must be named in a constants/config file and imported where used.
+- Any numeric value that represents gameplay tuning, timing, sizing, physics, limits, spawn behavior, scoring, or UI layout behavior must be named in a constants/config file and imported where used.
 - Inline numeric literals are acceptable only for structural values such as `0`, `1`, `-1`, loop increments, array indexes, and simple API values where a named constant would reduce clarity.
 
 ## Work Style
