@@ -7,26 +7,33 @@ import {
   emitGameplayCommand,
   GAMEPLAY_COMMANDS,
 } from "@/game/events/gameplay-commands";
-import { ScreenButton, ScreenCenter, ScreenTitle } from "./ScreenPrimitives";
+import {
+  ScreenButton,
+  ScreenCenter,
+  ScreenMenuGrid,
+  ScreenTitle,
+} from "./ScreenPrimitives";
 import { quitToDesktop } from "./screen-actions";
 
 export const MainMenuScreen = () => (
   <ScreenCenter>
-    <ScreenTitle className="mb-10 text-7xl max-md:text-5xl">
-      {GAME_TITLE}
-    </ScreenTitle>
-    <div className="grid w-[min(31rem,calc(100vw-3rem))] gap-3">
-      <ScreenButton
-        autoFocus
-        onClick={() => {
-          emitGameplayCommand(GAMEPLAY_COMMANDS.START_GAME, {
-            selectedStageId: SCREEN_PRIMARY_STAGE_ID,
-          });
-        }}
-      >
-        {MENU_BUTTONS.main[0]}
-      </ScreenButton>
-      <ScreenButton onClick={quitToDesktop}>{MENU_BUTTONS.main[1]}</ScreenButton>
+    <div className="flex flex-col items-center gap-10">
+      <ScreenTitle variant="main">{GAME_TITLE}</ScreenTitle>
+      <ScreenMenuGrid variant="main">
+        <ScreenButton
+          autoFocus
+          onClick={() => {
+            emitGameplayCommand(GAMEPLAY_COMMANDS.START_GAME, {
+              selectedStageId: SCREEN_PRIMARY_STAGE_ID,
+            });
+          }}
+        >
+          {MENU_BUTTONS.main[0]}
+        </ScreenButton>
+        <ScreenButton onClick={quitToDesktop}>
+          {MENU_BUTTONS.main[1]}
+        </ScreenButton>
+      </ScreenMenuGrid>
     </div>
   </ScreenCenter>
 );
