@@ -8,7 +8,6 @@ import {
   emitGameplayEvent,
   GAMEPLAY_EVENTS,
 } from "../events/gameplay-events";
-import { DEFAULT_LEVEL_ID } from "../state/game-session-state";
 import { EnemyController } from "./EnemyController";
 import { type GameplayController } from "./GameplayController";
 
@@ -34,6 +33,7 @@ export class WaveController implements GameplayController {
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly enemyController: EnemyController,
+    private readonly onStageComplete: () => void,
   ) {
     this.startCurrentWave();
   }
@@ -130,11 +130,7 @@ export class WaveController implements GameplayController {
     if (nextWaveIndex >= WAVE_DEFINITIONS.length) {
       this.isComplete = true;
       this.publishWaveState();
-      emitGameplayEvent(GAMEPLAY_EVENTS.LEVEL_COMPLETE, {
-        selectedLevelId: DEFAULT_LEVEL_ID,
-        currentWave: this.currentWaveNumber,
-        totalWaves: this.totalWaves,
-      });
+      this.onStageComplete();
       return;
     }
 

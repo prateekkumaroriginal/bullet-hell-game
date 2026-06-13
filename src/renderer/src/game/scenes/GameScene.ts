@@ -2,12 +2,18 @@ import Phaser from "phaser";
 import { GAME_SCENE_KEY } from "../config/scene-keys";
 import { WAVE_DEFINITIONS } from "../config/wave-config";
 import {
+  GAMEPLAY_COMMANDS,
+  onGameplayCommand,
+} from "../events/gameplay-commands";
+import {
   emitGameplayEvent,
   GAMEPLAY_EVENTS,
   onGameplayEvent,
 } from "../events/gameplay-events";
 import {
-  DEFAULT_LEVEL_ID,
+  DEFAULT_STAGE_ID,
+  GAME_SESSION_PHASES,
+  type GameSessionPhase,
   INITIAL_WAVE_NUMBER,
 } from "../state/game-session-state";
 import { bindGameUiStoreToGameplayEvents } from "../state/game-ui-event-sync";
@@ -21,6 +27,11 @@ import { PlayerController } from "../systems/PlayerController";
 import { WaveController } from "../systems/WaveController";
 import { WeaponController } from "../systems/WeaponController";
 
+type EndedSessionPhase = Extract<
+  GameSessionPhase,
+  typeof GAME_SESSION_PHASES.GAME_OVER | typeof GAME_SESSION_PHASES.STAGE_COMPLETE
+>;
+
 export class GameScene extends Phaser.Scene {
   private arenaBounds?: ArenaBounds;
   private arenaRenderer?: ArenaRenderer;
@@ -31,71 +42,46 @@ export class GameScene extends Phaser.Scene {
   private weaponController?: WeaponController;
   private readonly gameplayControllers: GameplayController[] = [];
   private readonly cleanupCallbacks: Array<() => void> = [];
-  private hasEndedSession = false;
+  private hasDestroyedSceneResources = false;
+  private sessionPhase: GameSessionPhase = GAME_SESSION_PHASES.IDLE;
+  private selectedStageId: string | null = null;
 
   constructor() {
     super(GAME_SCENE_KEY);
   }
 
   create(): void {
+    this.hasDestroyedSceneResources = false;
     useGameUiStore.getState().resetGameUiState();
     this.registerCleanup(bindGameUiStoreToGameplayEvents());
     this.arenaBounds = new ArenaBounds(this);
     this.arenaRenderer = new ArenaRenderer(this, this.arenaBounds);
-    this.playerController = new PlayerController(this, this.arenaBounds);
-    this.aimController = new AimController(
-      this,
-      () => this.getPlayerControllerOrThrow().gameObject,
-    );
-    this.weaponController = new WeaponController(
-      this,
-      this.arenaBounds,
-      () => this.getPlayerControllerOrThrow().gameObject,
-      () => this.getAimControllerOrThrow().updateAimDirection(),
-      () => this.getAimControllerOrThrow().direction,
-    );
-    this.enemyController = new EnemyController(
-      this,
-      this.arenaBounds,
-      () => this.getPlayerControllerOrThrow().gameObject,
-    );
-    this.waveController = new WaveController(
-      this,
-      this.enemyController,
-    );
-    this.gameplayControllers.push(
-      this.arenaRenderer,
-      this.playerController,
-      this.aimController,
-      this.weaponController,
-      this.enemyController,
-      this.waveController,
-    );
 
     this.scale.on(Phaser.Scale.Events.RESIZE, this.handleResize, this);
     this.registerCleanup(() => {
       this.scale.off(Phaser.Scale.Events.RESIZE, this.handleResize, this);
     });
-    const removeLevelCompleteListener = onGameplayEvent(
-      GAMEPLAY_EVENTS.LEVEL_COMPLETE,
-      () => {
-        this.endSession();
-      },
-    );
-    this.registerCleanup(removeLevelCompleteListener);
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.destroySceneResources();
-    });
 
-    emitGameplayEvent(GAMEPLAY_EVENTS.GAME_STARTED, {
-      selectedLevelId: DEFAULT_LEVEL_ID,
-      currentWave: INITIAL_WAVE_NUMBER,
-      totalWaves: WAVE_DEFINITIONS.length,
-    });
+    this.registerGameplayCommandListeners();
+    this.registerCleanup(
+      onGameplayEvent(GAMEPLAY_EVENTS.STAGE_COMPLETE, () => {
+        this.endSession(GAME_SESSION_PHASES.STAGE_COMPLETE);
+      }),
+    );
+    this.events.once(
+      Phaser.Scenes.Events.SHUTDOWN,
+      this.destroySceneResources,
+      this,
+    );
+    this.events.once(
+      Phaser.Scenes.Events.DESTROY,
+      this.destroySceneResources,
+      this,
+    );
   }
 
   update(_: number, delta: number): void {
-    if (this.hasEndedSession) {
+    if (this.sessionPhase !== GAME_SESSION_PHASES.PLAYING) {
       return;
     }
 
@@ -105,6 +91,137 @@ export class GameScene extends Phaser.Scene {
     this.resolveCombatCollisions(delta);
     this.updateGameOverState();
     this.updateEffects(delta);
+  }
+
+  private registerGameplayCommandListeners(): void {
+    this.registerCleanup(
+      onGameplayCommand(GAMEPLAY_COMMANDS.START_GAME, (command) => {
+        this.startSession(command.selectedStageId);
+      }),
+    );
+    this.registerCleanup(
+      onGameplayCommand(GAMEPLAY_COMMANDS.RESTART_GAME, () => {
+        this.restartSession();
+      }),
+    );
+    this.registerCleanup(
+      onGameplayCommand(GAMEPLAY_COMMANDS.RETURN_TO_MENU, () => {
+        this.returnToMenu();
+      }),
+    );
+    this.registerCleanup(
+      onGameplayCommand(GAMEPLAY_COMMANDS.PAUSE_GAME, () => {
+        this.pauseSession();
+      }),
+    );
+    this.registerCleanup(
+      onGameplayCommand(GAMEPLAY_COMMANDS.RESUME_GAME, () => {
+        this.resumeSession();
+      }),
+    );
+  }
+
+  private canStartSession(): boolean {
+    return this.sessionPhase === GAME_SESSION_PHASES.IDLE;
+  }
+
+  private canRestartSession(): boolean {
+    return (
+      this.selectedStageId !== null &&
+      this.sessionPhase !== GAME_SESSION_PHASES.IDLE
+    );
+  }
+
+  private canReturnToMenu(): boolean {
+    return this.sessionPhase !== GAME_SESSION_PHASES.IDLE;
+  }
+
+  private startSession(selectedStageId: string): void {
+    if (!this.canStartSession()) {
+      return;
+    }
+
+    this.destroyGameplayControllers();
+    useGameUiStore.getState().resetGameUiState();
+    this.time.paused = false;
+    this.sessionPhase = GAME_SESSION_PHASES.PLAYING;
+    this.selectedStageId = selectedStageId;
+
+    const arenaBounds = this.getArenaBoundsOrThrow();
+
+    this.playerController = new PlayerController(this, arenaBounds);
+    this.aimController = new AimController(
+      this,
+      () => this.getPlayerControllerOrThrow().gameObject,
+    );
+    this.weaponController = new WeaponController(
+      this,
+      arenaBounds,
+      () => this.getPlayerControllerOrThrow().gameObject,
+      () => this.getAimControllerOrThrow().updateAimDirection(),
+      () => this.getAimControllerOrThrow().direction,
+    );
+    this.enemyController = new EnemyController(
+      this,
+      arenaBounds,
+      () => this.getPlayerControllerOrThrow().gameObject,
+    );
+    this.waveController = new WaveController(this, this.enemyController, () => {
+      this.emitStageComplete();
+    });
+    this.gameplayControllers.push(
+      this.playerController,
+      this.aimController,
+      this.weaponController,
+      this.enemyController,
+      this.waveController,
+    );
+
+    emitGameplayEvent(GAMEPLAY_EVENTS.GAME_STARTED, {
+      selectedStageId,
+      currentWave: INITIAL_WAVE_NUMBER,
+      totalWaves: WAVE_DEFINITIONS.length,
+    });
+  }
+
+  private pauseSession(): void {
+    if (this.sessionPhase !== GAME_SESSION_PHASES.PLAYING) {
+      return;
+    }
+
+    this.sessionPhase = GAME_SESSION_PHASES.PAUSED;
+    this.time.paused = true;
+    emitGameplayEvent(GAMEPLAY_EVENTS.GAME_PAUSED, undefined);
+  }
+
+  private resumeSession(): void {
+    if (this.sessionPhase !== GAME_SESSION_PHASES.PAUSED) {
+      return;
+    }
+
+    this.sessionPhase = GAME_SESSION_PHASES.PLAYING;
+    this.time.paused = false;
+    emitGameplayEvent(GAMEPLAY_EVENTS.GAME_RESUMED, undefined);
+  }
+
+  private returnToMenu(): void {
+    if (!this.canReturnToMenu()) {
+      return;
+    }
+
+    this.destroyGameplayControllers();
+    this.time.paused = false;
+    this.sessionPhase = GAME_SESSION_PHASES.IDLE;
+    this.selectedStageId = null;
+    useGameUiStore.getState().resetGameUiState();
+  }
+
+  private restartSession(): void {
+    if (!this.canRestartSession()) {
+      return;
+    }
+
+    this.startSession(this.getSelectedStageIdOrThrow());
   }
 
   private updatePlayer(delta: number): void {
@@ -140,12 +257,26 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (this.playerController.health <= 0) {
+      const selectedStageId = this.getSelectedStageIdOrThrow();
+
       emitGameplayEvent(GAMEPLAY_EVENTS.GAME_OVER, {
-        selectedLevelId: DEFAULT_LEVEL_ID,
+        selectedStageId,
         currentWave: this.waveController.currentWaveNumber,
       });
-      this.endSession();
+      this.endSession(GAME_SESSION_PHASES.GAME_OVER);
     }
+  }
+
+  private emitStageComplete(): void {
+    if (!this.waveController) {
+      return;
+    }
+
+    emitGameplayEvent(GAMEPLAY_EVENTS.STAGE_COMPLETE, {
+      selectedStageId: this.getSelectedStageIdOrThrow(),
+      currentWave: this.waveController.currentWaveNumber,
+      totalWaves: this.waveController.totalWaves,
+    });
   }
 
   private registerCleanup(cleanup: () => void): void {
@@ -153,6 +284,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   private destroySceneResources(): void {
+    if (this.hasDestroyedSceneResources) {
+      return;
+    }
+
+    this.hasDestroyedSceneResources = true;
+
     for (
       let cleanupIndex = this.cleanupCallbacks.length - 1;
       cleanupIndex >= 0;
@@ -164,15 +301,25 @@ export class GameScene extends Phaser.Scene {
     this.cleanupCallbacks.length = 0;
 
     this.destroyGameplayControllers();
-    this.hasEndedSession = false;
+    this.arenaRenderer?.destroy();
+    this.arenaRenderer = undefined;
+    this.arenaBounds = undefined;
+    this.time.paused = false;
+    this.sessionPhase = GAME_SESSION_PHASES.IDLE;
+    this.selectedStageId = null;
   }
 
-  private endSession(): void {
-    if (this.hasEndedSession) {
+  private endSession(nextPhase: EndedSessionPhase): void {
+    if (
+      this.sessionPhase === GAME_SESSION_PHASES.IDLE ||
+      this.sessionPhase === GAME_SESSION_PHASES.GAME_OVER ||
+      this.sessionPhase === GAME_SESSION_PHASES.STAGE_COMPLETE
+    ) {
       return;
     }
 
-    this.hasEndedSession = true;
+    this.sessionPhase = nextPhase;
+    this.time.paused = false;
     this.destroyGameplayControllers();
   }
 
@@ -186,13 +333,11 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.gameplayControllers.length = 0;
-    this.arenaBounds = undefined;
     this.weaponController = undefined;
     this.waveController = undefined;
     this.enemyController = undefined;
     this.aimController = undefined;
     this.playerController = undefined;
-    this.arenaRenderer = undefined;
   }
 
   private handleResize(): void {
@@ -214,5 +359,21 @@ export class GameScene extends Phaser.Scene {
     }
 
     return this.aimController;
+  }
+
+  private getArenaBoundsOrThrow(): ArenaBounds {
+    if (!this.arenaBounds) {
+      throw new Error("ArenaBounds is required before session setup.");
+    }
+
+    return this.arenaBounds;
+  }
+
+  private getSelectedStageIdOrThrow(): string {
+    if (!this.selectedStageId) {
+      throw new Error("Selected stage is required during an active session.");
+    }
+
+    return this.selectedStageId;
   }
 }

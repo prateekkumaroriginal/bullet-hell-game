@@ -11,7 +11,7 @@
 ### 2. Formalize Gameplay State
 
 - [x] Add explicit gameplay/session state models instead of keeping state spread across controllers.
-- [x] Create a `GameSessionState` model for run-level state such as playing, paused, game over, level complete, selected level, and current wave.
+- [x] Create a `GameSessionState` model for run state such as playing, paused, game over, stage complete, selected stage, and current wave.
 - [x] Keep Phaser as the source of truth for real-time simulation state.
 - [x] Keep Zustand as the source of truth for React app/UI state.
 
@@ -22,7 +22,7 @@
   - `game:paused`
   - `game:resumed`
   - `game:over`
-  - `level:complete`
+  - `stage:complete`
 - [ ] Add events for combat feedback:
   - `player:damaged`
   - `enemy:damaged`
@@ -80,7 +80,7 @@
   - main menu
   - pause
   - game over
-  - level selection
+  - stage selection
   - settings
 - [ ] Keep gameplay scene lifecycle separate from React screen lifecycle.
 - [ ] Define how React commands Phaser to start, pause, resume, and restart runs.
