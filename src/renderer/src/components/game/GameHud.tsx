@@ -140,7 +140,7 @@ export const GameHud = () => {
         </div>
       </section>
 
-      {waveAnnouncement.isVisible ? (
+      {waveAnnouncement.isVisible && (
         <section
           className="absolute inset-0 grid place-items-center"
           key={waveAnnouncement.id}
@@ -195,9 +195,9 @@ export const GameHud = () => {
             </div>
           </div>
         </section>
-      ) : null}
+      )}
 
-      {isWaveAnnouncementDebugEnabled ? (
+      {isWaveAnnouncementDebugEnabled && (
         <section className="pointer-events-none absolute inset-x-6 bottom-6 z-20 max-w-xl border border-cyan-300/35 bg-black/72 p-4 font-mono text-xs text-cyan-100 shadow-[0_0_24px_rgba(45,255,231,0.24)]">
           <div className="mb-3 flex flex-wrap gap-x-5 gap-y-1">
             <span>duration {WAVE_ANNOUNCEMENT_DURATION_MS}ms</span>
@@ -224,7 +224,7 @@ export const GameHud = () => {
             <span className="wave-announcement-debug-progress absolute inset-y-0 left-0 w-px bg-white shadow-[0_0_10px_rgba(255,255,255,0.95)]" />
           </div>
         </section>
-      ) : null}
+      )}
 
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/24 to-transparent" />
     </div>

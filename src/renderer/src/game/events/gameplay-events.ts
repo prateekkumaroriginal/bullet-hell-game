@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { type StageId } from "../config/stage-config";
 
 export const GAMEPLAY_EVENTS = {
   GAME_STARTED: "game:started",
@@ -19,18 +20,18 @@ export type PlayerHealthChangedPayload = {
 };
 
 export type GameStartedPayload = {
-  selectedStageId: string;
+  selectedStageId: StageId;
   currentWave: number;
   totalWaves: number;
 };
 
 export type GameOverPayload = {
-  selectedStageId: string;
+  selectedStageId: StageId;
   currentWave: number;
 };
 
 export type StageCompletePayload = {
-  selectedStageId: string;
+  selectedStageId: StageId;
   currentWave: number;
   totalWaves: number;
 };

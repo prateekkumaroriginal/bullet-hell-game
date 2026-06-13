@@ -1,10 +1,15 @@
-import { WAVE_DEFINITIONS } from "../config/wave-config";
+import {
+  DEFAULT_STAGE_ID,
+  getStageDefinition,
+  type StageId,
+} from "../config/stage-config";
 
-export const DEFAULT_STAGE_ID = "stage-1";
 export const INITIAL_WAVE_NUMBER = 1;
+const DEFAULT_STAGE_TOTAL_WAVES = getStageDefinition(DEFAULT_STAGE_ID).waves.length;
 
 export const GAME_SESSION_PHASES = {
   IDLE: "idle",
+  STAGE_SELECT: "stageSelect",
   PLAYING: "playing",
   PAUSED: "paused",
   GAME_OVER: "gameOver",
@@ -16,7 +21,7 @@ export type GameSessionPhase =
 
 export type GameSessionState = {
   phase: GameSessionPhase;
-  selectedStageId: string | null;
+  selectedStageId: StageId | null;
   currentWave: number;
   totalWaves: number;
 };
@@ -25,5 +30,5 @@ export const INITIAL_GAME_SESSION_STATE: GameSessionState = {
   phase: GAME_SESSION_PHASES.IDLE,
   selectedStageId: null,
   currentWave: INITIAL_WAVE_NUMBER,
-  totalWaves: WAVE_DEFINITIONS.length,
+  totalWaves: DEFAULT_STAGE_TOTAL_WAVES,
 };

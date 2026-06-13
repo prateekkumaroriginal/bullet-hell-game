@@ -11,6 +11,7 @@ import {
 } from "./ScreenPrimitives";
 
 type ResultScreenProps = {
+  actions?: ReactNode;
   icon: ReactNode;
   stats: readonly (readonly [string, string])[];
   subtitle: string;
@@ -18,6 +19,7 @@ type ResultScreenProps = {
 };
 
 export const ResultScreen = ({
+  actions,
   icon,
   stats,
   subtitle,
@@ -50,22 +52,24 @@ export const ResultScreen = ({
         </div>
       ))}
     </div>
-    <div className="grid w-[min(40rem,calc(100vw-3rem))] grid-cols-2 gap-5 max-md:grid-cols-1">
-      <ScreenButton
-        onClick={() => {
-          emitGameplayCommand(GAMEPLAY_COMMANDS.RESTART_GAME, undefined);
-        }}
-      >
-        <RotateCcw className="mr-3 size-5" />
-        RESTART
-      </ScreenButton>
-      <ScreenButton
-        onClick={() => {
-          emitGameplayCommand(GAMEPLAY_COMMANDS.RETURN_TO_MENU, undefined);
-        }}
-      >
-        MAIN MENU
-      </ScreenButton>
-    </div>
+    {actions ?? (
+      <div className="grid w-[min(40rem,calc(100vw-3rem))] grid-cols-2 gap-5 max-md:grid-cols-1">
+        <ScreenButton
+          onClick={() => {
+            emitGameplayCommand(GAMEPLAY_COMMANDS.RESTART_GAME, undefined);
+          }}
+        >
+          <RotateCcw className="mr-3 size-5" />
+          RESTART
+        </ScreenButton>
+        <ScreenButton
+          onClick={() => {
+            emitGameplayCommand(GAMEPLAY_COMMANDS.RETURN_TO_MENU, undefined);
+          }}
+        >
+          MAIN MENU
+        </ScreenButton>
+      </div>
+    )}
   </ScreenCenter>
 );

@@ -1,12 +1,20 @@
 import { create } from "zustand";
 import { PLAYER_MAX_HEALTH } from "../config/player-config";
-import { WAVE_DEFINITIONS } from "../config/wave-config";
+import {
+  DEFAULT_STAGE_ID,
+  getStageDefinition,
+  type StageId,
+} from "../config/stage-config";
 import {
   INITIAL_GAME_SESSION_STATE,
   INITIAL_WAVE_NUMBER,
   type GameSessionPhase,
   type GameSessionState,
 } from "./game-session-state";
+import {
+  INITIAL_STAGE_PROGRESS_STATE,
+  type StageProgressState,
+} from "./stage-progress";
 import {
   type PlayerHealthChangedPayload,
   type WaveAnnouncementChangedPayload,
@@ -19,12 +27,14 @@ export type WaveAnnouncementState = WaveAnnouncementChangedPayload;
 
 export type GameUiState = {
   gameSession: GameSessionState;
+  stageProgress: StageProgressState;
   playerHealth: PlayerHealthState;
   wave: WaveState;
   waveAnnouncement: WaveAnnouncementState;
   setGameSession: (gameSession: GameSessionState) => void;
   setGameSessionPhase: (phase: GameSessionPhase) => void;
   setCurrentWave: (currentWave: number) => void;
+  markStageComplete: (stageId: StageId) => void;
   setPlayerHealth: (playerHealth: PlayerHealthState) => void;
   setWave: (wave: WaveState) => void;
   setWaveAnnouncement: (waveAnnouncement: WaveAnnouncementState) => void;
@@ -36,22 +46,25 @@ const INITIAL_PLAYER_HEALTH: PlayerHealthState = {
   max: PLAYER_MAX_HEALTH,
 };
 
+const DEFAULT_STAGE = getStageDefinition(DEFAULT_STAGE_ID);
+
 const INITIAL_WAVE_STATE: WaveState = {
   current: INITIAL_WAVE_NUMBER,
-  total: WAVE_DEFINITIONS.length,
-  enemiesRemaining: WAVE_DEFINITIONS[0]?.enemyCount ?? 0,
+  total: DEFAULT_STAGE.waves.length,
+  enemiesRemaining: DEFAULT_STAGE.waves[0]?.enemyCount ?? 0,
   isComplete: false,
 };
 
 const INITIAL_WAVE_ANNOUNCEMENT_STATE: WaveAnnouncementState = {
   id: 0,
   waveNumber: INITIAL_WAVE_NUMBER,
-  totalWaves: WAVE_DEFINITIONS.length,
+  totalWaves: DEFAULT_STAGE.waves.length,
   isVisible: false,
 };
 
 export const useGameUiStore = create<GameUiState>((set) => ({
   gameSession: INITIAL_GAME_SESSION_STATE,
+  stageProgress: INITIAL_STAGE_PROGRESS_STATE,
   playerHealth: INITIAL_PLAYER_HEALTH,
   wave: INITIAL_WAVE_STATE,
   waveAnnouncement: INITIAL_WAVE_ANNOUNCEMENT_STATE,
@@ -73,6 +86,22 @@ export const useGameUiStore = create<GameUiState>((set) => ({
         currentWave,
       },
     }));
+  },
+  markStageComplete: (stageId) => {
+    set((state) => {
+      if (state.stageProgress.completedStageIds.includes(stageId)) {
+        return {};
+      }
+
+      return {
+        stageProgress: {
+          completedStageIds: [
+            ...state.stageProgress.completedStageIds,
+            stageId,
+          ],
+        },
+      };
+    });
   },
   setPlayerHealth: (playerHealth) => {
     set({ playerHealth });

@@ -1,4 +1,3 @@
-export const SCREEN_PRIMARY_STAGE_ID = "stage-1";
 export const GAME_TITLE = "VOID STRIKE";
 
 export const SCREEN_BACKDROP = {
@@ -23,6 +22,7 @@ export const SCREEN_BACKDROP = {
 export const MENU_BUTTONS = {
   main: ["PLAY", "QUIT"],
   pause: ["RESUME", "RESTART STAGE", "MAIN MENU", "QUIT TO DESKTOP"],
+  stageComplete: ["NEXT STAGE", "STAGE SELECT", "RESTART STAGE", "MAIN MENU"],
 } as const;
 
 export const getGameOverStats = (currentWave: number, totalWaves: number) =>

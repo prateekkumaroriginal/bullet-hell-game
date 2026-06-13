@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import {
   WAVE_ANNOUNCEMENT_DURATION_MS,
   WAVE_ADVANCE_DELAY_MS,
-  WAVE_DEFINITIONS,
+  type WaveDefinition,
 } from "../config/wave-config";
 import {
   emitGameplayEvent,
@@ -10,8 +10,6 @@ import {
 } from "../events/gameplay-events";
 import { EnemyController } from "./EnemyController";
 import { type GameplayController } from "./GameplayController";
-
-type WaveDefinition = (typeof WAVE_DEFINITIONS)[number];
 
 export class WaveController implements GameplayController {
   private currentWaveIndex = 0;
@@ -33,6 +31,7 @@ export class WaveController implements GameplayController {
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly enemyController: EnemyController,
+    private readonly waveDefinitions: readonly WaveDefinition[],
     private readonly onStageComplete: () => void,
   ) {
     this.startCurrentWave();
@@ -43,7 +42,7 @@ export class WaveController implements GameplayController {
   }
 
   get totalWaves(): number {
-    return WAVE_DEFINITIONS.length;
+    return this.waveDefinitions.length;
   }
 
   update(_: number): void {
@@ -127,7 +126,7 @@ export class WaveController implements GameplayController {
   private finishCurrentWave(): void {
     const nextWaveIndex = this.currentWaveIndex + 1;
 
-    if (nextWaveIndex >= WAVE_DEFINITIONS.length) {
+    if (nextWaveIndex >= this.waveDefinitions.length) {
       this.isComplete = true;
       this.publishWaveState();
       this.onStageComplete();
@@ -154,7 +153,7 @@ export class WaveController implements GameplayController {
   }
 
   private getCurrentWave(): WaveDefinition {
-    const currentWave = WAVE_DEFINITIONS[this.currentWaveIndex];
+    const currentWave = this.waveDefinitions[this.currentWaveIndex];
 
     if (!currentWave) {
       throw new Error(`Missing wave definition at index ${this.currentWaveIndex}.`);

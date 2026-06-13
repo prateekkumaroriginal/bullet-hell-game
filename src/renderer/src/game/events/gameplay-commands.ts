@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { type StageId } from "../config/stage-config";
 
 export const GAMEPLAY_COMMANDS = {
   START_GAME: "game-command:start",
@@ -6,13 +7,14 @@ export const GAMEPLAY_COMMANDS = {
   RESUME_GAME: "game-command:resume",
   RESTART_GAME: "game-command:restart",
   RETURN_TO_MENU: "game-command:return-to-menu",
+  RETURN_TO_STAGE_SELECT: "game-command:return-to-stage-select",
 } as const;
 
 export type GameplayCommandName =
   (typeof GAMEPLAY_COMMANDS)[keyof typeof GAMEPLAY_COMMANDS];
 
 export type StartGameCommandPayload = {
-  selectedStageId: string;
+  selectedStageId: StageId;
 };
 
 export type GameplayCommandPayloads = {
@@ -21,6 +23,7 @@ export type GameplayCommandPayloads = {
   [GAMEPLAY_COMMANDS.RESUME_GAME]: undefined;
   [GAMEPLAY_COMMANDS.RESTART_GAME]: undefined;
   [GAMEPLAY_COMMANDS.RETURN_TO_MENU]: undefined;
+  [GAMEPLAY_COMMANDS.RETURN_TO_STAGE_SELECT]: undefined;
 };
 
 type GameplayCommandListener<CommandName extends GameplayCommandName> = (

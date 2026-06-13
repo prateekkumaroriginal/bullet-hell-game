@@ -45,6 +45,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
   const removeStageCompleteListener = onGameplayEvent(
     GAMEPLAY_EVENTS.STAGE_COMPLETE,
     (gameSession) => {
+      useGameUiStore.getState().markStageComplete(gameSession.selectedStageId);
       useGameUiStore.getState().setGameSession({
         phase: GAME_SESSION_PHASES.STAGE_COMPLETE,
         selectedStageId: gameSession.selectedStageId,

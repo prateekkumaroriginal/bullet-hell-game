@@ -16,17 +16,8 @@ export const WAVE_ANNOUNCEMENT_HEARTBEAT_DURATION_MS =
 export const WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_DURATION_MS =
   WAVE_ANNOUNCEMENT_HEARTBEAT_DURATION_MS /
   WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_COUNT;
-export const WAVE_DEFINITIONS = [
-  {
-    enemyCount: 4,
-    spawnCooldownMs: 900,
-  },
-  {
-    enemyCount: 7,
-    spawnCooldownMs: 800,
-  },
-  {
-    enemyCount: 10,
-    spawnCooldownMs: 700,
-  },
-] as const;
+
+export type WaveDefinition = {
+  enemyCount: number;
+  spawnCooldownMs: number;
+};
