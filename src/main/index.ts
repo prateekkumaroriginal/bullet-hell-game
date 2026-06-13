@@ -6,7 +6,9 @@ import {
   ELECTRON_WINDOW_MIN_WIDTH,
   ELECTRON_WINDOW_WIDTH,
 } from "./config/electron-window";
+import { registerActiveRunSaveIpcHandlers } from "./ipc/active-run-save-ipc";
 import { registerAppIpcHandlers } from "./ipc/app-ipc";
+import { registerProfileSaveIpcHandlers } from "./ipc/profile-save-ipc";
 
 const createMainWindow = (): void => {
   const mainWindow = new BrowserWindow({
@@ -38,6 +40,8 @@ const createMainWindow = (): void => {
 
 void app.whenReady().then(() => {
   registerAppIpcHandlers();
+  registerActiveRunSaveIpcHandlers();
+  registerProfileSaveIpcHandlers();
 
   createMainWindow();
 

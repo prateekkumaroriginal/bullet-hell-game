@@ -1,12 +1,22 @@
 import { type StageId } from "@/game/config/stage-config";
+import { type ActiveRunSave } from "../../../../../shared/save-types";
 import {
   emitGameplayCommand,
   GAMEPLAY_COMMANDS,
 } from "@/game/events/gameplay-commands";
 
-export const startStage = (selectedStageId: StageId) => {
+export const startStage = (selectedStageId: StageId, startingWave?: number) => {
   emitGameplayCommand(GAMEPLAY_COMMANDS.START_GAME, {
     selectedStageId,
+    startingWave,
+  });
+};
+
+export const continueActiveRun = (save: ActiveRunSave) => {
+  emitGameplayCommand(GAMEPLAY_COMMANDS.START_GAME, {
+    selectedStageId: save.selectedStageId as StageId,
+    startingWave: save.currentWave,
+    startingPlayerHealth: save.playerHealth.current,
   });
 };
 

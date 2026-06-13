@@ -15,6 +15,8 @@ export type GameplayCommandName =
 
 export type StartGameCommandPayload = {
   selectedStageId: StageId;
+  startingWave?: number;
+  startingPlayerHealth?: number;
 };
 
 export type GameplayCommandPayloads = {

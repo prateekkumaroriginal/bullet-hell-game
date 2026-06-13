@@ -59,3 +59,19 @@ export function getNextPlayableStageId(
 
   return nextStage.id;
 }
+
+export function getContinueStageId(
+  completedStageIds: readonly StageId[],
+): StageId | null {
+  if (completedStageIds.length === 0) {
+    return null;
+  }
+
+  const nextStage = STAGE_DEFINITIONS.find(
+    (stage) =>
+      !isStageCompleted(stage.id, completedStageIds) &&
+      isStageUnlocked(stage, completedStageIds),
+  );
+
+  return nextStage?.id ?? null;
+}

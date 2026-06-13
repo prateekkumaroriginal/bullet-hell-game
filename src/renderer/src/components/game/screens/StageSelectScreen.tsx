@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Check, Lock, Play } from "lucide-react";
 import { STAGE_DEFINITIONS } from "@/game/config/stage-config";
+import { loadProfileSave } from "@/game/save/profile-save-service";
 import { GAME_SESSION_PHASES } from "@/game/state/game-session-state";
 import {
   isStageCompleted,
@@ -21,9 +23,28 @@ export const StageSelectScreen = () => {
   const completedStageIds = useGameUiStore(
     (state) => state.stageProgress.completedStageIds,
   );
+  const setCompletedStageIds = useGameUiStore(
+    (state) => state.setCompletedStageIds,
+  );
   const setGameSessionPhase = useGameUiStore(
     (state) => state.setGameSessionPhase,
   );
+
+  useEffect(() => {
+    let isMounted = true;
+
+    void loadProfileSave().then((result) => {
+      if (!isMounted || !result.ok) {
+        return;
+      }
+
+      setCompletedStageIds(result.save.clearedStageIds);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [setCompletedStageIds]);
 
   return (
     <ScreenCenter>

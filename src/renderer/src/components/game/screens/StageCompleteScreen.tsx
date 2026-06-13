@@ -1,8 +1,5 @@
 import { RotateCcw, Trophy } from "lucide-react";
-import {
-  MENU_BUTTONS,
-  getStageCompleteStats,
-} from "@/game/config/screen-ui-config";
+import { getStageCompleteStats } from "@/game/config/screen-ui-config";
 import {
   emitGameplayCommand,
   GAMEPLAY_COMMANDS,
@@ -33,7 +30,7 @@ export const StageCompleteScreen = () => {
                 startStage(nextStageId);
               }}
             >
-              {MENU_BUTTONS.stageComplete[0]}
+              NEXT STAGE
             </ScreenButton>
           )}
           <ScreenButton
@@ -45,7 +42,7 @@ export const StageCompleteScreen = () => {
               );
             }}
           >
-            {MENU_BUTTONS.stageComplete[1]}
+            STAGE SELECT
           </ScreenButton>
           <ScreenButton
             onClick={() => {
@@ -53,14 +50,14 @@ export const StageCompleteScreen = () => {
             }}
           >
             <RotateCcw className="mr-3 size-5" />
-            {MENU_BUTTONS.stageComplete[2]}
+            RESTART STAGE
           </ScreenButton>
           <ScreenButton
             onClick={() => {
               emitGameplayCommand(GAMEPLAY_COMMANDS.RETURN_TO_MENU, undefined);
             }}
           >
-            {MENU_BUTTONS.stageComplete[3]}
+            MAIN MENU
           </ScreenButton>
         </div>
       }

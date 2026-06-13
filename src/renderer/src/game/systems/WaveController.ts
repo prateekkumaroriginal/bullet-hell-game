@@ -32,8 +32,11 @@ export class WaveController implements GameplayController {
     private readonly scene: Phaser.Scene,
     private readonly enemyController: EnemyController,
     private readonly waveDefinitions: readonly WaveDefinition[],
+    private readonly onWaveComplete: (nextWaveNumber: number) => void,
     private readonly onStageComplete: () => void,
+    startingWaveNumber: number,
   ) {
+    this.currentWaveIndex = startingWaveNumber - 1;
     this.startCurrentWave();
   }
 
@@ -134,6 +137,7 @@ export class WaveController implements GameplayController {
     }
 
     this.isWaitingForNextWave = true;
+    this.onWaveComplete(nextWaveIndex + 1);
     this.advanceTimer = this.scene.time.delayedCall(
       WAVE_ADVANCE_DELAY_MS,
       () => {

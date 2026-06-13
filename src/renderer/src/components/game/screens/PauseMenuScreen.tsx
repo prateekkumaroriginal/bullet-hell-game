@@ -1,4 +1,3 @@
-import { MENU_BUTTONS } from "@/game/config/screen-ui-config";
 import {
   emitGameplayCommand,
   GAMEPLAY_COMMANDS,
@@ -28,24 +27,24 @@ export const PauseMenuScreen = () => {
                 emitGameplayCommand(GAMEPLAY_COMMANDS.RESUME_GAME, undefined);
               }}
             >
-              {MENU_BUTTONS.pause[0]}
+              RESUME
             </ScreenButton>
             <ScreenButton
               onClick={() => {
                 emitGameplayCommand(GAMEPLAY_COMMANDS.RESTART_GAME, undefined);
               }}
             >
-              {MENU_BUTTONS.pause[1]}
+              RESTART STAGE
             </ScreenButton>
             <ScreenButton
               onClick={() => {
                 emitGameplayCommand(GAMEPLAY_COMMANDS.RETURN_TO_MENU, undefined);
               }}
             >
-              {MENU_BUTTONS.pause[2]}
+              MAIN MENU
             </ScreenButton>
             <ScreenButton onClick={quitToDesktop}>
-              {MENU_BUTTONS.pause[3]}
+              QUIT TO DESKTOP
             </ScreenButton>
           </ScreenMenuGrid>
         </div>

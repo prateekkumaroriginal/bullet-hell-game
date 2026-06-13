@@ -98,7 +98,11 @@ export class GameScene extends Phaser.Scene {
   private registerGameplayCommandListeners(): void {
     this.registerCleanup(
       onGameplayCommand(GAMEPLAY_COMMANDS.START_GAME, (command) => {
-        this.startSession(command.selectedStageId);
+        this.startSession(
+          command.selectedStageId,
+          command.startingWave,
+          command.startingPlayerHealth,
+        );
       }),
     );
     this.registerCleanup(
@@ -147,12 +151,21 @@ export class GameScene extends Phaser.Scene {
     return this.sessionPhase !== GAME_SESSION_PHASES.IDLE;
   }
 
-  private startSession(selectedStageId: StageId): void {
+  private startSession(
+    selectedStageId: StageId,
+    startingWave = INITIAL_WAVE_NUMBER,
+    startingPlayerHealth?: number,
+  ): void {
     if (!this.canStartSession()) {
       return;
     }
 
     const selectedStage = getStageDefinition(selectedStageId);
+    const clampedStartingWave = Phaser.Math.Clamp(
+      startingWave,
+      INITIAL_WAVE_NUMBER,
+      selectedStage.waves.length,
+    );
 
     this.destroyGameplayControllers();
     useGameUiStore.getState().resetGameUiState();
@@ -162,7 +175,11 @@ export class GameScene extends Phaser.Scene {
 
     const arenaBounds = this.getArenaBoundsOrThrow();
 
-    this.playerController = new PlayerController(this, arenaBounds);
+    this.playerController = new PlayerController(
+      this,
+      arenaBounds,
+      startingPlayerHealth,
+    );
     this.aimController = new AimController(
       this,
       () => this.getPlayerControllerOrThrow().gameObject,
@@ -183,9 +200,20 @@ export class GameScene extends Phaser.Scene {
       this,
       this.enemyController,
       selectedStage.waves,
+      (nextWave) => {
+        emitGameplayEvent(GAMEPLAY_EVENTS.WAVE_COMPLETED, {
+          selectedStageId,
+          nextWave,
+          playerHealth: {
+            current: this.getPlayerControllerOrThrow().health,
+            max: this.getPlayerControllerOrThrow().maxHealth,
+          },
+        });
+      },
       () => {
         this.emitStageComplete();
       },
+      clampedStartingWave,
     );
     this.gameplayControllers.push(
       this.playerController,
@@ -197,8 +225,12 @@ export class GameScene extends Phaser.Scene {
 
     emitGameplayEvent(GAMEPLAY_EVENTS.GAME_STARTED, {
       selectedStageId,
-      currentWave: INITIAL_WAVE_NUMBER,
+      currentWave: clampedStartingWave,
       totalWaves: selectedStage.waves.length,
+      playerHealth: {
+        current: this.getPlayerControllerOrThrow().health,
+        max: this.getPlayerControllerOrThrow().maxHealth,
+      },
     });
   }
 

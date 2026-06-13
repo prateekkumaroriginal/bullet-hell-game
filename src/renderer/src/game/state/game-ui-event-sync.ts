@@ -2,6 +2,11 @@ import {
   GAMEPLAY_EVENTS,
   onGameplayEvent,
 } from "../events/gameplay-events";
+import {
+  deleteActiveRunSave,
+  writeActiveRunSave,
+} from "../save/active-run-save-service";
+import { markStageCleared } from "../save/profile-save-service";
 import { GAME_SESSION_PHASES } from "./game-session-state";
 import { useGameUiStore } from "./use-game-ui-store";
 
@@ -9,6 +14,11 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
   const removeGameStartedListener = onGameplayEvent(
     GAMEPLAY_EVENTS.GAME_STARTED,
     (gameSession) => {
+      void writeActiveRunSave(
+        gameSession.selectedStageId,
+        gameSession.currentWave,
+        gameSession.playerHealth,
+      );
       useGameUiStore.getState().setGameSession({
         phase: GAME_SESSION_PHASES.PLAYING,
         selectedStageId: gameSession.selectedStageId,
@@ -45,13 +55,30 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
   const removeStageCompleteListener = onGameplayEvent(
     GAMEPLAY_EVENTS.STAGE_COMPLETE,
     (gameSession) => {
-      useGameUiStore.getState().markStageComplete(gameSession.selectedStageId);
+      void (async () => {
+        const profileSave = await markStageCleared(gameSession.selectedStageId);
+
+        useGameUiStore
+          .getState()
+          .setCompletedStageIds(profileSave.clearedStageIds);
+        await deleteActiveRunSave();
+      })();
       useGameUiStore.getState().setGameSession({
         phase: GAME_SESSION_PHASES.STAGE_COMPLETE,
         selectedStageId: gameSession.selectedStageId,
         currentWave: gameSession.currentWave,
         totalWaves: gameSession.totalWaves,
       });
+    },
+  );
+  const removeWaveCompletedListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.WAVE_COMPLETED,
+    (waveProgress) => {
+      void writeActiveRunSave(
+        waveProgress.selectedStageId,
+        waveProgress.nextWave,
+        waveProgress.playerHealth,
+      );
     },
   );
   const removeHealthListener = onGameplayEvent(
@@ -79,6 +106,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     removeGameOverListener();
     removeGamePausedListener();
     removeGameResumedListener();
+    removeWaveCompletedListener();
     removeStageCompleteListener();
     removeHealthListener();
     removeWaveListener();

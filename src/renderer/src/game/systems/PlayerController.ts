@@ -36,7 +36,13 @@ export class PlayerController implements GameplayController {
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly arenaBounds: ArenaBounds,
+    initialHealth = PLAYER_MAX_HEALTH,
   ) {
+    this.currentHealth = Phaser.Math.Clamp(
+      initialHealth,
+      0,
+      PLAYER_MAX_HEALTH,
+    );
     this.player = scene.add.circle(
       PLAYER_START_X,
       PLAYER_START_Y,

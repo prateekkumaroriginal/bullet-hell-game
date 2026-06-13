@@ -19,10 +19,8 @@ export const SCREEN_BACKDROP = {
   SHADOW_OPACITY: 0.92,
 } as const;
 
-export const MENU_BUTTONS = {
-  main: ["PLAY", "QUIT"],
-  pause: ["RESUME", "RESTART STAGE", "MAIN MENU", "QUIT TO DESKTOP"],
-  stageComplete: ["NEXT STAGE", "STAGE SELECT", "RESTART STAGE", "MAIN MENU"],
+export const SAVE_ERROR_DIALOG = {
+  CORRUPTED_ACTIVE_RUN_MESSAGE: "Saved run could not be loaded.",
 } as const;
 
 export const getGameOverStats = (currentWave: number, totalWaves: number) =>

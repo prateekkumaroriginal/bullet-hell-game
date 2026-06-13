@@ -34,6 +34,7 @@ export type GameUiState = {
   setGameSession: (gameSession: GameSessionState) => void;
   setGameSessionPhase: (phase: GameSessionPhase) => void;
   setCurrentWave: (currentWave: number) => void;
+  setCompletedStageIds: (completedStageIds: readonly StageId[]) => void;
   markStageComplete: (stageId: StageId) => void;
   setPlayerHealth: (playerHealth: PlayerHealthState) => void;
   setWave: (wave: WaveState) => void;
@@ -86,6 +87,13 @@ export const useGameUiStore = create<GameUiState>((set) => ({
         currentWave,
       },
     }));
+  },
+  setCompletedStageIds: (completedStageIds) => {
+    set({
+      stageProgress: {
+        completedStageIds,
+      },
+    });
   },
   markStageComplete: (stageId) => {
     set((state) => {
