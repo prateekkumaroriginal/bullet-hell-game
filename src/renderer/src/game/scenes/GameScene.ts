@@ -121,7 +121,26 @@ export class GameScene extends Phaser.Scene {
     );
   }
 
+  private canStartSession(): boolean {
+    return this.sessionPhase === GAME_SESSION_PHASES.IDLE;
+  }
+
+  private canRestartSession(): boolean {
+    return (
+      this.selectedStageId !== null &&
+      this.sessionPhase !== GAME_SESSION_PHASES.IDLE
+    );
+  }
+
+  private canReturnToMenu(): boolean {
+    return this.sessionPhase !== GAME_SESSION_PHASES.IDLE;
+  }
+
   private startSession(selectedStageId: string): void {
+    if (!this.canStartSession()) {
+      return;
+    }
+
     this.destroyGameplayControllers();
     useGameUiStore.getState().resetGameUiState();
     this.time.paused = false;
@@ -186,6 +205,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   private returnToMenu(): void {
+    if (!this.canReturnToMenu()) {
+      return;
+    }
+
     this.destroyGameplayControllers();
     this.time.paused = false;
     this.sessionPhase = GAME_SESSION_PHASES.IDLE;
@@ -194,11 +217,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   private restartSession(): void {
-    if (!this.selectedStageId) {
+    if (!this.canRestartSession()) {
       return;
     }
 
-    this.startSession(this.selectedStageId);
+    this.startSession(this.getSelectedStageIdOrThrow());
   }
 
   private updatePlayer(delta: number): void {
