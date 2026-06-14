@@ -24,8 +24,10 @@ import { AimController } from "../systems/AimController";
 import { ArenaBounds } from "../systems/ArenaBounds";
 import { ArenaRenderer } from "../systems/ArenaRenderer";
 import { EnemyController } from "../systems/EnemyController";
+import { ExperienceOrbPool } from "../systems/ExperienceOrbPool";
 import { type GameplayController } from "../systems/GameplayController";
 import { PlayerController } from "../systems/PlayerController";
+import { PlayerProgressionController } from "../systems/PlayerProgressionController";
 import { WaveController } from "../systems/WaveController";
 import { WeaponController } from "../systems/WeaponController";
 
@@ -39,7 +41,9 @@ export class GameScene extends Phaser.Scene {
   private arenaRenderer?: ArenaRenderer;
   private aimController?: AimController;
   private enemyController?: EnemyController;
+  private experienceOrbPool?: ExperienceOrbPool;
   private playerController?: PlayerController;
+  private playerProgressionController?: PlayerProgressionController;
   private waveController?: WaveController;
   private weaponController?: WeaponController;
   private readonly gameplayControllers: GameplayController[] = [];
@@ -180,6 +184,7 @@ export class GameScene extends Phaser.Scene {
       arenaBounds,
       startingPlayerHealth,
     );
+    this.playerProgressionController = new PlayerProgressionController();
     this.aimController = new AimController(
       this,
       () => this.getPlayerControllerOrThrow().gameObject,
@@ -196,6 +201,7 @@ export class GameScene extends Phaser.Scene {
       arenaBounds,
       () => this.getPlayerControllerOrThrow().gameObject,
     );
+    this.experienceOrbPool = new ExperienceOrbPool(this);
     this.waveController = new WaveController(
       this,
       this.enemyController,
@@ -217,9 +223,11 @@ export class GameScene extends Phaser.Scene {
     );
     this.gameplayControllers.push(
       this.playerController,
+      this.playerProgressionController,
       this.aimController,
       this.weaponController,
       this.enemyController,
+      this.experienceOrbPool,
       this.waveController,
     );
 
@@ -306,17 +314,35 @@ export class GameScene extends Phaser.Scene {
     this.waveController?.update(delta);
   }
 
-  private resolveCombatCollisions(_: number): void {
+  private resolveCombatCollisions(delta: number): void {
     if (!this.weaponController || !this.enemyController || !this.playerController) {
       return;
     }
 
-    this.enemyController.resolveBulletHits(this.weaponController.bullets);
+    const deathDrops = this.enemyController.resolveBulletHits(this.weaponController.bullets);
+
+    for (const deathDrop of deathDrops) {
+      this.experienceOrbPool?.spawn({
+        x: deathDrop.x,
+        y: deathDrop.y,
+        value: deathDrop.experienceValue,
+      });
+    }
+
     this.enemyController.resolvePlayerContact(this.playerController);
+
+    if (this.experienceOrbPool && this.playerProgressionController) {
+      this.experienceOrbPool.resolvePlayerCollection(
+        this.playerController,
+        this.playerProgressionController,
+        delta,
+      );
+    }
   }
 
-  private updateEffects(_: number): void {
+  private updateEffects(delta: number): void {
     // Visual-only effects update last so they can react to the settled frame state.
+    this.experienceOrbPool?.update(delta);
   }
 
   private updateGameOverState(): void {
@@ -403,8 +429,10 @@ export class GameScene extends Phaser.Scene {
     this.gameplayControllers.length = 0;
     this.weaponController = undefined;
     this.waveController = undefined;
+    this.experienceOrbPool = undefined;
     this.enemyController = undefined;
     this.aimController = undefined;
+    this.playerProgressionController = undefined;
     this.playerController = undefined;
   }
 

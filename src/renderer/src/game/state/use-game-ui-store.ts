@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import { PLAYER_MAX_HEALTH } from "../config/player-config";
 import {
+  PLAYER_BASE_EXPERIENCE_TO_LEVEL,
+  PLAYER_STARTING_EXPERIENCE,
+  PLAYER_STARTING_LEVEL,
+} from "../config/experience-config";
+import {
   DEFAULT_STAGE_ID,
   getStageDefinition,
   type StageId,
@@ -17,11 +22,13 @@ import {
 } from "./stage-progress";
 import {
   type PlayerHealthChangedPayload,
+  type PlayerProgressionChangedPayload,
   type WaveAnnouncementChangedPayload,
   type WaveChangedPayload,
 } from "../events/gameplay-events";
 
 export type PlayerHealthState = PlayerHealthChangedPayload;
+export type PlayerProgressionState = PlayerProgressionChangedPayload;
 export type WaveState = WaveChangedPayload;
 export type WaveAnnouncementState = WaveAnnouncementChangedPayload;
 
@@ -29,6 +36,7 @@ export type GameUiState = {
   gameSession: GameSessionState;
   stageProgress: StageProgressState;
   playerHealth: PlayerHealthState;
+  playerProgression: PlayerProgressionState;
   wave: WaveState;
   waveAnnouncement: WaveAnnouncementState;
   setGameSession: (gameSession: GameSessionState) => void;
@@ -37,6 +45,7 @@ export type GameUiState = {
   setCompletedStageIds: (completedStageIds: readonly StageId[]) => void;
   markStageComplete: (stageId: StageId) => void;
   setPlayerHealth: (playerHealth: PlayerHealthState) => void;
+  setPlayerProgression: (playerProgression: PlayerProgressionState) => void;
   setWave: (wave: WaveState) => void;
   setWaveAnnouncement: (waveAnnouncement: WaveAnnouncementState) => void;
   resetGameUiState: () => void;
@@ -45,6 +54,12 @@ export type GameUiState = {
 const INITIAL_PLAYER_HEALTH: PlayerHealthState = {
   current: PLAYER_MAX_HEALTH,
   max: PLAYER_MAX_HEALTH,
+};
+
+const INITIAL_PLAYER_PROGRESSION: PlayerProgressionState = {
+  level: PLAYER_STARTING_LEVEL,
+  experience: PLAYER_STARTING_EXPERIENCE,
+  experienceToNextLevel: PLAYER_BASE_EXPERIENCE_TO_LEVEL,
 };
 
 const DEFAULT_STAGE = getStageDefinition(DEFAULT_STAGE_ID);
@@ -67,6 +82,7 @@ export const useGameUiStore = create<GameUiState>((set) => ({
   gameSession: INITIAL_GAME_SESSION_STATE,
   stageProgress: INITIAL_STAGE_PROGRESS_STATE,
   playerHealth: INITIAL_PLAYER_HEALTH,
+  playerProgression: INITIAL_PLAYER_PROGRESSION,
   wave: INITIAL_WAVE_STATE,
   waveAnnouncement: INITIAL_WAVE_ANNOUNCEMENT_STATE,
   setGameSession: (gameSession) => {
@@ -114,6 +130,9 @@ export const useGameUiStore = create<GameUiState>((set) => ({
   setPlayerHealth: (playerHealth) => {
     set({ playerHealth });
   },
+  setPlayerProgression: (playerProgression) => {
+    set({ playerProgression });
+  },
   setWave: (wave) => {
     set({ wave });
   },
@@ -124,6 +143,7 @@ export const useGameUiStore = create<GameUiState>((set) => ({
     set({
       gameSession: INITIAL_GAME_SESSION_STATE,
       playerHealth: INITIAL_PLAYER_HEALTH,
+      playerProgression: INITIAL_PLAYER_PROGRESSION,
       wave: INITIAL_WAVE_STATE,
       waveAnnouncement: INITIAL_WAVE_ANNOUNCEMENT_STATE,
     });

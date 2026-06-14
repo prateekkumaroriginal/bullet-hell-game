@@ -8,7 +8,7 @@ import {
 import { COLLISION_CATEGORIES, canCollide } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
 import { type BulletPool } from "./BulletPool";
-import { EnemyPool } from "./EnemyPool";
+import { EnemyPool, type EnemyDeathDrop } from "./EnemyPool";
 import { type GameplayController } from "./GameplayController";
 import { PlayerController } from "./PlayerController";
 
@@ -35,7 +35,8 @@ export class EnemyController implements GameplayController {
     this.enemyPool.update(delta);
   }
 
-  resolveBulletHits(bulletPool: BulletPool): void {
+  resolveBulletHits(bulletPool: BulletPool): EnemyDeathDrop[] {
+    const deathDrops: EnemyDeathDrop[] = [];
     const bullets = bulletPool.active;
     const enemies = this.enemyPool.active;
     const hitDistance = ENEMY_RADIUS + BULLET_HIT_RADIUS;
@@ -63,10 +64,17 @@ export class EnemyController implements GameplayController {
         }
 
         bulletPool.deactivate(bullet);
-        this.enemyPool.damageActive(enemyIndex, bullet.damage);
+        const deathDrop = this.enemyPool.damageActive(enemyIndex, bullet.damage);
+
+        if (deathDrop) {
+          deathDrops.push(deathDrop);
+        }
+
         break;
       }
     }
+
+    return deathDrops;
   }
 
   resolvePlayerContact(playerController: PlayerController): void {

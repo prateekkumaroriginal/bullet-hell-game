@@ -11,6 +11,7 @@ import {
   ENEMY_STROKE_COLOR,
   ENEMY_STROKE_WIDTH,
 } from "../config/enemy-config";
+import { ENEMY_EXPERIENCE_DROP_VALUE } from "../config/experience-config";
 import { MILLISECONDS_PER_SECOND } from "../config/time-config";
 import { COLLISION_CATEGORIES, type CollisionCategory } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
@@ -26,6 +27,12 @@ export type Enemy = {
   y: number;
   health: number;
   collisionCategory: CollisionCategory;
+};
+
+export type EnemyDeathDrop = {
+  x: number;
+  y: number;
+  experienceValue: number;
 };
 
 export class EnemyPool {
@@ -93,18 +100,30 @@ export class EnemyPool {
     this.syncActiveEnemyViews();
   }
 
-  damageActive(activeEnemyIndex: number, damageAmount: number): void {
+  damageActive(
+    activeEnemyIndex: number,
+    damageAmount: number,
+  ): EnemyDeathDrop | undefined {
     const enemy = this.activeEnemies[activeEnemyIndex];
 
     if (!enemy) {
-      return;
+      return undefined;
     }
 
     enemy.health -= damageAmount;
 
     if (enemy.health <= 0) {
+      const deathDrop: EnemyDeathDrop = {
+        x: enemy.x,
+        y: enemy.y,
+        experienceValue: ENEMY_EXPERIENCE_DROP_VALUE,
+      };
+
       this.deactivateActiveEnemy(activeEnemyIndex);
+      return deathDrop;
     }
+
+    return undefined;
   }
 
   destroy(): void {

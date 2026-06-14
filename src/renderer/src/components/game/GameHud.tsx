@@ -2,6 +2,10 @@ import type { CSSProperties } from "react";
 import { Crosshair, Heart } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import {
+  PLAYER_BASE_EXPERIENCE_TO_LEVEL,
+  PLAYER_EXPERIENCE_TO_LEVEL_STEP,
+} from "@/game/config/experience-config";
+import {
   WAVE_ANNOUNCEMENT_DURATION_MS,
   WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_COUNT,
   WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_DURATION_MS,
@@ -12,10 +16,17 @@ import { useGameUiStore } from "@/game/state/use-game-ui-store";
 
 const WAVE_DEBUG_QUERY_PARAM = "waveDebug";
 const HEALTH_PERCENT_MULTIPLIER = 100;
+const EXPERIENCE_PERCENT_MULTIPLIER = 100;
 const MIN_HEALTH_PERCENT = 0;
 const MAX_HEALTH_PERCENT = 100;
+const MIN_EXPERIENCE_PERCENT = 0;
+const MAX_EXPERIENCE_PERCENT = 100;
 const LOW_HEALTH_PERCENT = 40;
+const PLAYER_BAR_VISUAL_WIDTH_PERCENT = 82;
+const LEVEL_BAR_MIN_VISUAL_WIDTH_PERCENT = PLAYER_BAR_VISUAL_WIDTH_PERCENT / 2;
+const LEVEL_BAR_WIDTH_GROWTH_STEP_PERCENT = 10;
 const HP_BAR_SLANT_PERCENT = "3.6%";
+const PLAYER_BAR_LEFT_INSET = `calc(0.5rem - ${HP_BAR_SLANT_PERCENT})`;
 const HP_BAR_CLIP_PATH =
   "polygon(var(--hp-bar-slant) 0, 100% 0, calc(100% - var(--hp-bar-slant)) 100%, 0 100%)";
 const WAVE_ANNOUNCEMENT_TEXT_SHADOW =
@@ -25,6 +36,7 @@ const WAVE_ANNOUNCEMENT_ARC_FILTER =
 
 export const GameHud = () => {
   const playerHealth = useGameUiStore((state) => state.playerHealth);
+  const playerProgression = useGameUiStore((state) => state.playerProgression);
   const wave = useGameUiStore((state) => state.wave);
   const waveAnnouncement = useGameUiStore((state) => state.waveAnnouncement);
   const { current, max } = playerHealth;
@@ -33,8 +45,26 @@ export const GameHud = () => {
     MAX_HEALTH_PERCENT,
     Math.max(MIN_HEALTH_PERCENT, (current / max) * HEALTH_PERCENT_MULTIPLIER),
   );
+  const experiencePercent = Math.min(
+    MAX_EXPERIENCE_PERCENT,
+    Math.max(
+      MIN_EXPERIENCE_PERCENT,
+      (playerProgression.experience / playerProgression.experienceToNextLevel) *
+        EXPERIENCE_PERCENT_MULTIPLIER,
+    ),
+  );
 
   const isLowHealth = healthPercent < LOW_HEALTH_PERCENT;
+  const levelBarGrowthSteps = Math.max(
+    MIN_EXPERIENCE_PERCENT,
+    (playerProgression.experienceToNextLevel - PLAYER_BASE_EXPERIENCE_TO_LEVEL) /
+      PLAYER_EXPERIENCE_TO_LEVEL_STEP,
+  );
+  const levelBarVisualWidthPercent = Math.min(
+    PLAYER_BAR_VISUAL_WIDTH_PERCENT,
+    LEVEL_BAR_MIN_VISUAL_WIDTH_PERCENT +
+      levelBarGrowthSteps * LEVEL_BAR_WIDTH_GROWTH_STEP_PERCENT,
+  );
 
   const isWaveAnnouncementDebugEnabled =
     import.meta.env.DEV &&
@@ -53,48 +83,89 @@ export const GameHud = () => {
           <Heart className="size-9 fill-emerald-300 text-emerald-100 drop-shadow-[0_0_12px_rgba(94,242,168,0.9)] max-md:size-6" />
         </div>
 
-        <div className="min-w-0 flex-1 pt-1">
-          <div className="mb-1 flex items-end gap-3 pl-2">
-            <span className="text-sm font-black uppercase tracking-[0.18em] text-emerald-300 drop-shadow-[0_0_8px_rgba(94,242,168,0.72)] max-md:text-xs">
-              HP
-            </span>
-            <span className="font-mono text-sm tabular-nums text-emerald-50/90 max-md:text-xs">
-              {current} / {max}
-            </span>
-          </div>
-
-          <div
-            className="relative"
-            style={
-              {
-                "--hp-bar-slant": HP_BAR_SLANT_PERCENT,
-                marginLeft: `calc(0.5rem - ${HP_BAR_SLANT_PERCENT})`,
-              } as CSSProperties
-            }
-          >
-            <Progress
-              aria-label="Player health"
-              className={`h-5 rounded-none bg-emerald-950/42 [clip-path:var(--hp-bar-clip)] [&_[data-slot=progress-indicator]]:rounded-none max-md:h-4 ${healthFillClassName}`}
+        <div className="flex min-w-0 flex-1 flex-col gap-4 pt-1">
+          <div className="flex min-w-0 flex-col gap-1 pl-2">
+            <div className="flex items-end gap-3">
+              <span className="text-sm font-black uppercase tracking-[0.18em] text-emerald-300 drop-shadow-[0_0_8px_rgba(94,242,168,0.72)] max-md:text-xs">
+                HP
+              </span>
+            </div>
+            <div
+              className="relative"
               style={
                 {
-                  "--hp-bar-clip": HP_BAR_CLIP_PATH,
                   "--hp-bar-slant": HP_BAR_SLANT_PERCENT,
+                  marginLeft: PLAYER_BAR_LEFT_INSET,
+                  width: `${PLAYER_BAR_VISUAL_WIDTH_PERCENT}%`,
                 } as CSSProperties
               }
-              value={healthPercent}
-            />
-            <svg
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 h-full w-full overflow-visible drop-shadow-[0_0_10px_rgba(255,64,112,0.8)]"
-              preserveAspectRatio="none"
-              viewBox="0 0 100 100"
             >
-              <polygon
-                className="fill-transparent stroke-emerald-300/80"
-                points="3.6,0 100,0 96.4,100 0,100"
-                vectorEffect="non-scaling-stroke"
+              <Progress
+                aria-label="Player health"
+                className={`h-5 rounded-none bg-emerald-950/42 [clip-path:var(--hp-bar-clip)] [&_[data-slot=progress-indicator]]:rounded-none max-md:h-4 ${healthFillClassName}`}
+                style={
+                  {
+                    "--hp-bar-clip": HP_BAR_CLIP_PATH,
+                    "--hp-bar-slant": HP_BAR_SLANT_PERCENT,
+                  } as CSSProperties
+                }
+                value={healthPercent}
               />
-            </svg>
+              <svg
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 h-full w-full overflow-visible drop-shadow-[0_0_10px_rgba(255,64,112,0.8)]"
+                preserveAspectRatio="none"
+                viewBox="0 0 100 100"
+              >
+                <polygon
+                  className="fill-transparent stroke-emerald-300/80"
+                  points="3.6,0 100,0 96.4,100 0,100"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div className="flex min-w-0 flex-col gap-1 pl-2">
+            <div className="flex items-end gap-3">
+              <span className="text-sm font-black uppercase tracking-[0.18em] text-cyan-300 drop-shadow-[0_0_8px_rgba(45,255,231,0.72)] max-md:text-xs">
+                LV {playerProgression.level}
+              </span>
+            </div>
+            <div
+              className="relative"
+              style={
+                {
+                  "--hp-bar-slant": HP_BAR_SLANT_PERCENT,
+                  marginLeft: PLAYER_BAR_LEFT_INSET,
+                  width: `${levelBarVisualWidthPercent}%`,
+                } as CSSProperties
+              }
+            >
+              <Progress
+                aria-label="Player experience"
+                className="h-2 rounded-none bg-cyan-950/42 [clip-path:var(--hp-bar-clip)] [&_[data-slot=progress-indicator]]:rounded-none [&_[data-slot=progress-indicator]]:bg-cyan-300 [&_[data-slot=progress-indicator]]:shadow-[0_0_12px_rgba(45,255,231,0.72)]"
+                style={
+                  {
+                    "--hp-bar-clip": HP_BAR_CLIP_PATH,
+                    "--hp-bar-slant": HP_BAR_SLANT_PERCENT,
+                  } as CSSProperties
+                }
+                value={experiencePercent}
+              />
+              <svg
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 h-full w-full overflow-visible drop-shadow-[0_0_8px_rgba(45,255,231,0.7)]"
+                preserveAspectRatio="none"
+                viewBox="0 0 100 100"
+              >
+                <polygon
+                  className="fill-transparent stroke-cyan-300/65"
+                  points="3.6,0 100,0 96.4,100 0,100"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
+            </div>
           </div>
         </div>
       </section>

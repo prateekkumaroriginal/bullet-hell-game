@@ -9,6 +9,7 @@ export const GAMEPLAY_EVENTS = {
   WAVE_COMPLETED: "wave:completed",
   STAGE_COMPLETE: "stage:complete",
   PLAYER_HEALTH_CHANGED: "player:health-changed",
+  PLAYER_PROGRESSION_CHANGED: "player:progression-changed",
   WAVE_CHANGED: "wave:changed",
   WAVE_ANNOUNCEMENT_CHANGED: "wave:announcement-changed",
 } as const;
@@ -18,6 +19,12 @@ export type GameplayEventName = (typeof GAMEPLAY_EVENTS)[keyof typeof GAMEPLAY_E
 export type PlayerHealthChangedPayload = {
   current: number;
   max: number;
+};
+
+export type PlayerProgressionChangedPayload = {
+  level: number;
+  experience: number;
+  experienceToNextLevel: number;
 };
 
 export type GameStartedPayload = {
@@ -66,6 +73,7 @@ export type GameplayEventPayloads = {
   [GAMEPLAY_EVENTS.WAVE_COMPLETED]: WaveCompletedPayload;
   [GAMEPLAY_EVENTS.STAGE_COMPLETE]: StageCompletePayload;
   [GAMEPLAY_EVENTS.PLAYER_HEALTH_CHANGED]: PlayerHealthChangedPayload;
+  [GAMEPLAY_EVENTS.PLAYER_PROGRESSION_CHANGED]: PlayerProgressionChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_CHANGED]: WaveChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_ANNOUNCEMENT_CHANGED]: WaveAnnouncementChangedPayload;
 };

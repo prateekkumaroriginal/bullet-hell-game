@@ -87,6 +87,12 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
       useGameUiStore.getState().setPlayerHealth(playerHealth);
     },
   );
+  const removeProgressionListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.PLAYER_PROGRESSION_CHANGED,
+    (playerProgression) => {
+      useGameUiStore.getState().setPlayerProgression(playerProgression);
+    },
+  );
   const removeWaveListener = onGameplayEvent(
     GAMEPLAY_EVENTS.WAVE_CHANGED,
     (wave) => {
@@ -109,6 +115,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     removeWaveCompletedListener();
     removeStageCompleteListener();
     removeHealthListener();
+    removeProgressionListener();
     removeWaveListener();
     removeWaveAnnouncementListener();
   };
