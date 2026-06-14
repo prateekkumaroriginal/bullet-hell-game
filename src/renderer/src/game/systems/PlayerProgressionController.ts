@@ -8,6 +8,7 @@ import {
 import {
   emitGameplayEvent,
   GAMEPLAY_EVENTS,
+  type PlayerProgressionChangedPayload,
 } from "../events/gameplay-events";
 import { type GameplayController } from "./GameplayController";
 
@@ -16,8 +17,22 @@ export class PlayerProgressionController implements GameplayController {
   private currentExperience = PLAYER_STARTING_EXPERIENCE;
   private currentExperienceToNextLevel = this.getExperienceToNextLevel(this.currentLevel);
 
-  constructor() {
+  constructor(initialProgression?: PlayerProgressionChangedPayload) {
+    if (initialProgression) {
+      this.currentLevel = initialProgression.level;
+      this.currentExperience = initialProgression.experience;
+      this.currentExperienceToNextLevel = initialProgression.experienceToNextLevel;
+    }
+
     this.publishProgression();
+  }
+
+  get progression(): PlayerProgressionChangedPayload {
+    return {
+      level: this.currentLevel,
+      experience: this.currentExperience,
+      experienceToNextLevel: this.currentExperienceToNextLevel
+    };
   }
 
   update(_: number): void {
@@ -45,11 +60,10 @@ export class PlayerProgressionController implements GameplayController {
   }
 
   private publishProgression(): void {
-    emitGameplayEvent(GAMEPLAY_EVENTS.PLAYER_PROGRESSION_CHANGED, {
-      level: this.currentLevel,
-      experience: this.currentExperience,
-      experienceToNextLevel: this.currentExperienceToNextLevel,
-    });
+    emitGameplayEvent(
+      GAMEPLAY_EVENTS.PLAYER_PROGRESSION_CHANGED,
+      this.progression,
+    );
   }
 
   private getExperienceToNextLevel(level: number): number {

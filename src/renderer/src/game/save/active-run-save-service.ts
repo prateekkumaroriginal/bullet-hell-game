@@ -3,6 +3,11 @@ import {
   type ActiveRunSave,
   type LoadActiveRunSaveResult,
 } from "../../../../shared/save-types";
+import {
+  PLAYER_BASE_EXPERIENCE_TO_LEVEL,
+  PLAYER_EXPERIENCE_TO_LEVEL_STEP,
+  PLAYER_STARTING_LEVEL,
+} from "../config/experience-config";
 import { PLAYER_MAX_HEALTH } from "../config/player-config";
 import { getStageDefinition, type StageId } from "../config/stage-config";
 
@@ -38,6 +43,7 @@ export async function writeActiveRunSave(
   selectedStageId: StageId,
   currentWave: number,
   playerHealth: ActiveRunSave["playerHealth"],
+  playerProgression: ActiveRunSave["playerProgression"],
 ): Promise<void> {
   const stage = getStageDefinition(selectedStageId);
 
@@ -52,6 +58,7 @@ export async function writeActiveRunSave(
     selectedStageId,
     currentWave,
     playerHealth,
+    playerProgression,
   } satisfies ActiveRunSave;
 
   await window.electron?.activeRunSave.writeActiveRunSave(save);
@@ -70,9 +77,24 @@ function isKnownStageRunSave(save: ActiveRunSave): save is ActiveRunSave & {
     return (
       save.currentWave <= stage.waves.length &&
       save.playerHealth.max === PLAYER_MAX_HEALTH &&
-      save.playerHealth.current <= PLAYER_MAX_HEALTH
+      save.playerHealth.current <= PLAYER_MAX_HEALTH &&
+      isValidPlayerProgression(save.playerProgression)
     );
   } catch {
     return false;
   }
+}
+
+function isValidPlayerProgression(
+  playerProgression: ActiveRunSave["playerProgression"],
+): boolean {
+  const expectedExperienceToNextLevel =
+    PLAYER_BASE_EXPERIENCE_TO_LEVEL +
+    (playerProgression.level - PLAYER_STARTING_LEVEL) *
+      PLAYER_EXPERIENCE_TO_LEVEL_STEP;
+
+  return (
+    playerProgression.experienceToNextLevel === expectedExperienceToNextLevel &&
+    playerProgression.experience < playerProgression.experienceToNextLevel
+  );
 }

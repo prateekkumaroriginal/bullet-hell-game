@@ -15,6 +15,15 @@ export const activeRunSaveSchema = z.object({
       max: z.number().positive(),
     })
     .refine((playerHealth) => playerHealth.current <= playerHealth.max),
+  playerProgression: z
+    .object({
+      level: z.int().positive(),
+      experience: z.number().nonnegative(),
+      experienceToNextLevel: z.number().positive()
+    })
+    .refine(
+      (playerProgression) => playerProgression.experience < playerProgression.experienceToNextLevel
+    )
 });
 
 export type ActiveRunSave = z.infer<typeof activeRunSaveSchema>;

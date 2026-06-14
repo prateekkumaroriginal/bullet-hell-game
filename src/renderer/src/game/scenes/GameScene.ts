@@ -12,6 +12,7 @@ import {
   emitGameplayEvent,
   GAMEPLAY_EVENTS,
   onGameplayEvent,
+  type PlayerProgressionChangedPayload,
 } from "../events/gameplay-events";
 import {
   GAME_SESSION_PHASES,
@@ -106,6 +107,7 @@ export class GameScene extends Phaser.Scene {
           command.selectedStageId,
           command.startingWave,
           command.startingPlayerHealth,
+          command.startingPlayerProgression,
         );
       }),
     );
@@ -159,6 +161,7 @@ export class GameScene extends Phaser.Scene {
     selectedStageId: StageId,
     startingWave = INITIAL_WAVE_NUMBER,
     startingPlayerHealth?: number,
+    startingPlayerProgression?: PlayerProgressionChangedPayload,
   ): void {
     if (!this.canStartSession()) {
       return;
@@ -184,7 +187,7 @@ export class GameScene extends Phaser.Scene {
       arenaBounds,
       startingPlayerHealth,
     );
-    this.playerProgressionController = new PlayerProgressionController();
+    this.playerProgressionController = new PlayerProgressionController(startingPlayerProgression);
     this.aimController = new AimController(
       this,
       () => this.getPlayerControllerOrThrow().gameObject,
@@ -214,6 +217,8 @@ export class GameScene extends Phaser.Scene {
             current: this.getPlayerControllerOrThrow().health,
             max: this.getPlayerControllerOrThrow().maxHealth,
           },
+          playerProgression:
+            this.getPlayerProgressionControllerOrThrow().progression,
         });
       },
       () => {
@@ -239,6 +244,7 @@ export class GameScene extends Phaser.Scene {
         current: this.getPlayerControllerOrThrow().health,
         max: this.getPlayerControllerOrThrow().maxHealth,
       },
+      playerProgression: this.getPlayerProgressionControllerOrThrow().progression,
     });
   }
 
@@ -455,6 +461,14 @@ export class GameScene extends Phaser.Scene {
     }
 
     return this.aimController;
+  }
+
+  private getPlayerProgressionControllerOrThrow(): PlayerProgressionController {
+    if (!this.playerProgressionController) {
+      throw new Error("PlayerProgressionController is required during a session.");
+    }
+
+    return this.playerProgressionController;
   }
 
   private getArenaBoundsOrThrow(): ArenaBounds {

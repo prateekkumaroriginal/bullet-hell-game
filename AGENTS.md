@@ -34,6 +34,7 @@
 - Prefer making one useful slice work end to end over creating a broad unfinished scaffold.
 - Preserve user changes. Do not revert unrelated files.
 - Use typescript very aggressively.
+- Do not change save schema versions unless explicitly requested.
 
 ## Teaching Style
 

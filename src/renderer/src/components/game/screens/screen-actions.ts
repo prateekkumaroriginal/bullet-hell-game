@@ -17,6 +17,7 @@ export const continueActiveRun = (save: ActiveRunSave) => {
     selectedStageId: save.selectedStageId as StageId,
     startingWave: save.currentWave,
     startingPlayerHealth: save.playerHealth.current,
+    startingPlayerProgression: save.playerProgression,
   });
 };
 

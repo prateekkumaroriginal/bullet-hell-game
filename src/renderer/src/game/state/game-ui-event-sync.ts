@@ -18,6 +18,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
         gameSession.selectedStageId,
         gameSession.currentWave,
         gameSession.playerHealth,
+        gameSession.playerProgression,
       );
       useGameUiStore.getState().setGameSession({
         phase: GAME_SESSION_PHASES.PLAYING,
@@ -78,6 +79,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
         waveProgress.selectedStageId,
         waveProgress.nextWave,
         waveProgress.playerHealth,
+        waveProgress.playerProgression,
       );
     },
   );

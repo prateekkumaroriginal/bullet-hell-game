@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { type StageId } from "../config/stage-config";
+import { type PlayerProgressionChangedPayload } from "./gameplay-events";
 
 export const GAMEPLAY_COMMANDS = {
   START_GAME: "game-command:start",
@@ -17,6 +18,7 @@ export type StartGameCommandPayload = {
   selectedStageId: StageId;
   startingWave?: number;
   startingPlayerHealth?: number;
+  startingPlayerProgression?: PlayerProgressionChangedPayload;
 };
 
 export type GameplayCommandPayloads = {

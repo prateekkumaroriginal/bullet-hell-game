@@ -32,6 +32,7 @@ export type GameStartedPayload = {
   currentWave: number;
   totalWaves: number;
   playerHealth: PlayerHealthChangedPayload;
+  playerProgression: PlayerProgressionChangedPayload;
 };
 
 export type GameOverPayload = {
@@ -43,6 +44,7 @@ export type WaveCompletedPayload = {
   selectedStageId: StageId;
   nextWave: number;
   playerHealth: PlayerHealthChangedPayload;
+  playerProgression: PlayerProgressionChangedPayload;
 };
 
 export type StageCompletePayload = {
