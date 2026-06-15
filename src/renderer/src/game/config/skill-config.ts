@@ -121,3 +121,36 @@ export const SKILL_DEFINITIONS = [
 export const SKILL_DEFINITION_BY_ID = Object.fromEntries(
   SKILL_DEFINITIONS.map((skill) => [skill.id, skill]),
 ) as Record<SkillId, SkillDefinition>;
+
+export type SkillStackState = {
+  skillId: SkillId;
+  stackCount: number;
+};
+
+export function isSkillId(skillId: string): skillId is SkillId {
+  return skillId in SKILL_DEFINITION_BY_ID;
+}
+
+export function getSkillRuntimeModifiers(
+  skillStacks: readonly SkillStackState[],
+): SkillRuntimeModifiers {
+  const modifiers = { ...DEFAULT_SKILL_MODIFIERS };
+
+  for (const skillStack of skillStacks) {
+    const skill = SKILL_DEFINITION_BY_ID[skillStack.skillId];
+
+    modifiers.fireCooldownMultiplier +=
+      skill.modifierDelta.fireCooldownMultiplierDelta * skillStack.stackCount;
+    modifiers.bulletDamageBonus +=
+      skill.modifierDelta.bulletDamageBonus * skillStack.stackCount;
+    modifiers.moveSpeedMultiplier +=
+      skill.modifierDelta.moveSpeedMultiplierDelta * skillStack.stackCount;
+    modifiers.experienceCollectRadiusBonus +=
+      skill.modifierDelta.experienceCollectRadiusBonus * skillStack.stackCount;
+    modifiers.experienceAttractRadiusBonus +=
+      skill.modifierDelta.experienceAttractRadiusBonus * skillStack.stackCount;
+    modifiers.maxHealthBonus += skill.modifierDelta.maxHealthBonus * skillStack.stackCount;
+  }
+
+  return modifiers;
+}

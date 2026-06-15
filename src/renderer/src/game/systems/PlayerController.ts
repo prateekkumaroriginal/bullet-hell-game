@@ -40,9 +40,10 @@ export class PlayerController implements GameplayController {
     private readonly arenaBounds: ArenaBounds,
     private readonly getSkillModifiers: () => SkillRuntimeModifiers,
     initialHealth = PLAYER_MAX_HEALTH,
+    initialMaxHealthBonus = 0,
   ) {
     this.currentMaxHealth =
-      PLAYER_MAX_HEALTH + this.getSkillModifiers().maxHealthBonus;
+      PLAYER_MAX_HEALTH + initialMaxHealthBonus;
     this.currentHealth = Phaser.Math.Clamp(
       initialHealth,
       0,

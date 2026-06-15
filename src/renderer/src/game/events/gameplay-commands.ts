@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { type SkillId } from "../config/skill-config";
+import { type SkillId, type SkillStackState } from "../config/skill-config";
 import { type StageId } from "../config/stage-config";
 import { type PlayerProgressionChangedPayload } from "./gameplay-events";
 
@@ -21,6 +21,7 @@ export type StartGameCommandPayload = {
   startingWave?: number;
   startingPlayerHealth?: number;
   startingPlayerProgression?: PlayerProgressionChangedPayload;
+  startingSkillStacks?: readonly SkillStackState[];
 };
 
 export type SelectSkillCommandPayload = {

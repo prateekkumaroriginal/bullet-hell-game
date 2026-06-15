@@ -23,8 +23,10 @@ import { bindGameUiStoreToGameplayEvents } from "../state/game-ui-event-sync";
 import { useGameUiStore } from "../state/use-game-ui-store";
 import {
   DEFAULT_SKILL_MODIFIERS,
+  getSkillRuntimeModifiers,
   type SkillId,
   type SkillRuntimeModifiers,
+  type SkillStackState,
 } from "../config/skill-config";
 import { AimController } from "../systems/AimController";
 import { ArenaBounds } from "../systems/ArenaBounds";
@@ -117,6 +119,7 @@ export class GameScene extends Phaser.Scene {
           command.startingWave,
           command.startingPlayerHealth,
           command.startingPlayerProgression,
+          command.startingSkillStacks,
         );
       }),
     );
@@ -176,6 +179,7 @@ export class GameScene extends Phaser.Scene {
     startingWave = INITIAL_WAVE_NUMBER,
     startingPlayerHealth?: number,
     startingPlayerProgression?: PlayerProgressionChangedPayload,
+    startingSkillStacks: readonly SkillStackState[] = [],
   ): void {
     if (!this.canStartSession()) {
       return;
@@ -196,14 +200,19 @@ export class GameScene extends Phaser.Scene {
     this.selectedStageId = selectedStageId;
 
     const arenaBounds = this.getArenaBoundsOrThrow();
+    const startingSkillModifiers = getSkillRuntimeModifiers(startingSkillStacks);
 
     this.playerController = new PlayerController(
       this,
       arenaBounds,
       () => this.getSkillRuntimeModifiers(),
       startingPlayerHealth,
+      startingSkillModifiers.maxHealthBonus,
     );
-    this.skillController = new SkillController(this.playerController);
+    this.skillController = new SkillController(
+      this.playerController,
+      startingSkillStacks,
+    );
     this.publishLearnedSkills();
     this.playerProgressionController = new PlayerProgressionController(
       (level) => {
@@ -246,6 +255,7 @@ export class GameScene extends Phaser.Scene {
           },
           playerProgression:
             this.getPlayerProgressionControllerOrThrow().progression,
+          learnedSkillStacks: this.getSkillControllerOrThrow().skillStacks,
         });
       },
       () => {
@@ -273,6 +283,7 @@ export class GameScene extends Phaser.Scene {
         max: this.getPlayerControllerOrThrow().maxHealth,
       },
       playerProgression: this.getPlayerProgressionControllerOrThrow().progression,
+      learnedSkillStacks: this.getSkillControllerOrThrow().skillStacks,
     });
   }
 

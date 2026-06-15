@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import {
   DEFAULT_SKILL_MODIFIERS,
+  getSkillRuntimeModifiers,
   SKILL_CHOICE_COUNT,
   SKILL_DEFINITIONS,
   SKILL_DEFINITION_BY_ID,
@@ -8,6 +9,7 @@ import {
   type SkillDefinition,
   type SkillId,
   type SkillRuntimeModifiers,
+  type SkillStackState,
 } from "../config/skill-config";
 import { type GameplayController } from "./GameplayController";
 import { type PlayerController } from "./PlayerController";
@@ -32,7 +34,16 @@ export class SkillController implements GameplayController {
   private readonly stackCounts = new Map<SkillId, number>();
   private readonly modifiers = { ...DEFAULT_SKILL_MODIFIERS };
 
-  constructor(private readonly playerController: PlayerController) {}
+  constructor(
+    private readonly playerController: PlayerController,
+    initialSkillStacks: readonly SkillStackState[] = [],
+  ) {
+    for (const skillStack of initialSkillStacks) {
+      this.stackCounts.set(skillStack.skillId, skillStack.stackCount);
+    }
+
+    Object.assign(this.modifiers, getSkillRuntimeModifiers(initialSkillStacks));
+  }
 
   get runtimeModifiers(): SkillRuntimeModifiers {
     return this.modifiers;
@@ -51,6 +62,23 @@ export class SkillController implements GameplayController {
           id: skill.id,
           name: skill.name,
           summary: skill.summary,
+          stackCount,
+        },
+      ];
+    });
+  }
+
+  get skillStacks(): readonly SkillStackState[] {
+    return SKILL_DEFINITIONS.flatMap((skill) => {
+      const stackCount = this.stackCounts.get(skill.id) ?? 0;
+
+      if (stackCount <= 0) {
+        return [];
+      }
+
+      return [
+        {
+          skillId: skill.id,
           stackCount,
         },
       ];

@@ -1,15 +1,16 @@
 import { getContinueStageId } from "../state/stage-progress";
-import { deleteActiveRunSave, loadActiveRunSave } from "./active-run-save-service";
+import {
+  deleteActiveRunSave,
+  loadActiveRunSave,
+  type ValidatedActiveRunSave,
+} from "./active-run-save-service";
 import { loadProfileSave } from "./profile-save-service";
-import { type ActiveRunSave } from "../../../../shared/save-types";
 import { type StageId } from "../config/stage-config";
 
 export type ContinueTarget =
   | {
       kind: "activeRun";
-      save: ActiveRunSave & {
-        selectedStageId: StageId;
-      };
+      save: ValidatedActiveRunSave;
     }
   | {
       kind: "nextStage";
@@ -34,9 +35,7 @@ export async function resolveContinueTarget(): Promise<ContinueTargetResult> {
       ok: true,
       target: {
         kind: "activeRun",
-        save: activeRunResult.save as ActiveRunSave & {
-          selectedStageId: StageId;
-        },
+        save: activeRunResult.save,
       },
     };
   }

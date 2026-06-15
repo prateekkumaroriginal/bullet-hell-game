@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { type LearnedSkill, type SkillChoice } from "../systems/SkillController";
+import { type SkillStackState } from "../config/skill-config";
 import { type StageId } from "../config/stage-config";
 
 export const GAMEPLAY_EVENTS = {
@@ -37,6 +38,7 @@ export type GameStartedPayload = {
   totalWaves: number;
   playerHealth: PlayerHealthChangedPayload;
   playerProgression: PlayerProgressionChangedPayload;
+  learnedSkillStacks: readonly SkillStackState[];
 };
 
 export type GameOverPayload = {
@@ -49,6 +51,7 @@ export type WaveCompletedPayload = {
   nextWave: number;
   playerHealth: PlayerHealthChangedPayload;
   playerProgression: PlayerProgressionChangedPayload;
+  learnedSkillStacks: readonly SkillStackState[];
 };
 
 export type StageCompletePayload = {
