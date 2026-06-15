@@ -11,6 +11,7 @@ import {
   EXPERIENCE_ORB_STROKE_COLOR,
   EXPERIENCE_ORB_STROKE_WIDTH,
 } from "../config/experience-config";
+import { type SkillRuntimeModifiers } from "../config/skill-config";
 import { MILLISECONDS_PER_SECOND } from "../config/time-config";
 import { type GameplayController } from "./GameplayController";
 import { type PlayerController } from "./PlayerController";
@@ -39,7 +40,10 @@ export class ExperienceOrbPool implements GameplayController {
   private readonly freeOrbIndexes: number[] = [];
   private readonly movementDirection = new Phaser.Math.Vector2();
 
-  constructor(private readonly scene: Phaser.Scene) {
+  constructor(
+    private readonly scene: Phaser.Scene,
+    private readonly getSkillModifiers: () => SkillRuntimeModifiers,
+  ) {
     this.orbs = Array.from({ length: EXPERIENCE_ORB_POOL_SIZE }, (_, index) =>
       this.createOrb(index),
     );
@@ -92,10 +96,15 @@ export class ExperienceOrbPool implements GameplayController {
     delta: number,
   ): void {
     const player = playerController.gameObject;
-    const collectDistanceSquared =
-      EXPERIENCE_ORB_COLLECT_RADIUS * EXPERIENCE_ORB_COLLECT_RADIUS;
-    const attractDistanceSquared =
-      EXPERIENCE_ORB_ATTRACT_RADIUS * EXPERIENCE_ORB_ATTRACT_RADIUS;
+    const skillModifiers = this.getSkillModifiers();
+    const collectRadius =
+      EXPERIENCE_ORB_COLLECT_RADIUS +
+      skillModifiers.experienceCollectRadiusBonus;
+    const attractRadius =
+      EXPERIENCE_ORB_ATTRACT_RADIUS +
+      skillModifiers.experienceAttractRadiusBonus;
+    const collectDistanceSquared = collectRadius * collectRadius;
+    const attractDistanceSquared = attractRadius * attractRadius;
     const deltaSeconds = delta / MILLISECONDS_PER_SECOND;
 
     for (let orbIndex = this.activeOrbs.length - 1; orbIndex >= 0; orbIndex -= 1) {

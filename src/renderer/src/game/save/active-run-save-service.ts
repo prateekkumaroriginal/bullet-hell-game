@@ -76,8 +76,8 @@ function isKnownStageRunSave(save: ActiveRunSave): save is ActiveRunSave & {
 
     return (
       save.currentWave <= stage.waves.length &&
-      save.playerHealth.max === PLAYER_MAX_HEALTH &&
-      save.playerHealth.current <= PLAYER_MAX_HEALTH &&
+      save.playerHealth.max >= PLAYER_MAX_HEALTH &&
+      save.playerHealth.current <= save.playerHealth.max &&
       isValidPlayerProgression(save.playerProgression)
     );
   } catch {

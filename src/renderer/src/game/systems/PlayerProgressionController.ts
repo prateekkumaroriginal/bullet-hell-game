@@ -17,7 +17,10 @@ export class PlayerProgressionController implements GameplayController {
   private currentExperience = PLAYER_STARTING_EXPERIENCE;
   private currentExperienceToNextLevel = this.getExperienceToNextLevel(this.currentLevel);
 
-  constructor(initialProgression?: PlayerProgressionChangedPayload) {
+  constructor(
+    private readonly onLevelUp: (level: number) => void,
+    initialProgression?: PlayerProgressionChangedPayload,
+  ) {
     if (initialProgression) {
       this.currentLevel = initialProgression.level;
       this.currentExperience = initialProgression.experience;
@@ -49,6 +52,7 @@ export class PlayerProgressionController implements GameplayController {
     while (this.currentExperience >= this.currentExperienceToNextLevel) {
       this.currentExperience -= this.currentExperienceToNextLevel;
       this.currentLevel += 1;
+      this.onLevelUp(this.currentLevel);
       this.currentExperienceToNextLevel = this.getExperienceToNextLevel(this.currentLevel);
     }
 

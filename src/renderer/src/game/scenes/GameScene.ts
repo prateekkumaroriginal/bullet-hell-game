@@ -21,6 +21,11 @@ import {
 } from "../state/game-session-state";
 import { bindGameUiStoreToGameplayEvents } from "../state/game-ui-event-sync";
 import { useGameUiStore } from "../state/use-game-ui-store";
+import {
+  DEFAULT_SKILL_MODIFIERS,
+  type SkillId,
+  type SkillRuntimeModifiers,
+} from "../config/skill-config";
 import { AimController } from "../systems/AimController";
 import { ArenaBounds } from "../systems/ArenaBounds";
 import { ArenaRenderer } from "../systems/ArenaRenderer";
@@ -29,6 +34,7 @@ import { ExperienceOrbPool } from "../systems/ExperienceOrbPool";
 import { type GameplayController } from "../systems/GameplayController";
 import { PlayerController } from "../systems/PlayerController";
 import { PlayerProgressionController } from "../systems/PlayerProgressionController";
+import { SkillController, type SkillChoice } from "../systems/SkillController";
 import { WaveController } from "../systems/WaveController";
 import { WeaponController } from "../systems/WeaponController";
 
@@ -45,10 +51,13 @@ export class GameScene extends Phaser.Scene {
   private experienceOrbPool?: ExperienceOrbPool;
   private playerController?: PlayerController;
   private playerProgressionController?: PlayerProgressionController;
+  private skillController?: SkillController;
   private waveController?: WaveController;
   private weaponController?: WeaponController;
   private readonly gameplayControllers: GameplayController[] = [];
   private readonly cleanupCallbacks: Array<() => void> = [];
+  private readonly pendingSkillChoiceLevels: number[] = [];
+  private activeSkillChoices: readonly SkillChoice[] = [];
   private hasDestroyedSceneResources = false;
   private sessionPhase: GameSessionPhase = GAME_SESSION_PHASES.IDLE;
   private selectedStageId: StageId | null = null;
@@ -136,6 +145,11 @@ export class GameScene extends Phaser.Scene {
         this.resumeSession();
       }),
     );
+    this.registerCleanup(
+      onGameplayCommand(GAMEPLAY_COMMANDS.SELECT_SKILL, (command) => {
+        this.selectSkill(command.skillId);
+      }),
+    );
   }
 
   private canStartSession(): boolean {
@@ -175,6 +189,7 @@ export class GameScene extends Phaser.Scene {
     );
 
     this.destroyGameplayControllers();
+    this.clearSkillSelectionState();
     useGameUiStore.getState().resetGameUiState();
     this.time.paused = false;
     this.sessionPhase = GAME_SESSION_PHASES.PLAYING;
@@ -185,9 +200,17 @@ export class GameScene extends Phaser.Scene {
     this.playerController = new PlayerController(
       this,
       arenaBounds,
+      () => this.getSkillRuntimeModifiers(),
       startingPlayerHealth,
     );
-    this.playerProgressionController = new PlayerProgressionController(startingPlayerProgression);
+    this.skillController = new SkillController(this.playerController);
+    this.publishLearnedSkills();
+    this.playerProgressionController = new PlayerProgressionController(
+      (level) => {
+        this.queueSkillChoice(level);
+      },
+      startingPlayerProgression,
+    );
     this.aimController = new AimController(
       this,
       () => this.getPlayerControllerOrThrow().gameObject,
@@ -198,13 +221,17 @@ export class GameScene extends Phaser.Scene {
       () => this.getPlayerControllerOrThrow().gameObject,
       () => this.getAimControllerOrThrow().updateAimDirection(),
       () => this.getAimControllerOrThrow().direction,
+      () => this.getSkillRuntimeModifiers(),
     );
     this.enemyController = new EnemyController(
       this,
       arenaBounds,
       () => this.getPlayerControllerOrThrow().gameObject,
     );
-    this.experienceOrbPool = new ExperienceOrbPool(this);
+    this.experienceOrbPool = new ExperienceOrbPool(
+      this,
+      () => this.getSkillRuntimeModifiers(),
+    );
     this.waveController = new WaveController(
       this,
       this.enemyController,
@@ -228,6 +255,7 @@ export class GameScene extends Phaser.Scene {
     );
     this.gameplayControllers.push(
       this.playerController,
+      this.skillController,
       this.playerProgressionController,
       this.aimController,
       this.weaponController,
@@ -268,6 +296,59 @@ export class GameScene extends Phaser.Scene {
     emitGameplayEvent(GAMEPLAY_EVENTS.GAME_RESUMED, undefined);
   }
 
+  private queueSkillChoice(level: number): void {
+    this.pendingSkillChoiceLevels.push(level);
+
+    if (this.sessionPhase === GAME_SESSION_PHASES.PLAYING) {
+      this.startNextSkillSelection();
+    }
+  }
+
+  private startNextSkillSelection(): void {
+    const offeredAtLevel = this.pendingSkillChoiceLevels.shift();
+
+    if (offeredAtLevel === undefined) {
+      this.clearSkillSelectionState();
+      this.sessionPhase = GAME_SESSION_PHASES.PLAYING;
+      this.time.paused = false;
+      emitGameplayEvent(GAMEPLAY_EVENTS.SKILL_SELECTION_ENDED, undefined);
+      return;
+    }
+
+    this.activeSkillChoices =
+      this.getSkillControllerOrThrow().createChoices(offeredAtLevel);
+
+    if (this.activeSkillChoices.length === 0) {
+      this.startNextSkillSelection();
+      return;
+    }
+
+    this.sessionPhase = GAME_SESSION_PHASES.SKILL_SELECT;
+    this.time.paused = true;
+    emitGameplayEvent(GAMEPLAY_EVENTS.SKILL_SELECTION_STARTED, {
+      offeredAtLevel,
+      choices: this.activeSkillChoices,
+    });
+  }
+
+  private selectSkill(skillId: SkillId): void {
+    if (this.sessionPhase !== GAME_SESSION_PHASES.SKILL_SELECT) {
+      return;
+    }
+
+    const selectedChoice = this.activeSkillChoices.find(
+      (choice) => choice.id === skillId,
+    );
+
+    if (!selectedChoice) {
+      return;
+    }
+
+    this.getSkillControllerOrThrow().applySkill(selectedChoice.id);
+    this.publishLearnedSkills();
+    this.startNextSkillSelection();
+  }
+
   private returnToMenu(): void {
     if (!this.canReturnToMenu()) {
       return;
@@ -290,6 +371,7 @@ export class GameScene extends Phaser.Scene {
 
   private resetToIdleSession(): void {
     this.destroyGameplayControllers();
+    this.clearSkillSelectionState();
     this.time.paused = false;
     this.sessionPhase = GAME_SESSION_PHASES.IDLE;
     this.selectedStageId = null;
@@ -405,6 +487,7 @@ export class GameScene extends Phaser.Scene {
     this.arenaRenderer = undefined;
     this.arenaBounds = undefined;
     this.time.paused = false;
+    this.clearSkillSelectionState();
     this.sessionPhase = GAME_SESSION_PHASES.IDLE;
     this.selectedStageId = null;
   }
@@ -420,6 +503,7 @@ export class GameScene extends Phaser.Scene {
 
     this.sessionPhase = nextPhase;
     this.time.paused = false;
+    this.clearSkillSelectionState();
     this.destroyGameplayControllers();
   }
 
@@ -435,11 +519,27 @@ export class GameScene extends Phaser.Scene {
     this.gameplayControllers.length = 0;
     this.weaponController = undefined;
     this.waveController = undefined;
+    this.skillController = undefined;
     this.experienceOrbPool = undefined;
     this.enemyController = undefined;
     this.aimController = undefined;
     this.playerProgressionController = undefined;
     this.playerController = undefined;
+  }
+
+  private clearSkillSelectionState(): void {
+    this.pendingSkillChoiceLevels.length = 0;
+    this.activeSkillChoices = [];
+  }
+
+  private getSkillRuntimeModifiers(): SkillRuntimeModifiers {
+    return this.skillController?.runtimeModifiers ?? DEFAULT_SKILL_MODIFIERS;
+  }
+
+  private publishLearnedSkills(): void {
+    emitGameplayEvent(GAMEPLAY_EVENTS.SKILLS_CHANGED, {
+      learnedSkills: this.getSkillControllerOrThrow().learnedSkills,
+    });
   }
 
   private handleResize(): void {
@@ -469,6 +569,14 @@ export class GameScene extends Phaser.Scene {
     }
 
     return this.playerProgressionController;
+  }
+
+  private getSkillControllerOrThrow(): SkillController {
+    if (!this.skillController) {
+      throw new Error("SkillController is required during a session.");
+    }
+
+    return this.skillController;
   }
 
   private getArenaBoundsOrThrow(): ArenaBounds {

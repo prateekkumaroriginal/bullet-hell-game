@@ -53,6 +53,28 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
       useGameUiStore.getState().setGameSessionPhase(GAME_SESSION_PHASES.PLAYING);
     },
   );
+  const removeSkillSelectionStartedListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.SKILL_SELECTION_STARTED,
+    (skillSelection) => {
+      useGameUiStore.getState().setSkillSelection(skillSelection);
+      useGameUiStore
+        .getState()
+        .setGameSessionPhase(GAME_SESSION_PHASES.SKILL_SELECT);
+    },
+  );
+  const removeSkillSelectionEndedListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.SKILL_SELECTION_ENDED,
+    () => {
+      useGameUiStore.getState().setSkillSelection(null);
+      useGameUiStore.getState().setGameSessionPhase(GAME_SESSION_PHASES.PLAYING);
+    },
+  );
+  const removeSkillsChangedListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.SKILLS_CHANGED,
+    (skills) => {
+      useGameUiStore.getState().setLearnedSkills(skills.learnedSkills);
+    },
+  );
   const removeStageCompleteListener = onGameplayEvent(
     GAMEPLAY_EVENTS.STAGE_COMPLETE,
     (gameSession) => {
@@ -114,6 +136,9 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     removeGameOverListener();
     removeGamePausedListener();
     removeGameResumedListener();
+    removeSkillSelectionStartedListener();
+    removeSkillSelectionEndedListener();
+    removeSkillsChangedListener();
     removeWaveCompletedListener();
     removeStageCompleteListener();
     removeHealthListener();

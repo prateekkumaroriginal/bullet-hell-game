@@ -21,6 +21,8 @@ import {
   type StageProgressState,
 } from "./stage-progress";
 import {
+  type SkillSelectionStartedPayload,
+  type SkillsChangedPayload,
   type PlayerHealthChangedPayload,
   type PlayerProgressionChangedPayload,
   type WaveAnnouncementChangedPayload,
@@ -31,12 +33,16 @@ export type PlayerHealthState = PlayerHealthChangedPayload;
 export type PlayerProgressionState = PlayerProgressionChangedPayload;
 export type WaveState = WaveChangedPayload;
 export type WaveAnnouncementState = WaveAnnouncementChangedPayload;
+export type SkillSelectionState = SkillSelectionStartedPayload | null;
+export type LearnedSkillsState = SkillsChangedPayload["learnedSkills"];
 
 export type GameUiState = {
   gameSession: GameSessionState;
   stageProgress: StageProgressState;
   playerHealth: PlayerHealthState;
   playerProgression: PlayerProgressionState;
+  skillSelection: SkillSelectionState;
+  learnedSkills: LearnedSkillsState;
   wave: WaveState;
   waveAnnouncement: WaveAnnouncementState;
   setGameSession: (gameSession: GameSessionState) => void;
@@ -46,6 +52,8 @@ export type GameUiState = {
   markStageComplete: (stageId: StageId) => void;
   setPlayerHealth: (playerHealth: PlayerHealthState) => void;
   setPlayerProgression: (playerProgression: PlayerProgressionState) => void;
+  setSkillSelection: (skillSelection: SkillSelectionState) => void;
+  setLearnedSkills: (learnedSkills: LearnedSkillsState) => void;
   setWave: (wave: WaveState) => void;
   setWaveAnnouncement: (waveAnnouncement: WaveAnnouncementState) => void;
   resetGameUiState: () => void;
@@ -83,6 +91,8 @@ export const useGameUiStore = create<GameUiState>((set) => ({
   stageProgress: INITIAL_STAGE_PROGRESS_STATE,
   playerHealth: INITIAL_PLAYER_HEALTH,
   playerProgression: INITIAL_PLAYER_PROGRESSION,
+  skillSelection: null,
+  learnedSkills: [],
   wave: INITIAL_WAVE_STATE,
   waveAnnouncement: INITIAL_WAVE_ANNOUNCEMENT_STATE,
   setGameSession: (gameSession) => {
@@ -133,6 +143,12 @@ export const useGameUiStore = create<GameUiState>((set) => ({
   setPlayerProgression: (playerProgression) => {
     set({ playerProgression });
   },
+  setSkillSelection: (skillSelection) => {
+    set({ skillSelection });
+  },
+  setLearnedSkills: (learnedSkills) => {
+    set({ learnedSkills });
+  },
   setWave: (wave) => {
     set({ wave });
   },
@@ -144,6 +160,8 @@ export const useGameUiStore = create<GameUiState>((set) => ({
       gameSession: INITIAL_GAME_SESSION_STATE,
       playerHealth: INITIAL_PLAYER_HEALTH,
       playerProgression: INITIAL_PLAYER_PROGRESSION,
+      skillSelection: null,
+      learnedSkills: [],
       wave: INITIAL_WAVE_STATE,
       waveAnnouncement: INITIAL_WAVE_ANNOUNCEMENT_STATE,
     });

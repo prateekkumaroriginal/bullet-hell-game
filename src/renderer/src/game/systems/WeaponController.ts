@@ -4,13 +4,17 @@ import {
   BULLET_DEFAULT_DIRECTION_Y,
   BULLET_FIRE_COOLDOWN_MS,
 } from "../config/bullet-config";
+import {
+  MIN_FIRE_COOLDOWN_MULTIPLIER,
+  type SkillRuntimeModifiers,
+} from "../config/skill-config";
 import { ArenaBounds } from "./ArenaBounds";
 import { BulletPool } from "./BulletPool";
 import { type GameplayController } from "./GameplayController";
 
 export class WeaponController implements GameplayController {
   private readonly bulletPool: BulletPool;
-  private readonly fireTimer: Phaser.Time.TimerEvent;
+  private fireCooldownRemainingMs = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -18,17 +22,19 @@ export class WeaponController implements GameplayController {
     private readonly getPlayer: () => Phaser.GameObjects.Arc,
     private readonly updateAimDirection: () => void,
     private readonly getAimDirection: () => Phaser.Math.Vector2,
+    private readonly getSkillModifiers: () => SkillRuntimeModifiers,
   ) {
-    this.bulletPool = new BulletPool(scene, arenaBounds);
-    this.fireTimer = scene.time.addEvent({
-      delay: BULLET_FIRE_COOLDOWN_MS,
-      callback: this.fireAtCursor,
-      callbackScope: this,
-      loop: true,
-    });
+    this.bulletPool = new BulletPool(scene, arenaBounds, getSkillModifiers);
   }
 
   update(delta: number): void {
+    this.fireCooldownRemainingMs -= delta;
+
+    if (this.fireCooldownRemainingMs <= 0) {
+      this.fireAtCursor();
+      this.fireCooldownRemainingMs = this.getFireCooldownMs();
+    }
+
     this.bulletPool.update(delta);
   }
 
@@ -37,7 +43,6 @@ export class WeaponController implements GameplayController {
   }
 
   destroy(): void {
-    this.fireTimer.remove();
     this.bulletPool.destroy();
   }
 
@@ -57,5 +62,15 @@ export class WeaponController implements GameplayController {
       directionX: aimDirection.x,
       directionY: aimDirection.y,
     });
+  }
+
+  private getFireCooldownMs(): number {
+    return (
+      BULLET_FIRE_COOLDOWN_MS *
+      Math.max(
+        MIN_FIRE_COOLDOWN_MULTIPLIER,
+        this.getSkillModifiers().fireCooldownMultiplier,
+      )
+    );
   }
 }

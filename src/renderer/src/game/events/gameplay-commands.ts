@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { type SkillId } from "../config/skill-config";
 import { type StageId } from "../config/stage-config";
 import { type PlayerProgressionChangedPayload } from "./gameplay-events";
 
@@ -9,6 +10,7 @@ export const GAMEPLAY_COMMANDS = {
   RESTART_GAME: "game-command:restart",
   RETURN_TO_MENU: "game-command:return-to-menu",
   RETURN_TO_STAGE_SELECT: "game-command:return-to-stage-select",
+  SELECT_SKILL: "game-command:select-skill",
 } as const;
 
 export type GameplayCommandName =
@@ -21,6 +23,10 @@ export type StartGameCommandPayload = {
   startingPlayerProgression?: PlayerProgressionChangedPayload;
 };
 
+export type SelectSkillCommandPayload = {
+  skillId: SkillId;
+};
+
 export type GameplayCommandPayloads = {
   [GAMEPLAY_COMMANDS.START_GAME]: StartGameCommandPayload;
   [GAMEPLAY_COMMANDS.PAUSE_GAME]: undefined;
@@ -28,6 +34,7 @@ export type GameplayCommandPayloads = {
   [GAMEPLAY_COMMANDS.RESTART_GAME]: undefined;
   [GAMEPLAY_COMMANDS.RETURN_TO_MENU]: undefined;
   [GAMEPLAY_COMMANDS.RETURN_TO_STAGE_SELECT]: undefined;
+  [GAMEPLAY_COMMANDS.SELECT_SKILL]: SelectSkillCommandPayload;
 };
 
 type GameplayCommandListener<CommandName extends GameplayCommandName> = (
