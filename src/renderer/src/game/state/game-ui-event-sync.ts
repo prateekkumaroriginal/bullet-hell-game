@@ -34,6 +34,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     (gameSession) => {
       const totalWaves = useGameUiStore.getState().gameSession.totalWaves;
 
+      void deleteActiveRunSave();
       useGameUiStore.getState().setGameSession({
         phase: GAME_SESSION_PHASES.GAME_OVER,
         selectedStageId: gameSession.selectedStageId,
@@ -80,12 +81,12 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     GAMEPLAY_EVENTS.STAGE_COMPLETE,
     (gameSession) => {
       void (async () => {
+        await deleteActiveRunSave();
         const profileSave = await markStageCleared(gameSession.selectedStageId);
 
         useGameUiStore
           .getState()
           .setCompletedStageIds(profileSave.clearedStageIds);
-        await deleteActiveRunSave();
       })();
       useGameUiStore.getState().setGameSession({
         phase: GAME_SESSION_PHASES.STAGE_COMPLETE,
