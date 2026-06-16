@@ -10,6 +10,7 @@ import {
   getStageDefinition,
   type StageId,
 } from "../config/stage-config";
+import { getWaveEnemyCount } from "../config/wave-config";
 import {
   INITIAL_GAME_SESSION_STATE,
   INITIAL_WAVE_NUMBER,
@@ -75,7 +76,9 @@ const DEFAULT_STAGE = getStageDefinition(DEFAULT_STAGE_ID);
 const INITIAL_WAVE_STATE: WaveState = {
   current: INITIAL_WAVE_NUMBER,
   total: DEFAULT_STAGE.waves.length,
-  enemiesRemaining: DEFAULT_STAGE.waves[0]?.enemyCount ?? 0,
+  enemiesRemaining: DEFAULT_STAGE.waves[0]
+    ? getWaveEnemyCount(DEFAULT_STAGE.waves[0])
+    : 0,
   isComplete: false,
 };
 

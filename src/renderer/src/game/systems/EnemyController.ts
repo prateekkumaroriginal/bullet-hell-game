@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { BULLET_HIT_RADIUS } from "../config/bullet-config";
-import { ENEMY_RADIUS } from "../config/enemy-config";
+import { type EnemyTypeId } from "../config/enemy-config";
 import {
   PLAYER_ENEMY_CONTACT_DAMAGE,
   PLAYER_RADIUS,
@@ -27,8 +27,8 @@ export class EnemyController implements GameplayController {
     return this.enemyPool.active.length;
   }
 
-  spawnEnemy(): void {
-    this.enemyPool.spawn();
+  spawnEnemy(enemyTypeId: EnemyTypeId): void {
+    this.enemyPool.spawn(enemyTypeId);
   }
 
   update(delta: number): void {
@@ -39,11 +39,10 @@ export class EnemyController implements GameplayController {
     const deathDrops: EnemyDeathDrop[] = [];
     const bullets = bulletPool.active;
     const enemies = this.enemyPool.active;
-    const hitDistance = ENEMY_RADIUS + BULLET_HIT_RADIUS;
-    const hitDistanceSquared = hitDistance * hitDistance;
-
     for (let enemyIndex = enemies.length - 1; enemyIndex >= 0; enemyIndex -= 1) {
       const enemy = enemies[enemyIndex];
+      const hitDistance = enemy.radius + BULLET_HIT_RADIUS;
+      const hitDistanceSquared = hitDistance * hitDistance;
 
       for (let bulletIndex = bullets.length - 1; bulletIndex >= 0; bulletIndex -= 1) {
         const bullet = bullets[bulletIndex];
@@ -83,14 +82,13 @@ export class EnemyController implements GameplayController {
     }
 
     const player = playerController.gameObject;
-    const hitDistance = ENEMY_RADIUS + PLAYER_RADIUS;
-    const hitDistanceSquared = hitDistance * hitDistance;
-
     for (const enemy of this.enemyPool.active) {
       if (!canCollide(enemy.collisionCategory, COLLISION_CATEGORIES.PLAYER)) {
         continue;
       }
 
+      const hitDistance = enemy.radius + PLAYER_RADIUS;
+      const hitDistanceSquared = hitDistance * hitDistance;
       const distanceSquared = Phaser.Math.Distance.Squared(
         enemy.x,
         enemy.y,

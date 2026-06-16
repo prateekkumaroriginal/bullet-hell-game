@@ -1,8 +1,11 @@
 import { type WaveDefinition } from "./wave-config";
+import { ENEMY_TYPE_IDS } from "./enemy-config";
 
 export const STAGE_IDS = {
   STAGE_1: "stage-1",
   STAGE_2: "stage-2",
+  STAGE_3: "stage-3",
+  STAGE_4: "stage-4",
 } as const;
 
 export type StageId = (typeof STAGE_IDS)[keyof typeof STAGE_IDS];
@@ -21,15 +24,15 @@ export const STAGE_DEFINITIONS = [
     order: 1,
     waves: [
       {
-        enemyCount: 4,
+        spawns: [{ enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 4 }],
         spawnCooldownMs: 900,
       },
       {
-        enemyCount: 7,
+        spawns: [{ enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 7 }],
         spawnCooldownMs: 800,
       },
       {
-        enemyCount: 10,
+        spawns: [{ enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 10 }],
         spawnCooldownMs: 700,
       },
     ],
@@ -40,20 +43,99 @@ export const STAGE_DEFINITIONS = [
     order: 2,
     waves: [
       {
-        enemyCount: 6,
+        spawns: [{ enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 6 }],
         spawnCooldownMs: 780,
       },
       {
-        enemyCount: 9,
+        spawns: [
+          { enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 8 },
+          { enemyTypeId: ENEMY_TYPE_IDS.TANK, count: 1 },
+        ],
         spawnCooldownMs: 680,
       },
       {
-        enemyCount: 12,
+        spawns: [
+          { enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 10 },
+          { enemyTypeId: ENEMY_TYPE_IDS.TANK, count: 2 },
+        ],
         spawnCooldownMs: 580,
       },
       {
-        enemyCount: 15,
+        spawns: [
+          { enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 12 },
+          { enemyTypeId: ENEMY_TYPE_IDS.TANK, count: 3 },
+        ],
         spawnCooldownMs: 520,
+      },
+    ],
+  },
+  {
+    id: STAGE_IDS.STAGE_3,
+    name: "Stage 3",
+    order: 3,
+    waves: [
+      {
+        spawns: [{ enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 6 }],
+        spawnCooldownMs: 760,
+      },
+      {
+        spawns: [
+          { enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 6 },
+          { enemyTypeId: ENEMY_TYPE_IDS.RUSHER, count: 3 },
+        ],
+        spawnCooldownMs: 660,
+      },
+      {
+        spawns: [
+          { enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 7 },
+          { enemyTypeId: ENEMY_TYPE_IDS.RUSHER, count: 5 },
+        ],
+        spawnCooldownMs: 560,
+      },
+      {
+        spawns: [
+          { enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 8 },
+          { enemyTypeId: ENEMY_TYPE_IDS.RUSHER, count: 7 },
+        ],
+        spawnCooldownMs: 500,
+      },
+    ],
+  },
+  {
+    id: STAGE_IDS.STAGE_4,
+    name: "Stage 4",
+    order: 4,
+    waves: [
+      {
+        spawns: [
+          { enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 5 },
+          { enemyTypeId: ENEMY_TYPE_IDS.RUSHER, count: 2 },
+        ],
+        spawnCooldownMs: 720,
+      },
+      {
+        spawns: [
+          { enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 6 },
+          { enemyTypeId: ENEMY_TYPE_IDS.RUSHER, count: 3 },
+          { enemyTypeId: ENEMY_TYPE_IDS.TANK, count: 1 },
+        ],
+        spawnCooldownMs: 620,
+      },
+      {
+        spawns: [
+          { enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 7 },
+          { enemyTypeId: ENEMY_TYPE_IDS.RUSHER, count: 4 },
+          { enemyTypeId: ENEMY_TYPE_IDS.TANK, count: 2 },
+        ],
+        spawnCooldownMs: 540,
+      },
+      {
+        spawns: [
+          { enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 8 },
+          { enemyTypeId: ENEMY_TYPE_IDS.RUSHER, count: 5 },
+          { enemyTypeId: ENEMY_TYPE_IDS.TANK, count: 3 },
+        ],
+        spawnCooldownMs: 480,
       },
     ],
   },

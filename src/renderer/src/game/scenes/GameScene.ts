@@ -421,11 +421,17 @@ export class GameScene extends Phaser.Scene {
     const deathDrops = this.enemyController.resolveBulletHits(this.weaponController.bullets);
 
     for (const deathDrop of deathDrops) {
-      this.experienceOrbPool?.spawn({
-        x: deathDrop.x,
-        y: deathDrop.y,
-        value: deathDrop.experienceValue,
-      });
+      for (
+        let orbIndex = 0;
+        orbIndex < deathDrop.experienceOrbCount;
+        orbIndex += 1
+      ) {
+        this.experienceOrbPool?.spawn({
+          x: deathDrop.x,
+          y: deathDrop.y,
+          value: deathDrop.experienceValuePerOrb,
+        });
+      }
     }
 
     this.enemyController.resolvePlayerContact(this.playerController);
