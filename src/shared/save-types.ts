@@ -23,7 +23,16 @@ export const activeRunSaveSchema = z.object({
     })
     .refine(
       (playerProgression) => playerProgression.experience < playerProgression.experienceToNextLevel
+    ),
+  learnedSkillStacks: z
+    .array(
+      z.object({
+        skillId: z.string().min(1),
+        stackCount: z.int().positive(),
+      }),
     )
+    .readonly()
+    .default([]),
 });
 
 export type ActiveRunSave = z.infer<typeof activeRunSaveSchema>;

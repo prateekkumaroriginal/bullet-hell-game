@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+import { type LearnedSkill, type SkillChoice } from "../systems/SkillController";
+import { type SkillStackState } from "../config/skill-config";
 import { type StageId } from "../config/stage-config";
 
 export const GAMEPLAY_EVENTS = {
@@ -8,6 +10,9 @@ export const GAMEPLAY_EVENTS = {
   GAME_OVER: "game:over",
   WAVE_COMPLETED: "wave:completed",
   STAGE_COMPLETE: "stage:complete",
+  SKILL_SELECTION_STARTED: "skill-selection:started",
+  SKILL_SELECTION_ENDED: "skill-selection:ended",
+  SKILLS_CHANGED: "skills:changed",
   PLAYER_HEALTH_CHANGED: "player:health-changed",
   PLAYER_PROGRESSION_CHANGED: "player:progression-changed",
   WAVE_CHANGED: "wave:changed",
@@ -33,6 +38,7 @@ export type GameStartedPayload = {
   totalWaves: number;
   playerHealth: PlayerHealthChangedPayload;
   playerProgression: PlayerProgressionChangedPayload;
+  learnedSkillStacks: readonly SkillStackState[];
 };
 
 export type GameOverPayload = {
@@ -45,12 +51,22 @@ export type WaveCompletedPayload = {
   nextWave: number;
   playerHealth: PlayerHealthChangedPayload;
   playerProgression: PlayerProgressionChangedPayload;
+  learnedSkillStacks: readonly SkillStackState[];
 };
 
 export type StageCompletePayload = {
   selectedStageId: StageId;
   currentWave: number;
   totalWaves: number;
+};
+
+export type SkillSelectionStartedPayload = {
+  offeredAtLevel: number;
+  choices: readonly SkillChoice[];
+};
+
+export type SkillsChangedPayload = {
+  learnedSkills: readonly LearnedSkill[];
 };
 
 export type WaveChangedPayload = {
@@ -74,6 +90,9 @@ export type GameplayEventPayloads = {
   [GAMEPLAY_EVENTS.GAME_OVER]: GameOverPayload;
   [GAMEPLAY_EVENTS.WAVE_COMPLETED]: WaveCompletedPayload;
   [GAMEPLAY_EVENTS.STAGE_COMPLETE]: StageCompletePayload;
+  [GAMEPLAY_EVENTS.SKILL_SELECTION_STARTED]: SkillSelectionStartedPayload;
+  [GAMEPLAY_EVENTS.SKILL_SELECTION_ENDED]: undefined;
+  [GAMEPLAY_EVENTS.SKILLS_CHANGED]: SkillsChangedPayload;
   [GAMEPLAY_EVENTS.PLAYER_HEALTH_CHANGED]: PlayerHealthChangedPayload;
   [GAMEPLAY_EVENTS.PLAYER_PROGRESSION_CHANGED]: PlayerProgressionChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_CHANGED]: WaveChangedPayload;

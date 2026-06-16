@@ -19,6 +19,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
         gameSession.currentWave,
         gameSession.playerHealth,
         gameSession.playerProgression,
+        gameSession.learnedSkillStacks,
       );
       useGameUiStore.getState().setGameSession({
         phase: GAME_SESSION_PHASES.PLAYING,
@@ -33,6 +34,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     (gameSession) => {
       const totalWaves = useGameUiStore.getState().gameSession.totalWaves;
 
+      void deleteActiveRunSave();
       useGameUiStore.getState().setGameSession({
         phase: GAME_SESSION_PHASES.GAME_OVER,
         selectedStageId: gameSession.selectedStageId,
@@ -53,16 +55,38 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
       useGameUiStore.getState().setGameSessionPhase(GAME_SESSION_PHASES.PLAYING);
     },
   );
+  const removeSkillSelectionStartedListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.SKILL_SELECTION_STARTED,
+    (skillSelection) => {
+      useGameUiStore.getState().setSkillSelection(skillSelection);
+      useGameUiStore
+        .getState()
+        .setGameSessionPhase(GAME_SESSION_PHASES.SKILL_SELECT);
+    },
+  );
+  const removeSkillSelectionEndedListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.SKILL_SELECTION_ENDED,
+    () => {
+      useGameUiStore.getState().setSkillSelection(null);
+      useGameUiStore.getState().setGameSessionPhase(GAME_SESSION_PHASES.PLAYING);
+    },
+  );
+  const removeSkillsChangedListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.SKILLS_CHANGED,
+    (skills) => {
+      useGameUiStore.getState().setLearnedSkills(skills.learnedSkills);
+    },
+  );
   const removeStageCompleteListener = onGameplayEvent(
     GAMEPLAY_EVENTS.STAGE_COMPLETE,
     (gameSession) => {
       void (async () => {
+        await deleteActiveRunSave();
         const profileSave = await markStageCleared(gameSession.selectedStageId);
 
         useGameUiStore
           .getState()
           .setCompletedStageIds(profileSave.clearedStageIds);
-        await deleteActiveRunSave();
       })();
       useGameUiStore.getState().setGameSession({
         phase: GAME_SESSION_PHASES.STAGE_COMPLETE,
@@ -80,6 +104,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
         waveProgress.nextWave,
         waveProgress.playerHealth,
         waveProgress.playerProgression,
+        waveProgress.learnedSkillStacks,
       );
     },
   );
@@ -114,6 +139,9 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     removeGameOverListener();
     removeGamePausedListener();
     removeGameResumedListener();
+    removeSkillSelectionStartedListener();
+    removeSkillSelectionEndedListener();
+    removeSkillsChangedListener();
     removeWaveCompletedListener();
     removeStageCompleteListener();
     removeHealthListener();

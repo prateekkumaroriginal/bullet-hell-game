@@ -1,21 +1,38 @@
 import { ACTIVE_RUN_SAVE_SCHEMA_VERSION } from "../../../../shared/save-config";
-import {
-  type ActiveRunSave,
-  type LoadActiveRunSaveResult,
-} from "../../../../shared/save-types";
+import { type ActiveRunSave } from "../../../../shared/save-types";
 import {
   PLAYER_BASE_EXPERIENCE_TO_LEVEL,
   PLAYER_EXPERIENCE_TO_LEVEL_STEP,
   PLAYER_STARTING_LEVEL,
 } from "../config/experience-config";
 import { PLAYER_MAX_HEALTH } from "../config/player-config";
+import {
+  isSkillId,
+  SKILL_MAX_STACK_COUNT,
+  type SkillStackState,
+} from "../config/skill-config";
 import { getStageDefinition, type StageId } from "../config/stage-config";
+
+export type ValidatedActiveRunSave = ActiveRunSave & {
+  selectedStageId: StageId;
+  learnedSkillStacks: readonly SkillStackState[];
+};
+
+export type LoadValidatedActiveRunSaveResult =
+  | {
+      ok: true;
+      save: ValidatedActiveRunSave;
+    }
+  | {
+      ok: false;
+      reason: "missing" | "invalid" | "unavailable";
+    };
 
 export async function hasActiveRunSave(): Promise<boolean> {
   return window.electron?.activeRunSave.hasActiveRunSave() ?? false;
 }
 
-export async function loadActiveRunSave(): Promise<LoadActiveRunSaveResult> {
+export async function loadActiveRunSave(): Promise<LoadValidatedActiveRunSaveResult> {
   const result = await window.electron?.activeRunSave.loadActiveRunSave();
 
   if (!result) {
@@ -36,7 +53,10 @@ export async function loadActiveRunSave(): Promise<LoadActiveRunSaveResult> {
     };
   }
 
-  return result;
+  return {
+    ok: true,
+    save: result.save,
+  };
 }
 
 export async function writeActiveRunSave(
@@ -44,6 +64,7 @@ export async function writeActiveRunSave(
   currentWave: number,
   playerHealth: ActiveRunSave["playerHealth"],
   playerProgression: ActiveRunSave["playerProgression"],
+  learnedSkillStacks: readonly SkillStackState[],
 ): Promise<void> {
   const stage = getStageDefinition(selectedStageId);
 
@@ -59,6 +80,7 @@ export async function writeActiveRunSave(
     currentWave,
     playerHealth,
     playerProgression,
+    learnedSkillStacks,
   } satisfies ActiveRunSave;
 
   await window.electron?.activeRunSave.writeActiveRunSave(save);
@@ -68,17 +90,16 @@ export async function deleteActiveRunSave(): Promise<void> {
   await window.electron?.activeRunSave.deleteActiveRunSave();
 }
 
-function isKnownStageRunSave(save: ActiveRunSave): save is ActiveRunSave & {
-  selectedStageId: StageId;
-} {
+function isKnownStageRunSave(save: ActiveRunSave): save is ValidatedActiveRunSave {
   try {
     const stage = getStageDefinition(save.selectedStageId as StageId);
 
     return (
       save.currentWave <= stage.waves.length &&
-      save.playerHealth.max === PLAYER_MAX_HEALTH &&
-      save.playerHealth.current <= PLAYER_MAX_HEALTH &&
-      isValidPlayerProgression(save.playerProgression)
+      save.playerHealth.max >= PLAYER_MAX_HEALTH &&
+      save.playerHealth.current <= save.playerHealth.max &&
+      isValidPlayerProgression(save.playerProgression) &&
+      isValidSkillStackSave(save.learnedSkillStacks)
     );
   } catch {
     return false;
@@ -97,4 +118,25 @@ function isValidPlayerProgression(
     playerProgression.experienceToNextLevel === expectedExperienceToNextLevel &&
     playerProgression.experience < playerProgression.experienceToNextLevel
   );
+}
+
+function isValidSkillStackSave(
+  learnedSkillStacks: ActiveRunSave["learnedSkillStacks"],
+): learnedSkillStacks is readonly SkillStackState[] {
+  const seenSkillIds = new Set<string>();
+
+  for (const skillStack of learnedSkillStacks) {
+    if (
+      !isSkillId(skillStack.skillId) ||
+      seenSkillIds.has(skillStack.skillId) ||
+      skillStack.stackCount <= 0 ||
+      skillStack.stackCount > SKILL_MAX_STACK_COUNT
+    ) {
+      return false;
+    }
+
+    seenSkillIds.add(skillStack.skillId);
+  }
+
+  return true;
 }

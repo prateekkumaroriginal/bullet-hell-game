@@ -12,6 +12,7 @@ import {
 } from "../config/bullet-config";
 import { MILLISECONDS_PER_SECOND } from "../config/time-config";
 import { COLLISION_CATEGORIES, type CollisionCategory } from "../config/collision-config";
+import { type SkillRuntimeModifiers } from "../config/skill-config";
 import { ArenaBounds } from "./ArenaBounds";
 
 export type Bullet = {
@@ -41,6 +42,7 @@ export class BulletPool {
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly arenaBounds: ArenaBounds,
+    private readonly getSkillModifiers: () => SkillRuntimeModifiers,
   ) {
     this.bullets = Array.from({ length: BULLET_POOL_SIZE }, (_, index) =>
       this.createBullet(index),
@@ -75,6 +77,8 @@ export class BulletPool {
     bullet.y = input.y;
     bullet.velocityX = this.spawnDirection.x * BULLET_SPEED;
     bullet.velocityY = this.spawnDirection.y * BULLET_SPEED;
+    bullet.damage =
+      BULLET_DEFAULT_DAMAGE + this.getSkillModifiers().bulletDamageBonus;
     bullet.view.setPosition(bullet.x, bullet.y);
     bullet.view.setRotation(this.spawnDirection.angle());
     bullet.view.setActive(true);

@@ -17,6 +17,7 @@ import {
 } from "../events/gameplay-events";
 import { ArenaBounds } from "./ArenaBounds";
 import { type GameplayController } from "./GameplayController";
+import { type SkillRuntimeModifiers } from "../config/skill-config";
 
 type MovementKeys = {
   up: Phaser.Input.Keyboard.Key;
@@ -31,17 +32,22 @@ export class PlayerController implements GameplayController {
   private readonly cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private readonly movementKeys?: MovementKeys;
   private currentHealth = PLAYER_MAX_HEALTH;
+  private currentMaxHealth = PLAYER_MAX_HEALTH;
   private invulnerabilityTimerMs = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly arenaBounds: ArenaBounds,
+    private readonly getSkillModifiers: () => SkillRuntimeModifiers,
     initialHealth = PLAYER_MAX_HEALTH,
+    initialMaxHealthBonus = 0,
   ) {
+    this.currentMaxHealth =
+      PLAYER_MAX_HEALTH + initialMaxHealthBonus;
     this.currentHealth = Phaser.Math.Clamp(
       initialHealth,
       0,
-      PLAYER_MAX_HEALTH,
+      this.currentMaxHealth,
     );
     this.player = scene.add.circle(
       PLAYER_START_X,
@@ -76,7 +82,7 @@ export class PlayerController implements GameplayController {
   }
 
   get maxHealth(): number {
-    return PLAYER_MAX_HEALTH;
+    return this.currentMaxHealth;
   }
 
   get canTakeDamage(): boolean {
@@ -94,8 +100,10 @@ export class PlayerController implements GameplayController {
     this.movement.normalize();
 
     const deltaSeconds = delta / MILLISECONDS_PER_SECOND;
-    const nextX = this.player.x + this.movement.x * PLAYER_MOVE_SPEED * deltaSeconds;
-    const nextY = this.player.y + this.movement.y * PLAYER_MOVE_SPEED * deltaSeconds;
+    const moveSpeed =
+      PLAYER_MOVE_SPEED * this.getSkillModifiers().moveSpeedMultiplier;
+    const nextX = this.player.x + this.movement.x * moveSpeed * deltaSeconds;
+    const nextY = this.player.y + this.movement.y * moveSpeed * deltaSeconds;
     const clampedPosition = this.arenaBounds.clampCircle(
       nextX,
       nextY,
@@ -113,7 +121,7 @@ export class PlayerController implements GameplayController {
     this.currentHealth = Phaser.Math.Clamp(
       this.currentHealth - damageAmount,
       0,
-      PLAYER_MAX_HEALTH,
+      this.currentMaxHealth,
     );
     this.invulnerabilityTimerMs = PLAYER_DAMAGE_INVULNERABILITY_MS;
     this.publishHealth();
@@ -121,6 +129,20 @@ export class PlayerController implements GameplayController {
 
   destroy(): void {
     this.player.destroy();
+  }
+
+  increaseMaxHealth(maxHealthBonus: number): void {
+    if (maxHealthBonus <= 0) {
+      return;
+    }
+
+    this.currentMaxHealth += maxHealthBonus;
+    this.currentHealth = Phaser.Math.Clamp(
+      this.currentHealth + maxHealthBonus,
+      0,
+      this.currentMaxHealth,
+    );
+    this.publishHealth();
   }
 
   private updateInvulnerability(delta: number): void {
@@ -134,7 +156,7 @@ export class PlayerController implements GameplayController {
   private publishHealth(): void {
     emitGameplayEvent(GAMEPLAY_EVENTS.PLAYER_HEALTH_CHANGED, {
       current: this.currentHealth,
-      max: PLAYER_MAX_HEALTH,
+      max: this.currentMaxHealth,
     });
   }
 
