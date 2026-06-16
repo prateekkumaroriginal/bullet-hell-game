@@ -129,6 +129,7 @@ function isValidSkillStackSave(
     if (
       !isSkillId(skillStack.skillId) ||
       seenSkillIds.has(skillStack.skillId) ||
+      skillStack.stackCount <= 0 ||
       skillStack.stackCount > SKILL_MAX_STACK_COUNT
     ) {
       return false;

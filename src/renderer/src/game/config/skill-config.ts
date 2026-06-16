@@ -128,7 +128,7 @@ export type SkillStackState = {
 };
 
 export function isSkillId(skillId: string): skillId is SkillId {
-  return skillId in SKILL_DEFINITION_BY_ID;
+  return Object.hasOwn(SKILL_DEFINITION_BY_ID, skillId);
 }
 
 export function getSkillRuntimeModifiers(

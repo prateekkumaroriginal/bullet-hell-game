@@ -30,9 +30,15 @@ export class WeaponController implements GameplayController {
   update(delta: number): void {
     this.fireCooldownRemainingMs -= delta;
 
-    if (this.fireCooldownRemainingMs <= 0) {
+    while (this.fireCooldownRemainingMs <= 0) {
+      const fireCooldownMs = this.getFireCooldownMs();
+
+      if (fireCooldownMs <= 0) {
+        return;
+      }
+
       this.fireAtCursor();
-      this.fireCooldownRemainingMs = this.getFireCooldownMs();
+      this.fireCooldownRemainingMs += fireCooldownMs;
     }
 
     this.bulletPool.update(delta);
