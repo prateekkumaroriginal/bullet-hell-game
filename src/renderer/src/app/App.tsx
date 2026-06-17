@@ -1,19 +1,44 @@
+import { lazy, Suspense } from "react";
 import { GameCanvas } from "@/components/game/GameCanvas";
 import { GameHud } from "@/components/game/GameHud";
 import { GameScreens } from "@/components/game/GameScreens";
-import { GAME_SESSION_PHASES } from "@/game/state/game-session-state";
+import { isDebugStatsEnabled } from "@/game/config/debug-config";
+import {
+  GAME_SESSION_PHASES,
+  type GameSessionPhase,
+} from "@/game/state/game-session-state";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
+
+const DebugBar = import.meta.env.DEV
+  ? lazy(() =>
+      import("@/components/game/DebugBar").then((module) => ({
+        default: module.DebugBar,
+      })),
+    )
+  : null;
+
+const DEBUG_BAR_GAME_PHASES: readonly GameSessionPhase[] = [
+  GAME_SESSION_PHASES.PLAYING,
+  GAME_SESSION_PHASES.PAUSED,
+  GAME_SESSION_PHASES.GAME_OVER,
+];
 
 export const App = () => {
   const gamePhase = useGameUiStore((state) => state.gameSession.phase);
   const shouldShowHud =
     gamePhase === GAME_SESSION_PHASES.PLAYING ||
     gamePhase === GAME_SESSION_PHASES.PAUSED;
+  const shouldShowDebugBar = isDebugStatsEnabled() && DEBUG_BAR_GAME_PHASES.includes(gamePhase);
 
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-black">
       <GameCanvas />
       {shouldShowHud ? <GameHud /> : null}
+      {shouldShowDebugBar && DebugBar && (
+        <Suspense fallback={null}>
+          <DebugBar />
+        </Suspense>
+      )}
       <GameScreens />
     </main>
   );

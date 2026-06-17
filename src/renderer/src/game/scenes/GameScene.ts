@@ -109,6 +109,31 @@ export class GameScene extends Phaser.Scene {
     this.resolveCombatCollisions(delta);
     this.updateGameOverState();
     this.updateEffects(delta);
+    if (import.meta.env.DEV) {
+      void import("../debug/publish-game-debug-stats").then(
+        ({ publishGameDebugStats }) => {
+          publishGameDebugStats({
+            aimController: this.aimController,
+            delta,
+            displayObjectCount: this.children.list.length,
+            enemyController: this.enemyController,
+            experienceOrbPool: this.experienceOrbPool,
+            fps: this.game.loop.actualFps,
+            gameTimeMs: this.time.now,
+            isPaused: this.time.paused,
+            playerController: this.playerController,
+            playerProgressionController: this.playerProgressionController,
+            renderer: this.game.renderer,
+            selectedStageId: this.selectedStageId,
+            sessionPhase: this.sessionPhase,
+            skillController: this.skillController,
+            skillModifiers: this.getSkillRuntimeModifiers(),
+            waveController: this.waveController,
+            weaponController: this.weaponController,
+          });
+        },
+      );
+    }
   }
 
   private registerGameplayCommandListeners(): void {
