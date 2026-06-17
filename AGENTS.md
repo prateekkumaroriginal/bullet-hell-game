@@ -35,6 +35,7 @@
 - Preserve user changes. Do not revert unrelated files.
 - Use typescript very aggressively.
 - Do not change save schema versions unless explicitly requested.
+- Do not add trailing commas.
 
 ## Teaching Style
 

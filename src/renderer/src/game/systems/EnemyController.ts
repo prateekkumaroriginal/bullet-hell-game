@@ -27,8 +27,8 @@ export class EnemyController implements GameplayController {
     return this.enemyPool.active.length;
   }
 
-  spawnEnemy(enemyTypeId: EnemyTypeId): void {
-    this.enemyPool.spawn(enemyTypeId);
+  spawnEnemy(enemyTypeId: EnemyTypeId): boolean {
+    return this.enemyPool.spawn(enemyTypeId);
   }
 
   update(delta: number): void {

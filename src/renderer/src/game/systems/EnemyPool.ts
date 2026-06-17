@@ -66,11 +66,11 @@ export class EnemyPool {
     return this.activeEnemies;
   }
 
-  spawn(enemyTypeId: EnemyTypeId): void {
+  spawn(enemyTypeId: EnemyTypeId): boolean {
     const enemyIndex = this.freeEnemyIndexes.pop();
 
     if (enemyIndex === undefined) {
-      return;
+      return false;
     }
 
     const enemy = this.enemies[enemyIndex];
@@ -84,6 +84,7 @@ export class EnemyPool {
     enemy.view.setActive(true);
     enemy.view.setVisible(true);
     this.activeEnemies.push(enemy);
+    return true;
   }
 
   update(delta: number): void {

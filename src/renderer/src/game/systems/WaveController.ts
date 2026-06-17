@@ -116,7 +116,12 @@ export class WaveController implements GameplayController {
         return;
       }
 
-      this.enemyController.spawnEnemy(spawnDefinition.enemyTypeId);
+      const didSpawnEnemy = this.enemyController.spawnEnemy(spawnDefinition.enemyTypeId);
+
+      if (!didSpawnEnemy) {
+        return;
+      }
+
       spawnedGroupEnemyCount += 1;
       this.spawnedEnemyCount += 1;
       this.publishWaveState();
