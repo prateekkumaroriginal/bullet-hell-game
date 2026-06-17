@@ -22,6 +22,8 @@ export const WAVE_ANNOUNCEMENT_HEARTBEAT_CYCLE_DURATION_MS =
 export type WaveSpawnDefinition = {
   enemyTypeId: EnemyTypeId;
   count: number;
+  delayMs?: number;
+  spawnCooldownMs?: number;
 };
 
 export type WaveDefinition = {

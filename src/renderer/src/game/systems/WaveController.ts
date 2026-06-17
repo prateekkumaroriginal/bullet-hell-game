@@ -3,9 +3,9 @@ import {
   getWaveEnemyCount,
   WAVE_ANNOUNCEMENT_DURATION_MS,
   WAVE_ADVANCE_DELAY_MS,
+  type WaveSpawnDefinition,
   type WaveDefinition,
 } from "../config/wave-config";
-import { type EnemyTypeId } from "../config/enemy-config";
 import {
   emitGameplayEvent,
   GAMEPLAY_EVENTS,
@@ -16,7 +16,6 @@ import { type GameplayController } from "./GameplayController";
 export class WaveController implements GameplayController {
   private currentWaveIndex = 0;
   private spawnedEnemyCount = 0;
-  private spawnQueue: EnemyTypeId[] = [];
   private isWaitingForNextWave = false;
   private isAnnouncingWave = false;
   private isComplete = false;
@@ -27,7 +26,7 @@ export class WaveController implements GameplayController {
     enemiesRemaining: number;
     isComplete: boolean;
   };
-  private spawnTimer?: Phaser.Time.TimerEvent;
+  private readonly spawnTimers: Phaser.Time.TimerEvent[] = [];
   private advanceTimer?: Phaser.Time.TimerEvent;
   private announcementTimer?: Phaser.Time.TimerEvent;
 
@@ -66,19 +65,17 @@ export class WaveController implements GameplayController {
   }
 
   destroy(): void {
-    this.spawnTimer?.remove();
+    this.clearSpawnTimers();
     this.advanceTimer?.remove();
     this.announcementTimer?.remove();
   }
 
   private startCurrentWave(): void {
     this.spawnedEnemyCount = 0;
-    this.spawnQueue = this.createSpawnQueue(this.getCurrentWave());
     this.isWaitingForNextWave = false;
     this.isAnnouncingWave = true;
-    this.spawnTimer?.remove();
+    this.clearSpawnTimers();
     this.announcementTimer?.remove();
-    this.spawnTimer = undefined;
     this.announcementTimer = undefined;
     this.publishWaveState();
     this.showWaveAnnouncement();
@@ -95,47 +92,68 @@ export class WaveController implements GameplayController {
   }
 
   private beginCurrentWaveSpawns(): void {
-    this.spawnEnemyForCurrentWave();
-
     const currentWave = this.getCurrentWave();
 
-    if (this.spawnedEnemyCount >= getWaveEnemyCount(currentWave)) {
-      return;
+    for (const spawnDefinition of currentWave.spawns) {
+      this.scheduleSpawnDefinition(spawnDefinition, currentWave.spawnCooldownMs);
     }
-
-    this.spawnTimer = this.scene.time.addEvent({
-      delay: currentWave.spawnCooldownMs,
-      callback: this.spawnEnemyForCurrentWave,
-      callbackScope: this,
-      loop: true,
-    });
   }
 
-  private spawnEnemyForCurrentWave(): void {
-    const currentWave = this.getCurrentWave();
-
-    if (this.spawnedEnemyCount >= getWaveEnemyCount(currentWave)) {
-      this.spawnTimer?.remove();
-      this.spawnTimer = undefined;
+  private scheduleSpawnDefinition(
+    spawnDefinition: WaveSpawnDefinition,
+    defaultSpawnCooldownMs: number,
+  ): void {
+    if (spawnDefinition.count <= 0) {
       return;
     }
 
-    const enemyTypeId = this.spawnQueue[this.spawnedEnemyCount];
+    const spawnCooldownMs =
+      spawnDefinition.spawnCooldownMs ?? defaultSpawnCooldownMs;
+    let spawnedGroupEnemyCount = 0;
 
-    if (!enemyTypeId) {
-      throw new Error(
-        `Missing enemy spawn definition at wave ${this.currentWaveNumber}, spawn ${this.spawnedEnemyCount}.`,
-      );
+    const spawnEnemyForDefinition = (): void => {
+      if (spawnedGroupEnemyCount >= spawnDefinition.count) {
+        return;
+      }
+
+      this.enemyController.spawnEnemy(spawnDefinition.enemyTypeId);
+      spawnedGroupEnemyCount += 1;
+      this.spawnedEnemyCount += 1;
+      this.publishWaveState();
+    };
+
+    const startSpawnLoop = (): void => {
+      spawnEnemyForDefinition();
+
+      if (spawnedGroupEnemyCount >= spawnDefinition.count) {
+        return;
+      }
+
+      const spawnTimer = this.scene.time.addEvent({
+        delay: spawnCooldownMs,
+        callback: () => {
+          spawnEnemyForDefinition();
+          if (spawnedGroupEnemyCount >= spawnDefinition.count) {
+            this.removeSpawnTimer(spawnTimer);
+          }
+        },
+        loop: true,
+      });
+
+      this.trackSpawnTimer(spawnTimer);
+    };
+
+    if (spawnDefinition.delayMs === undefined) {
+      startSpawnLoop();
+      return;
     }
 
-    this.enemyController.spawnEnemy(enemyTypeId);
-    this.spawnedEnemyCount += 1;
-    this.publishWaveState();
+    const delayTimer = this.scene.time.delayedCall(spawnDefinition.delayMs, () => {
+      this.removeSpawnTimer(delayTimer);
+      startSpawnLoop();
+    });
 
-    if (this.spawnedEnemyCount >= getWaveEnemyCount(currentWave)) {
-      this.spawnTimer?.remove();
-      this.spawnTimer = undefined;
-    }
+    this.trackSpawnTimer(delayTimer);
   }
 
   private finishCurrentWave(): void {
@@ -178,16 +196,28 @@ export class WaveController implements GameplayController {
     return currentWave;
   }
 
-  private createSpawnQueue(waveDefinition: WaveDefinition): EnemyTypeId[] {
-    const spawnQueue: EnemyTypeId[] = [];
-
-    for (const spawn of waveDefinition.spawns) {
-      for (let spawnedCount = 0; spawnedCount < spawn.count; spawnedCount += 1) {
-        spawnQueue.push(spawn.enemyTypeId);
-      }
+  private clearSpawnTimers(): void {
+    for (const spawnTimer of this.spawnTimers) {
+      spawnTimer.remove();
     }
 
-    return spawnQueue;
+    this.spawnTimers.length = 0;
+  }
+
+  private trackSpawnTimer(spawnTimer: Phaser.Time.TimerEvent): void {
+    this.spawnTimers.push(spawnTimer);
+  }
+
+  private removeSpawnTimer(spawnTimer: Phaser.Time.TimerEvent): void {
+    spawnTimer.remove();
+
+    const spawnTimerIndex = this.spawnTimers.indexOf(spawnTimer);
+
+    if (spawnTimerIndex === -1) {
+      return;
+    }
+
+    this.spawnTimers.splice(spawnTimerIndex, 1);
   }
 
   private publishWaveState(): void {
