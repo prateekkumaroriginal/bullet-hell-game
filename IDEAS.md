@@ -1,11 +1,11 @@
 # Ideas
 
-## Tutorial Popups
+## Pop-ups
 
-- Add info popups for controls, first-time enemy introductions, skill pickups and major mechanics.
-- Keep popups data-driven so new tutorials can be added without wiring custom UI each time.
-- Support pause-on-popup for important tutorials and non-pausing toast-style hints for minor tips.
-- Track which tutorial ids have already been shown so they do not repeat every run unless reset.
+- Add pop-ups for controls, first-time enemy introductions, skill pickups and major mechanics.
+- Keep pop-ups data-driven so new entries can be added without wiring custom UI each time.
+- Support pause-on-popup for important entries and non-pausing toast-style hints for minor tips.
+- Track which pop-up ids have already been shown so they do not repeat every run unless reset.
 
 ## Audio
 

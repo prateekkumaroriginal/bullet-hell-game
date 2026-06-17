@@ -10,6 +10,7 @@ import {
   emitGameplayEvent,
   GAMEPLAY_EVENTS,
 } from "../events/gameplay-events";
+import { type EnemyTypeId } from "../config/enemy-config";
 import { EnemyController } from "./EnemyController";
 import { type GameplayController } from "./GameplayController";
 
@@ -36,6 +37,7 @@ export class WaveController implements GameplayController {
     private readonly waveDefinitions: readonly WaveDefinition[],
     private readonly onWaveComplete: (nextWaveNumber: number) => void,
     private readonly onStageComplete: () => void,
+    private readonly onEnemySpawned: (enemyTypeId: EnemyTypeId) => void,
     startingWaveNumber: number,
   ) {
     this.currentWaveIndex = startingWaveNumber - 1;
@@ -124,6 +126,7 @@ export class WaveController implements GameplayController {
 
       spawnedGroupEnemyCount += 1;
       this.spawnedEnemyCount += 1;
+      this.onEnemySpawned(spawnDefinition.enemyTypeId);
       this.publishWaveState();
     };
 

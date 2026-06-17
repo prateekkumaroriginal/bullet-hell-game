@@ -133,6 +133,18 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
       useGameUiStore.getState().setWaveAnnouncement(waveAnnouncement);
     },
   );
+  const removePopupShownListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.POPUP_SHOWN,
+    (popup) => {
+      useGameUiStore.getState().showPopup(popup);
+    },
+  );
+  const removePopupDismissedListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.POPUP_DISMISSED,
+    (popup) => {
+      useGameUiStore.getState().dismissPopup(popup.id);
+    },
+  );
 
   return () => {
     removeGameStartedListener();
@@ -148,5 +160,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     removeProgressionListener();
     removeWaveListener();
     removeWaveAnnouncementListener();
+    removePopupShownListener();
+    removePopupDismissedListener();
   };
 }

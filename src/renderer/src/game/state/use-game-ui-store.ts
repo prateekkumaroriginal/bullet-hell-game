@@ -22,6 +22,11 @@ import {
   type StageProgressState,
 } from "./stage-progress";
 import {
+  POPUP_MAX_TOAST_COUNT,
+  POPUP_MODES,
+  type PopupState,
+} from "../config/popup-config";
+import {
   type SkillSelectionStartedPayload,
   type SkillsChangedPayload,
   type PlayerHealthChangedPayload,
@@ -36,6 +41,10 @@ export type WaveState = WaveChangedPayload;
 export type WaveAnnouncementState = WaveAnnouncementChangedPayload;
 export type SkillSelectionState = SkillSelectionStartedPayload | null;
 export type LearnedSkillsState = SkillsChangedPayload["learnedSkills"];
+export type PopupUiState = {
+  activeModal: PopupState | null;
+  toasts: readonly PopupState[];
+};
 
 export type GameUiState = {
   gameSession: GameSessionState;
@@ -46,6 +55,7 @@ export type GameUiState = {
   learnedSkills: LearnedSkillsState;
   wave: WaveState;
   waveAnnouncement: WaveAnnouncementState;
+  popups: PopupUiState;
   setGameSession: (gameSession: GameSessionState) => void;
   setGameSessionPhase: (phase: GameSessionPhase) => void;
   setCurrentWave: (currentWave: number) => void;
@@ -57,6 +67,9 @@ export type GameUiState = {
   setLearnedSkills: (learnedSkills: LearnedSkillsState) => void;
   setWave: (wave: WaveState) => void;
   setWaveAnnouncement: (waveAnnouncement: WaveAnnouncementState) => void;
+  showPopup: (popup: PopupState) => void;
+  dismissPopup: (popupId: string) => void;
+  prunePopupToasts: (currentTimeMs: number, toastDurationMs: number) => void;
   resetGameUiState: () => void;
 };
 
@@ -89,6 +102,11 @@ const INITIAL_WAVE_ANNOUNCEMENT_STATE: WaveAnnouncementState = {
   isVisible: false,
 };
 
+const INITIAL_POPUP_STATE: PopupUiState = {
+  activeModal: null,
+  toasts: [],
+};
+
 export const useGameUiStore = create<GameUiState>((set) => ({
   gameSession: INITIAL_GAME_SESSION_STATE,
   stageProgress: INITIAL_STAGE_PROGRESS_STATE,
@@ -98,6 +116,7 @@ export const useGameUiStore = create<GameUiState>((set) => ({
   learnedSkills: [],
   wave: INITIAL_WAVE_STATE,
   waveAnnouncement: INITIAL_WAVE_ANNOUNCEMENT_STATE,
+  popups: INITIAL_POPUP_STATE,
   setGameSession: (gameSession) => {
     set({ gameSession });
   },
@@ -158,6 +177,51 @@ export const useGameUiStore = create<GameUiState>((set) => ({
   setWaveAnnouncement: (waveAnnouncement) => {
     set({ waveAnnouncement });
   },
+  showPopup: (popup) => {
+    set((state) => {
+      if (popup.mode === POPUP_MODES.MODAL) {
+        return {
+          popups: {
+            ...state.popups,
+            activeModal: popup,
+          },
+        };
+      }
+
+      const toasts = [
+        popup,
+        ...state.popups.toasts.filter((toast) => toast.id !== popup.id),
+      ].slice(0, POPUP_MAX_TOAST_COUNT);
+
+      return {
+        popups: {
+          ...state.popups,
+          toasts,
+        },
+      };
+    });
+  },
+  dismissPopup: (popupId) => {
+    set((state) => ({
+      popups: {
+        activeModal:
+          state.popups.activeModal?.id === popupId
+            ? null
+            : state.popups.activeModal,
+        toasts: state.popups.toasts.filter((toast) => toast.id !== popupId),
+      },
+    }));
+  },
+  prunePopupToasts: (currentTimeMs, toastDurationMs) => {
+    set((state) => ({
+      popups: {
+        ...state.popups,
+        toasts: state.popups.toasts.filter(
+          (toast) => currentTimeMs - toast.shownAtMs < toastDurationMs,
+        ),
+      },
+    }));
+  },
   resetGameUiState: () => {
     set({
       gameSession: INITIAL_GAME_SESSION_STATE,
@@ -167,6 +231,7 @@ export const useGameUiStore = create<GameUiState>((set) => ({
       learnedSkills: [],
       wave: INITIAL_WAVE_STATE,
       waveAnnouncement: INITIAL_WAVE_ANNOUNCEMENT_STATE,
+      popups: INITIAL_POPUP_STATE,
     });
   },
 }));

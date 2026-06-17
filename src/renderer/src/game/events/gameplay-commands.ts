@@ -11,6 +11,7 @@ export const GAMEPLAY_COMMANDS = {
   RETURN_TO_MENU: "game-command:return-to-menu",
   RETURN_TO_STAGE_SELECT: "game-command:return-to-stage-select",
   SELECT_SKILL: "game-command:select-skill",
+  DISMISS_POPUP: "game-command:dismiss-popup",
 } as const;
 
 export type GameplayCommandName =
@@ -36,6 +37,7 @@ export type GameplayCommandPayloads = {
   [GAMEPLAY_COMMANDS.RETURN_TO_MENU]: undefined;
   [GAMEPLAY_COMMANDS.RETURN_TO_STAGE_SELECT]: undefined;
   [GAMEPLAY_COMMANDS.SELECT_SKILL]: SelectSkillCommandPayload;
+  [GAMEPLAY_COMMANDS.DISMISS_POPUP]: undefined;
 };
 
 type GameplayCommandListener<CommandName extends GameplayCommandName> = (
