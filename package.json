@@ -1,11 +1,15 @@
 {
   "name": "bullet-hell-game",
   "version": "1.0.0",
-  "description": "",
+  "description": "Desktop bullet hell game.",
   "main": "out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "tsc --noEmit && electron-vite build",
+    "release:clean": "node scripts/clean-release.mjs",
+    "release:win": "pnpm release:clean && pnpm build && electron-builder --win --x64",
+    "release:linux": "pnpm release:clean && pnpm build && electron-builder --linux --x64",
+    "release:mac": "pnpm release:clean && pnpm build && electron-builder --mac --x64 --arm64",
     "preview": "electron-vite preview",
     "typecheck": "tsc --noEmit"
   },
@@ -20,6 +24,33 @@
     }
   },
   "type": "module",
+  "build": {
+    "appId": "com.prateek.bullethellgame",
+    "productName": "Bullet Hell Game",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        "dir"
+      ]
+    },
+    "linux": {
+      "target": [
+        "dir"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dir"
+      ]
+    }
+  },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
     "@radix-ui/react-slot": "^1.2.4",
@@ -44,6 +75,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "electron": "^42.3.3",
+    "electron-builder": "^26.15.3",
     "electron-vite": "^5.0.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.16"
