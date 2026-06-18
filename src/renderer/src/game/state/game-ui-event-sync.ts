@@ -7,7 +7,9 @@ import {
   writeActiveRunSave,
 } from "../save/active-run-save-service";
 import { markStageCleared } from "../save/profile-save-service";
+import { POPUP_IDS } from "../config/popup-config";
 import { GAME_SESSION_PHASES } from "./game-session-state";
+import { showPopupOnce } from "./popup-ui-service";
 import { useGameUiStore } from "./use-game-ui-store";
 
 export function bindGameUiStoreToGameplayEvents(): () => void {
@@ -27,6 +29,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
         currentWave: gameSession.currentWave,
         totalWaves: gameSession.totalWaves,
       });
+      showPopupOnce(POPUP_IDS.CONTROLS);
     },
   );
   const removeGameOverListener = onGameplayEvent(
@@ -133,19 +136,6 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
       useGameUiStore.getState().setWaveAnnouncement(waveAnnouncement);
     },
   );
-  const removePopupShownListener = onGameplayEvent(
-    GAMEPLAY_EVENTS.POPUP_SHOWN,
-    (popup) => {
-      useGameUiStore.getState().showPopup(popup);
-    },
-  );
-  const removePopupDismissedListener = onGameplayEvent(
-    GAMEPLAY_EVENTS.POPUP_DISMISSED,
-    (popup) => {
-      useGameUiStore.getState().dismissPopup(popup.id);
-    },
-  );
-
   return () => {
     removeGameStartedListener();
     removeGameOverListener();
@@ -160,7 +150,5 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     removeProgressionListener();
     removeWaveListener();
     removeWaveAnnouncementListener();
-    removePopupShownListener();
-    removePopupDismissedListener();
   };
 }

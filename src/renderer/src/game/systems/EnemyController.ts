@@ -8,7 +8,11 @@ import {
 import { COLLISION_CATEGORIES, canCollide } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
 import { type BulletPool } from "./BulletPool";
-import { EnemyPool, type EnemyDeathDrop } from "./EnemyPool";
+import {
+  EnemyPool,
+  type EnemyDeathDrop,
+  type EnemySpawnToken
+} from "./EnemyPool";
 import { type GameplayController } from "./GameplayController";
 import { PlayerController } from "./PlayerController";
 
@@ -27,8 +31,12 @@ export class EnemyController implements GameplayController {
     return this.enemyPool.active.length;
   }
 
-  spawnEnemy(enemyTypeId: EnemyTypeId): boolean {
+  spawnEnemy(enemyTypeId: EnemyTypeId): EnemySpawnToken | null {
     return this.enemyPool.spawn(enemyTypeId);
+  }
+
+  isEnemySpawnActive(spawnToken: EnemySpawnToken): boolean {
+    return this.enemyPool.isSpawnActive(spawnToken);
   }
 
   update(delta: number): void {

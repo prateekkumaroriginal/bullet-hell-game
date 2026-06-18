@@ -11,19 +11,31 @@ import {
   DialogTitle
 } from "@/components/ui/dialog";
 import {
-  emitGameplayCommand,
-  GAMEPLAY_COMMANDS
-} from "@/game/events/gameplay-commands";
-import { POPUP_TOAST_DURATION_MS } from "@/game/config/popup-config";
+  ENEMY_POPUP_ID_BY_TYPE,
+  POPUP_TOAST_DURATION_MS,
+  SKILL_POPUP_ID_BY_SKILL
+} from "@/game/config/popup-config";
+import {
+  GAMEPLAY_EVENTS,
+  onGameplayEvent
+} from "@/game/events/gameplay-events";
+import {
+  completePopupDismissal,
+  dismissActivePopup,
+  showPopupOnce
+} from "@/game/state/popup-ui-service";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
 
 const TOAST_PRUNE_INTERVAL_MS = 500;
 const POPUP_MODAL_ENTRANCE_CLASS = "tutorial-popup-modal-enter";
+const POPUP_MODAL_OVERLAY_CLASS = "tutorial-popup-modal-overlay";
 const POPUP_TOAST_ENTRANCE_CLASS = "tutorial-popup-toast-enter";
+const REDUCED_MOTION_MEDIA_QUERY = "(prefers-reduced-motion: reduce)";
 
 export const Popups = () => {
   const activeModal = useGameUiStore((state) => state.popups.activeModal);
   const toasts = useGameUiStore((state) => state.popups.toasts);
+  const renderedModalRef = useRef(activeModal);
   const shownToastIds = useRef(new Set<string>());
   const prunePopupToasts = useGameUiStore(
     (state) => state.prunePopupToasts
@@ -44,6 +56,26 @@ export const Popups = () => {
       window.clearInterval(pruneInterval);
     };
   }, [prunePopupToasts]);
+
+  useEffect(() => {
+    const removeEnemyIntroReadyListener = onGameplayEvent(
+      GAMEPLAY_EVENTS.ENEMY_INTRO_READY,
+      ({ enemyTypeId }) => {
+        showPopupOnce(ENEMY_POPUP_ID_BY_TYPE[enemyTypeId]);
+      }
+    );
+    const removeSkillAcquiredListener = onGameplayEvent(
+      GAMEPLAY_EVENTS.SKILL_ACQUIRED,
+      ({ skillId }) => {
+        showPopupOnce(SKILL_POPUP_ID_BY_SKILL[skillId]);
+      }
+    );
+
+    return () => {
+      removeEnemyIntroReadyListener();
+      removeSkillAcquiredListener();
+    };
+  }, []);
 
   useEffect(() => {
     const nextToastIds = new Set<string>(toasts.map((toast) => toast.id));
@@ -112,7 +144,25 @@ export const Popups = () => {
     []
   );
 
-  if (!activeModal && toasts.length === 0) {
+  useEffect(() => {
+    if (
+      activeModal !== null ||
+      !renderedModalRef.current ||
+      !window.matchMedia(REDUCED_MOTION_MEDIA_QUERY).matches
+    ) {
+      return;
+    }
+
+    completePopupDismissal();
+  }, [activeModal]);
+
+  if (activeModal) {
+    renderedModalRef.current = activeModal;
+  }
+
+  const renderedModal = renderedModalRef.current;
+
+  if (!renderedModal && toasts.length === 0) {
     return null;
   }
 
@@ -122,13 +172,24 @@ export const Popups = () => {
         open={activeModal !== null}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
-            emitGameplayCommand(GAMEPLAY_COMMANDS.DISMISS_POPUP, undefined);
+            dismissActivePopup();
           }
         }}
       >
-        {activeModal && (
+        {renderedModal && (
           <DialogContent
             className={`${POPUP_MODAL_ENTRANCE_CLASS} !left-[50vw] !top-[50vh] !w-[min(58rem,calc(100vw-4rem))] !max-w-none !translate-x-[-50%] !translate-y-[-50%] flex min-h-[30rem] flex-col justify-between gap-10 rounded-[2rem] border border-white/15 bg-zinc-950/95 p-10 text-white shadow-2xl max-md:!w-[min(42rem,calc(100vw-2rem))] max-md:min-h-[26rem] max-md:p-7`}
+            onAnimationEnd={(event) => {
+              if (
+                event.target !== event.currentTarget ||
+                activeModal !== null
+              ) {
+                return;
+              }
+
+              completePopupDismissal();
+            }}
+            overlayClassName={POPUP_MODAL_OVERLAY_CLASS}
             showCloseButton={false}
           >
             <div className="flex items-start gap-8 max-md:flex-col max-md:gap-5">
@@ -137,13 +198,13 @@ export const Popups = () => {
               </div>
               <DialogHeader className="min-w-0 flex-1 gap-6 text-left">
                 <div className="text-base font-black uppercase tracking-[0.24em] text-cyan-200 max-md:text-sm">
-                  {activeModal.eyebrow}
+                  {renderedModal.eyebrow}
                 </div>
                 <DialogTitle className="text-7xl font-black uppercase leading-none tracking-wide text-white max-md:text-4xl">
-                  {activeModal.title}
+                  {renderedModal.title}
                 </DialogTitle>
                 <DialogDescription className="max-w-[44rem] text-2xl leading-10 text-zinc-200 max-md:text-lg max-md:leading-8">
-                  {activeModal.body}
+                  {renderedModal.body}
                 </DialogDescription>
               </DialogHeader>
             </div>

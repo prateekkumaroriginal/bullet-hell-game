@@ -1,4 +1,5 @@
 export const ENEMY_POOL_SIZE = 48;
+export const ENEMY_INTRO_DELAY_MS = 1000;
 
 export const ENEMY_SEPARATION_RADIUS_MULTIPLIER = 1.175;
 export const ENEMY_SEPARATION_STRENGTH = 0.5;

@@ -1,7 +1,7 @@
 import Phaser from "phaser";
+import { type EnemyTypeId } from "../config/enemy-config";
 import { type LearnedSkill, type SkillChoice } from "../systems/SkillController";
-import { type PopupState } from "../config/popup-config";
-import { type SkillStackState } from "../config/skill-config";
+import { type SkillId, type SkillStackState } from "../config/skill-config";
 import { type StageId } from "../config/stage-config";
 
 export const GAMEPLAY_EVENTS = {
@@ -18,8 +18,8 @@ export const GAMEPLAY_EVENTS = {
   PLAYER_PROGRESSION_CHANGED: "player:progression-changed",
   WAVE_CHANGED: "wave:changed",
   WAVE_ANNOUNCEMENT_CHANGED: "wave:announcement-changed",
-  POPUP_SHOWN: "popup:shown",
-  POPUP_DISMISSED: "popup:dismissed",
+  ENEMY_INTRO_READY: "enemy:intro-ready",
+  SKILL_ACQUIRED: "skill:acquired",
 } as const;
 
 export type GameplayEventName = (typeof GAMEPLAY_EVENTS)[keyof typeof GAMEPLAY_EVENTS];
@@ -86,10 +86,12 @@ export type WaveAnnouncementChangedPayload = {
   isVisible: boolean;
 };
 
-export type PopupShownPayload = PopupState;
+export type EnemyIntroReadyPayload = {
+  enemyTypeId: EnemyTypeId;
+};
 
-export type PopupDismissedPayload = {
-  id: string;
+export type SkillAcquiredPayload = {
+  skillId: SkillId;
 };
 
 export type GameplayEventPayloads = {
@@ -106,8 +108,8 @@ export type GameplayEventPayloads = {
   [GAMEPLAY_EVENTS.PLAYER_PROGRESSION_CHANGED]: PlayerProgressionChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_CHANGED]: WaveChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_ANNOUNCEMENT_CHANGED]: WaveAnnouncementChangedPayload;
-  [GAMEPLAY_EVENTS.POPUP_SHOWN]: PopupShownPayload;
-  [GAMEPLAY_EVENTS.POPUP_DISMISSED]: PopupDismissedPayload;
+  [GAMEPLAY_EVENTS.ENEMY_INTRO_READY]: EnemyIntroReadyPayload;
+  [GAMEPLAY_EVENTS.SKILL_ACQUIRED]: SkillAcquiredPayload;
 };
 
 type GameplayEventListener<EventName extends GameplayEventName> = (

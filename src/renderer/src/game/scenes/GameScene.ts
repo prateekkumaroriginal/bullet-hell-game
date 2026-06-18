@@ -28,21 +28,12 @@ import {
   type SkillRuntimeModifiers,
   type SkillStackState,
 } from "../config/skill-config";
-import {
-  ENEMY_POPUP_ID_BY_TYPE,
-  POPUP_IDS,
-  POPUP_MODES,
-  SKILL_POPUP_ID_BY_SKILL,
-  type PopupId,
-} from "../config/popup-config";
-import { type EnemyTypeId } from "../config/enemy-config";
 import { AimController } from "../systems/AimController";
 import { ArenaBounds } from "../systems/ArenaBounds";
 import { ArenaRenderer } from "../systems/ArenaRenderer";
 import { EnemyController } from "../systems/EnemyController";
 import { ExperienceOrbPool } from "../systems/ExperienceOrbPool";
 import { type GameplayController } from "../systems/GameplayController";
-import { PopupController } from "../systems/PopupController";
 import { PlayerController } from "../systems/PlayerController";
 import { PlayerProgressionController } from "../systems/PlayerProgressionController";
 import { SkillController, type SkillChoice } from "../systems/SkillController";
@@ -63,7 +54,6 @@ export class GameScene extends Phaser.Scene {
   private playerController?: PlayerController;
   private playerProgressionController?: PlayerProgressionController;
   private skillController?: SkillController;
-  private popupController?: PopupController;
   private waveController?: WaveController;
   private weaponController?: WeaponController;
   private readonly gameplayControllers: GameplayController[] = [];
@@ -84,8 +74,6 @@ export class GameScene extends Phaser.Scene {
     this.registerCleanup(bindGameUiStoreToGameplayEvents());
     this.arenaBounds = new ArenaBounds(this);
     this.arenaRenderer = new ArenaRenderer(this, this.arenaBounds);
-    this.popupController = new PopupController();
-
     this.scale.on(Phaser.Scale.Events.RESIZE, this.handleResize, this);
     this.registerCleanup(() => {
       this.scale.off(Phaser.Scale.Events.RESIZE, this.handleResize, this);
@@ -190,8 +178,13 @@ export class GameScene extends Phaser.Scene {
       }),
     );
     this.registerCleanup(
-      onGameplayCommand(GAMEPLAY_COMMANDS.DISMISS_POPUP, () => {
-        this.dismissActivePopup();
+      onGameplayCommand(GAMEPLAY_COMMANDS.COMPLETE_POPUP_DISMISSAL, () => {
+        this.completePopupDismissal();
+      }),
+    );
+    this.registerCleanup(
+      onGameplayCommand(GAMEPLAY_COMMANDS.BLOCK_GAMEPLAY_FOR_POPUP, () => {
+        this.blockGameplayForPopup();
       }),
     );
   }
@@ -303,7 +296,7 @@ export class GameScene extends Phaser.Scene {
         this.emitStageComplete();
       },
       (enemyTypeId) => {
-        this.showEnemyPopup(enemyTypeId);
+        emitGameplayEvent(GAMEPLAY_EVENTS.ENEMY_INTRO_READY, { enemyTypeId });
       },
       clampedStartingWave,
     );
@@ -329,7 +322,6 @@ export class GameScene extends Phaser.Scene {
       playerProgression: this.getPlayerProgressionControllerOrThrow().progression,
       learnedSkillStacks: this.getSkillControllerOrThrow().skillStacks,
     });
-    this.showPopup(POPUP_IDS.CONTROLS);
   }
 
   private pauseSession(): void {
@@ -403,45 +395,27 @@ export class GameScene extends Phaser.Scene {
     this.getSkillControllerOrThrow().applySkill(selectedChoice.id);
     this.publishLearnedSkills();
     this.startNextSkillSelection();
-    this.showPopup(SKILL_POPUP_ID_BY_SKILL[selectedChoice.id]);
+    emitGameplayEvent(GAMEPLAY_EVENTS.SKILL_ACQUIRED, {
+      skillId: selectedChoice.id
+    });
   }
 
-  private showEnemyPopup(enemyTypeId: EnemyTypeId): void {
-    this.showPopup(ENEMY_POPUP_ID_BY_TYPE[enemyTypeId]);
-  }
-
-  private showPopup(popupId: PopupId): void {
+  private blockGameplayForPopup(): void {
     if (this.sessionPhase !== GAME_SESSION_PHASES.PLAYING) {
-      return;
-    }
-
-    const popup = this.getPopupControllerOrThrow().showOnce(popupId);
-
-    if (!popup || popup.mode !== POPUP_MODES.MODAL) {
       return;
     }
 
     this.sessionPhase = GAME_SESSION_PHASES.POPUP;
     this.time.paused = true;
-    useGameUiStore
-      .getState()
-      .setGameSessionPhase(GAME_SESSION_PHASES.POPUP);
   }
 
-  private dismissActivePopup(): void {
-    if (
-      this.sessionPhase !== GAME_SESSION_PHASES.POPUP ||
-      !this.popupController?.hasActiveModal
-    ) {
+  private completePopupDismissal(): void {
+    if (this.sessionPhase !== GAME_SESSION_PHASES.POPUP) {
       return;
     }
 
-    this.popupController.dismissActiveModal();
     this.sessionPhase = GAME_SESSION_PHASES.PLAYING;
     this.time.paused = false;
-    useGameUiStore
-      .getState()
-      .setGameSessionPhase(GAME_SESSION_PHASES.PLAYING);
   }
 
   private returnToMenu(): void {
@@ -467,7 +441,6 @@ export class GameScene extends Phaser.Scene {
   private resetToIdleSession(): void {
     this.destroyGameplayControllers();
     this.clearSkillSelectionState();
-    this.popupController?.resetActiveModal();
     this.time.paused = false;
     this.sessionPhase = GAME_SESSION_PHASES.IDLE;
     this.selectedStageId = null;
@@ -588,8 +561,6 @@ export class GameScene extends Phaser.Scene {
     this.arenaRenderer?.destroy();
     this.arenaRenderer = undefined;
     this.arenaBounds = undefined;
-    this.popupController?.resetActiveModal();
-    this.popupController = undefined;
     this.time.paused = false;
     this.clearSkillSelectionState();
     this.sessionPhase = GAME_SESSION_PHASES.IDLE;
@@ -608,7 +579,6 @@ export class GameScene extends Phaser.Scene {
     this.sessionPhase = nextPhase;
     this.time.paused = false;
     this.clearSkillSelectionState();
-    this.popupController?.resetActiveModal();
     this.destroyGameplayControllers();
   }
 
@@ -658,14 +628,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     return this.playerController;
-  }
-
-  private getPopupControllerOrThrow(): PopupController {
-    if (!this.popupController) {
-      throw new Error("PopupController is required during a session.");
-    }
-
-    return this.popupController;
   }
 
   private getAimControllerOrThrow(): AimController {

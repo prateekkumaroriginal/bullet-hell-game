@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bug, ChevronDown } from "lucide-react";
+import { Bug, ChevronDown, MessageSquareMore } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -10,6 +10,10 @@ import {
   onDebugStatsChanged,
   type DebugStatsChangedPayload,
 } from "@/game/debug/debug-stats-events";
+import { POPUP_IDS } from "@/game/config/popup-config";
+import { GAME_SESSION_PHASES } from "@/game/state/game-session-state";
+import { showPopup } from "@/game/state/popup-ui-service";
+import { useGameUiStore } from "@/game/state/use-game-ui-store";
 
 const DEBUG_PANEL_WIDTH_CLASS = "w-80 max-w-[calc(100vw-1rem)]";
 const INITIAL_OPEN_CATEGORY_NAMES = new Set<string>();
@@ -28,6 +32,7 @@ const INITIAL_DEBUG_STATS: DebugStatsChangedPayload = {
 };
 
 export const DebugBar = () => {
+  const gamePhase = useGameUiStore((state) => state.gameSession.phase);
   const [isStatsVisible, setIsStatsVisible] = useState(
     debugBarUiState.isStatsVisible,
   );
@@ -65,6 +70,19 @@ export const DebugBar = () => {
         <div
           className={`pointer-events-none flex max-h-[calc(100vh-4.5rem)] ${DEBUG_PANEL_WIDTH_CLASS} flex-col gap-1 overflow-y-auto border border-slate-400/25 bg-zinc-950/82 p-2 shadow-[0_0_22px_rgba(0,0,0,0.52)] backdrop-blur-sm`}
         >
+          <Button
+            className="pointer-events-auto flex h-auto w-full justify-start gap-2 rounded-none border-white/10 bg-white/[0.045] px-3 py-2 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-cyan-100 hover:bg-cyan-300/10 max-md:text-[0.65rem]"
+            disabled={gamePhase !== GAME_SESSION_PHASES.PLAYING}
+            onClick={() => {
+              showPopup(POPUP_IDS.CONTROLS);
+            }}
+            type="button"
+            variant="outline"
+          >
+            <MessageSquareMore className="size-3.5" />
+            Sample popup
+          </Button>
+
           {debugStats.categories.map((category) => {
             const isCategoryOpen = openCategoryNames.has(category.name);
 
