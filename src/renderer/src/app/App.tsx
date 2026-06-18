@@ -3,6 +3,7 @@ import { GameCanvas } from "@/components/game/GameCanvas";
 import { GameHud } from "@/components/game/GameHud";
 import { Popups } from "@/components/game/Popups";
 import { GameScreens } from "@/components/game/GameScreens";
+import { Toaster } from "@/components/ui/sonner";
 import { isDebugStatsEnabled } from "@/game/config/debug-config";
 import {
   GAME_SESSION_PHASES,
@@ -45,6 +46,7 @@ export const App = () => {
         </Suspense>
       )}
       <Popups />
+      <Toaster expand richColors />
       <GameScreens />
     </main>
   );

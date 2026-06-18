@@ -254,6 +254,50 @@ html {
     linear infinite;
 }
 
+@keyframes tutorial-popup-modal-enter {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.75);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes tutorial-popup-toast-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.96);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-0.125rem) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.tutorial-popup-modal-enter[data-state="open"] {
+  --tutorial-popup-modal-enter-duration: 300ms;
+  animation: tutorial-popup-modal-enter
+    var(--tutorial-popup-modal-enter-duration)
+    cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+
+.tutorial-popup-toast-enter {
+  --tutorial-popup-toast-enter-duration: 320ms;
+  animation: tutorial-popup-toast-enter
+    var(--tutorial-popup-toast-enter-duration)
+    cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: center right;
+  will-change: opacity, transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   @keyframes wave-announcement-visibility {
     0% {
@@ -273,5 +317,11 @@ html {
     100% {
       transform: scale(1);
     }
+  }
+
+  .tutorial-popup-modal-enter[data-state="open"],
+  .tutorial-popup-toast-enter {
+    animation: none;
+    opacity: 1;
   }
 }

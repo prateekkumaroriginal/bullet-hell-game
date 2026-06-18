@@ -1,12 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Info, X } from "lucide-react";
+import { toast as sonnerToast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog";
@@ -18,10 +18,13 @@ import { POPUP_TOAST_DURATION_MS } from "@/game/config/popup-config";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
 
 const TOAST_PRUNE_INTERVAL_MS = 500;
+const POPUP_MODAL_ENTRANCE_CLASS = "tutorial-popup-modal-enter";
+const POPUP_TOAST_ENTRANCE_CLASS = "tutorial-popup-toast-enter";
 
 export const Popups = () => {
   const activeModal = useGameUiStore((state) => state.popups.activeModal);
   const toasts = useGameUiStore((state) => state.popups.toasts);
+  const shownToastIds = useRef(new Set<string>());
   const prunePopupToasts = useGameUiStore(
     (state) => state.prunePopupToasts
   );
@@ -42,6 +45,73 @@ export const Popups = () => {
     };
   }, [prunePopupToasts]);
 
+  useEffect(() => {
+    const nextToastIds = new Set<string>(toasts.map((toast) => toast.id));
+
+    shownToastIds.current.forEach((toastId) => {
+      if (!nextToastIds.has(toastId)) {
+        sonnerToast.dismiss(toastId);
+        shownToastIds.current.delete(toastId);
+      }
+    });
+
+    toasts.forEach((popupToast) => {
+      if (shownToastIds.current.has(popupToast.id)) {
+        return;
+      }
+
+      shownToastIds.current.add(popupToast.id);
+      sonnerToast.custom(
+        () => (
+          <div className={`${POPUP_TOAST_ENTRANCE_CLASS} pointer-events-auto flex w-[min(24rem,calc(100vw-2rem))] gap-3 rounded-2xl border border-white/15 bg-zinc-950/92 p-4 text-white shadow-xl backdrop-blur-[2px]`}>
+            <div className="grid size-9 shrink-0 place-items-center rounded-xl border border-white/15 bg-white/8 text-amber-100">
+              <Info className="size-4" />
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col gap-1">
+              <div className="text-[0.65rem] font-black uppercase tracking-[0.24em] text-amber-200">
+                {popupToast.eyebrow}
+              </div>
+              <h3 className="text-base font-black uppercase leading-tight tracking-wide">
+                {popupToast.title}
+              </h3>
+              <p className="text-sm leading-6 text-zinc-200">
+                {popupToast.body}
+              </p>
+            </div>
+            <Button
+              aria-label={`Dismiss ${popupToast.title}`}
+              className="size-8 shrink-0 rounded-none p-0 text-zinc-400 hover:text-white"
+              onClick={() => {
+                useGameUiStore.getState().dismissPopup(popupToast.id);
+                sonnerToast.dismiss(popupToast.id);
+              }}
+              size="icon"
+              type="button"
+              variant="ghost"
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
+        ),
+        {
+          duration: Infinity,
+          id: popupToast.id
+        }
+      );
+    });
+
+  }, [toasts]);
+
+  useEffect(
+    () => () => {
+      shownToastIds.current.forEach((toastId) => {
+        sonnerToast.dismiss(toastId);
+      });
+      shownToastIds.current.clear();
+    },
+    []
+  );
+
   if (!activeModal && toasts.length === 0) {
     return null;
   }
@@ -58,71 +128,41 @@ export const Popups = () => {
       >
         {activeModal && (
           <DialogContent
-            className="flex max-w-[min(34rem,calc(100vw-2.5rem))] flex-col gap-5 rounded-none border-cyan-200/45 bg-zinc-950/92 p-6 text-white shadow-[0_0_42px_rgba(45,255,231,0.22),inset_0_0_36px_rgba(45,255,231,0.08)]"
+            className={`${POPUP_MODAL_ENTRANCE_CLASS} !left-[50vw] !top-[50vh] !w-[min(58rem,calc(100vw-4rem))] !max-w-none !translate-x-[-50%] !translate-y-[-50%] flex min-h-[30rem] flex-col justify-between gap-10 rounded-[2rem] border border-white/15 bg-zinc-950/95 p-10 text-white shadow-2xl max-md:!w-[min(42rem,calc(100vw-2rem))] max-md:min-h-[26rem] max-md:p-7`}
             showCloseButton={false}
           >
-            <div className="flex items-start gap-4">
-              <div className="grid size-11 shrink-0 place-items-center border border-cyan-300/55 bg-cyan-400/12 text-cyan-200 shadow-[0_0_18px_rgba(45,255,231,0.28)]">
-                <Info className="size-5" />
+            <div className="flex items-start gap-8 max-md:flex-col max-md:gap-5">
+              <div className="grid size-20 shrink-0 place-items-center rounded-3xl border border-white/15 bg-white/8 text-cyan-100 max-md:size-16">
+                <Info className="size-8 max-md:size-7" />
               </div>
-              <DialogHeader className="min-w-0 flex-1 text-left">
-                <div className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">
+              <DialogHeader className="min-w-0 flex-1 gap-6 text-left">
+                <div className="text-base font-black uppercase tracking-[0.24em] text-cyan-200 max-md:text-sm">
                   {activeModal.eyebrow}
                 </div>
-                <DialogTitle className="text-3xl font-black uppercase leading-tight tracking-wide text-white max-md:text-2xl">
+                <DialogTitle className="text-7xl font-black uppercase leading-none tracking-wide text-white max-md:text-4xl">
                   {activeModal.title}
                 </DialogTitle>
-                <DialogDescription className="text-base leading-7 text-zinc-200">
+                <DialogDescription className="max-w-[44rem] text-2xl leading-10 text-zinc-200 max-md:text-lg max-md:leading-8">
                   {activeModal.body}
                 </DialogDescription>
               </DialogHeader>
             </div>
 
-            <DialogFooter className="border-0 bg-transparent p-0 sm:justify-end">
+            <div className="flex justify-end pt-2">
               <DialogClose asChild>
                 <Button
-                  className="rounded-none border border-cyan-200/40 bg-cyan-300 px-5 font-black uppercase tracking-[0.18em] text-zinc-950 shadow-[0_0_18px_rgba(45,255,231,0.34)] hover:bg-white"
+                  className="h-14 rounded-2xl border border-white/15 bg-white px-10 font-black uppercase tracking-[0.14em] text-zinc-950 shadow-none hover:bg-zinc-200 focus-visible:ring-white/30"
                   type="button"
+                  variant="outline"
                 >
                   Continue
                 </Button>
               </DialogClose>
-            </DialogFooter>
+            </div>
           </DialogContent>
         )}
       </Dialog>
 
-      <section className="absolute bottom-6 right-6 flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-3 max-md:bottom-4 max-md:right-4">
-        {toasts.map((toast) => (
-          <article
-            className="pointer-events-auto flex gap-3 border border-amber-200/35 bg-zinc-950/88 p-4 shadow-[0_0_26px_rgba(255,200,87,0.16),inset_0_0_24px_rgba(255,200,87,0.06)] backdrop-blur-[2px]"
-            key={toast.id}
-          >
-            <div className="grid size-9 shrink-0 place-items-center border border-amber-200/50 bg-amber-300/12 text-amber-200">
-              <Info className="size-4" />
-            </div>
-            <div className="flex min-w-0 flex-1 flex-col gap-1">
-              <div className="text-[0.65rem] font-black uppercase tracking-[0.24em] text-amber-200">
-                {toast.eyebrow}
-              </div>
-              <h3 className="text-base font-black uppercase leading-tight tracking-wide">
-                {toast.title}
-              </h3>
-              <p className="text-sm leading-6 text-zinc-200">{toast.body}</p>
-            </div>
-            <button
-              aria-label={`Dismiss ${toast.title}`}
-              className="grid size-8 shrink-0 place-items-center text-zinc-400 transition hover:text-white"
-              onClick={() => {
-                useGameUiStore.getState().dismissPopup(toast.id);
-              }}
-              type="button"
-            >
-              <X className="size-4" />
-            </button>
-          </article>
-        ))}
-      </section>
     </div>
   );
 };
