@@ -37,6 +37,9 @@ const readSeenPopupIds = (): readonly PopupId[] => {
 
 const seenPopupIds = new Set<PopupId>(readSeenPopupIds());
 
+export const hasSeenPopup = (popupId: PopupId): boolean =>
+  seenPopupIds.has(popupId);
+
 const markPopupSeen = (popupId: PopupId): void => {
   seenPopupIds.add(popupId);
 
@@ -78,7 +81,7 @@ export const showPopup = (popupId: PopupId): PopupState | null => {
 };
 
 export const showPopupOnce = (popupId: PopupId): PopupState | null => {
-  if (seenPopupIds.has(popupId)) {
+  if (hasSeenPopup(popupId)) {
     return null;
   }
 
