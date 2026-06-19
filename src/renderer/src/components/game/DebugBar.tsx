@@ -68,7 +68,7 @@ export const DebugBar = () => {
 
       {isStatsVisible ? (
         <div
-          className={`pointer-events-none flex max-h-[calc(100vh-4.5rem)] ${DEBUG_PANEL_WIDTH_CLASS} flex-col gap-1 overflow-y-auto border border-slate-400/25 bg-zinc-950/82 p-2 shadow-[0_0_22px_rgba(0,0,0,0.52)] backdrop-blur-sm`}
+          className={`pointer-events-auto flex max-h-[calc(100vh-4.5rem)] ${DEBUG_PANEL_WIDTH_CLASS} flex-col gap-1 overflow-y-auto border border-slate-400/25 bg-zinc-950/82 p-2 shadow-[0_0_22px_rgba(0,0,0,0.52)] backdrop-blur-sm`}
         >
           <Button
             className="pointer-events-auto flex h-auto w-full justify-start gap-2 rounded-none border-white/10 bg-white/[0.045] px-3 py-2 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-cyan-100 hover:bg-cyan-300/10 max-md:text-[0.65rem]"

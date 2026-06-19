@@ -56,7 +56,8 @@ export const showPopup = (popupId: PopupId): PopupState | null => {
 
   if (
     popupDefinition.mode === POPUP_MODES.MODAL &&
-    store.popups.activeModal
+    (store.popups.activeModal ||
+      store.gameSession.phase === GAME_SESSION_PHASES.POPUP)
   ) {
     return null;
   }

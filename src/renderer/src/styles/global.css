@@ -302,6 +302,7 @@ html {
   animation: tutorial-popup-modal-enter
     var(--tutorial-popup-enter-duration)
     cubic-bezier(0.2, 0.9, 0.2, 1) both;
+
   transform-origin: center;
   will-change: filter, opacity, transform;
 }
@@ -311,6 +312,7 @@ html {
   animation: tutorial-popup-modal-exit
     var(--tutorial-popup-exit-duration)
     cubic-bezier(0.4, 0, 0.2, 1) both;
+
   transform-origin: center;
   will-change: filter, opacity, transform;
 }
@@ -328,6 +330,7 @@ html {
   animation: tutorial-popup-toast-enter
     var(--tutorial-popup-toast-enter-duration)
     cubic-bezier(0.16, 1, 0.3, 1) both;
+
   transform-origin: center right;
   will-change: opacity, transform;
 }
