@@ -43,7 +43,7 @@ export class WaveController implements GameplayController {
     private readonly waveDefinitions: readonly WaveDefinition[],
     private readonly onWaveComplete: (nextWaveNumber: number) => void,
     private readonly onStageComplete: () => void,
-    private readonly onEnemyIntroReady: (enemyTypeId: EnemyTypeId) => void,
+    private readonly onEnemyIntroReady: (enemyTypeId: EnemyTypeId) => boolean,
     startingWaveNumber: number,
   ) {
     this.currentWaveIndex = startingWaveNumber - 1;
@@ -214,8 +214,9 @@ export class WaveController implements GameplayController {
           return;
         }
 
-        this.introducedEnemyTypeIds.add(enemyTypeId);
-        this.onEnemyIntroReady(enemyTypeId);
+        if (this.onEnemyIntroReady(enemyTypeId)) {
+          this.introducedEnemyTypeIds.add(enemyTypeId);
+        }
       }
     );
 

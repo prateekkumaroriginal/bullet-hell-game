@@ -9,7 +9,6 @@ import {
   DialogContent
 } from "@/components/ui/dialog";
 import {
-  ENEMY_POPUP_ID_BY_TYPE,
   POPUP_TOAST_DURATION_MS,
   SKILL_POPUP_ID_BY_SKILL
 } from "@/game/config/popup-config";
@@ -56,12 +55,6 @@ export const Popups = () => {
   }, [prunePopupToasts]);
 
   useEffect(() => {
-    const removeEnemyIntroReadyListener = onGameplayEvent(
-      GAMEPLAY_EVENTS.ENEMY_INTRO_READY,
-      ({ enemyTypeId }) => {
-        showPopupOnce(ENEMY_POPUP_ID_BY_TYPE[enemyTypeId]);
-      }
-    );
     const removeSkillAcquiredListener = onGameplayEvent(
       GAMEPLAY_EVENTS.SKILL_ACQUIRED,
       ({ skillId }) => {
@@ -70,7 +63,6 @@ export const Popups = () => {
     );
 
     return () => {
-      removeEnemyIntroReadyListener();
       removeSkillAcquiredListener();
     };
   }, []);

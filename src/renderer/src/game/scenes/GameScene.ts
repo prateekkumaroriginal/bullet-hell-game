@@ -28,6 +28,8 @@ import {
   type SkillRuntimeModifiers,
   type SkillStackState,
 } from "../config/skill-config";
+import { ENEMY_POPUP_ID_BY_TYPE } from "../config/popup-config";
+import { showPopupOnce } from "../state/popup-ui-service";
 import { AimController } from "../systems/AimController";
 import { ArenaBounds } from "../systems/ArenaBounds";
 import { ArenaRenderer } from "../systems/ArenaRenderer";
@@ -296,7 +298,7 @@ export class GameScene extends Phaser.Scene {
         this.emitStageComplete();
       },
       (enemyTypeId) => {
-        emitGameplayEvent(GAMEPLAY_EVENTS.ENEMY_INTRO_READY, { enemyTypeId });
+        return showPopupOnce(ENEMY_POPUP_ID_BY_TYPE[enemyTypeId]) !== null;
       },
       clampedStartingWave,
     );
