@@ -2,13 +2,11 @@ import { useEffect, useRef } from "react";
 import { Info, X } from "lucide-react";
 import { toast as sonnerToast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { PopupModalContent } from "@/components/game/PopupModalContent";
 import {
   Dialog,
   DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle
+  DialogContent
 } from "@/components/ui/dialog";
 import {
   ENEMY_POPUP_ID_BY_TYPE,
@@ -178,7 +176,7 @@ export const Popups = () => {
       >
         {renderedModal && (
           <DialogContent
-            className={`${POPUP_MODAL_ENTRANCE_CLASS} !left-[50vw] !top-[50vh] !w-[min(58rem,calc(100vw-4rem))] !max-w-none !translate-x-[-50%] !translate-y-[-50%] flex min-h-[30rem] flex-col justify-between gap-10 rounded-[2rem] border border-white/15 bg-zinc-950/95 p-10 text-white shadow-2xl max-md:!w-[min(42rem,calc(100vw-2rem))] max-md:min-h-[26rem] max-md:p-7`}
+            className={`${POPUP_MODAL_ENTRANCE_CLASS} popup-intel-modal !left-[50vw] !top-[50vh] !w-[min(68rem,calc(100vw-4rem))] !max-w-none !translate-x-[-50%] !translate-y-[-50%] flex max-h-[calc(100vh-3rem)] overflow-y-auto rounded-[2rem] border border-cyan-200/15 bg-[linear-gradient(135deg,rgba(8,15,22,0.98),rgba(9,12,19,0.96))] p-8 text-white shadow-[0_2rem_6rem_rgba(0,0,0,0.72),inset_0_0_4rem_rgba(34,211,238,0.025)] max-md:!w-[min(42rem,calc(100vw-2rem))] max-md:p-5`}
             onAnimationEnd={(event) => {
               if (
                 event.target !== event.currentTarget ||
@@ -192,34 +190,22 @@ export const Popups = () => {
             overlayClassName={POPUP_MODAL_OVERLAY_CLASS}
             showCloseButton={false}
           >
-            <div className="flex items-start gap-8 max-md:flex-col max-md:gap-5">
-              <div className="grid size-20 shrink-0 place-items-center rounded-3xl border border-white/15 bg-white/8 text-cyan-100 max-md:size-16">
-                <Info className="size-8 max-md:size-7" />
-              </div>
-              <DialogHeader className="min-w-0 flex-1 gap-6 text-left">
-                <div className="text-base font-black uppercase tracking-[0.24em] text-cyan-200 max-md:text-sm">
-                  {renderedModal.eyebrow}
+            <PopupModalContent
+              footer={
+                <div className="flex justify-end">
+                  <DialogClose asChild>
+                    <Button
+                      className="h-14 rounded-2xl border border-white/15 bg-white px-10 text-base font-black uppercase tracking-[0.14em] text-zinc-950 shadow-none hover:bg-zinc-200 focus-visible:ring-white/30"
+                      type="button"
+                      variant="outline"
+                    >
+                      Continue
+                    </Button>
+                  </DialogClose>
                 </div>
-                <DialogTitle className="text-7xl font-black uppercase leading-none tracking-wide text-white max-md:text-4xl">
-                  {renderedModal.title}
-                </DialogTitle>
-                <DialogDescription className="max-w-[44rem] text-2xl leading-10 text-zinc-200 max-md:text-lg max-md:leading-8">
-                  {renderedModal.body}
-                </DialogDescription>
-              </DialogHeader>
-            </div>
-
-            <div className="flex justify-end pt-2">
-              <DialogClose asChild>
-                <Button
-                  className="h-14 rounded-2xl border border-white/15 bg-white px-10 font-black uppercase tracking-[0.14em] text-zinc-950 shadow-none hover:bg-zinc-200 focus-visible:ring-white/30"
-                  type="button"
-                  variant="outline"
-                >
-                  Continue
-                </Button>
-              </DialogClose>
-            </div>
+              }
+              popup={renderedModal}
+            />
           </DialogContent>
         )}
       </Dialog>

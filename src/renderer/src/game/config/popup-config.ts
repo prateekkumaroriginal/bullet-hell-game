@@ -33,6 +33,38 @@ export type PopupDefinition = {
   eyebrow: string;
   title: string;
   body: string;
+  presentation?: PopupPresentation;
+};
+
+export const POPUP_VISUALS = {
+  CONTROLS: "controls",
+  CHASER: "chaser",
+  RUSHER: "rusher",
+  TANK: "tank"
+} as const;
+
+export type PopupVisual =
+  (typeof POPUP_VISUALS)[keyof typeof POPUP_VISUALS];
+
+export const POPUP_METADATA_ICONS = {
+  SPEED: "speed",
+  BEHAVIOR: "behavior",
+  THREAT: "threat"
+} as const;
+
+export type PopupMetadataIcon =
+  (typeof POPUP_METADATA_ICONS)[keyof typeof POPUP_METADATA_ICONS];
+
+export type PopupMetadata = {
+  label: string;
+  value: string;
+  icon: PopupMetadataIcon;
+  tone: "cyan" | "violet" | "rose";
+};
+
+export type PopupPresentation = {
+  visual: PopupVisual;
+  metadata?: readonly PopupMetadata[];
 };
 
 export type PopupState = PopupDefinition & {
@@ -46,6 +78,9 @@ export const POPUP_DEFINITIONS = {
     eyebrow: "Pilot Briefing",
     title: "Keep moving",
     body: "Move with WASD or arrow keys. Aim with the cursor. Your weapon fires toward your aim automatically.",
+    presentation: {
+      visual: POPUP_VISUALS.CONTROLS
+    }
   },
   [POPUP_IDS.ENEMY_CHASER]: {
     id: POPUP_IDS.ENEMY_CHASER,
@@ -53,6 +88,29 @@ export const POPUP_DEFINITIONS = {
     eyebrow: "Enemy Intel",
     title: "Chaser",
     body: "Tracks directly toward you. Circle wide before the arena gets crowded.",
+    presentation: {
+      visual: POPUP_VISUALS.CHASER,
+      metadata: [
+        {
+          label: "Speed",
+          value: "Fast",
+          icon: POPUP_METADATA_ICONS.SPEED,
+          tone: "cyan"
+        },
+        {
+          label: "Behavior",
+          value: "Tracks player",
+          icon: POPUP_METADATA_ICONS.BEHAVIOR,
+          tone: "violet"
+        },
+        {
+          label: "Threat",
+          value: "Moderate",
+          icon: POPUP_METADATA_ICONS.THREAT,
+          tone: "rose"
+        }
+      ]
+    }
   },
   [POPUP_IDS.ENEMY_RUSHER]: {
     id: POPUP_IDS.ENEMY_RUSHER,
@@ -60,6 +118,29 @@ export const POPUP_DEFINITIONS = {
     eyebrow: "Enemy Intel",
     title: "Rusher",
     body: "Fast and fragile. Clear space early so it cannot force a panic turn.",
+    presentation: {
+      visual: POPUP_VISUALS.RUSHER,
+      metadata: [
+        {
+          label: "Speed",
+          value: "Very fast",
+          icon: POPUP_METADATA_ICONS.SPEED,
+          tone: "cyan"
+        },
+        {
+          label: "Behavior",
+          value: "Rushes player",
+          icon: POPUP_METADATA_ICONS.BEHAVIOR,
+          tone: "violet"
+        },
+        {
+          label: "Threat",
+          value: "High",
+          icon: POPUP_METADATA_ICONS.THREAT,
+          tone: "rose"
+        }
+      ]
+    }
   },
   [POPUP_IDS.ENEMY_TANK]: {
     id: POPUP_IDS.ENEMY_TANK,
@@ -67,6 +148,29 @@ export const POPUP_DEFINITIONS = {
     eyebrow: "Enemy Intel",
     title: "Tank",
     body: "Slow, heavy, and worth more experience. Kite it while thinning the smaller enemies.",
+    presentation: {
+      visual: POPUP_VISUALS.TANK,
+      metadata: [
+        {
+          label: "Speed",
+          value: "Slow",
+          icon: POPUP_METADATA_ICONS.SPEED,
+          tone: "cyan"
+        },
+        {
+          label: "Behavior",
+          value: "Absorbs fire",
+          icon: POPUP_METADATA_ICONS.BEHAVIOR,
+          tone: "violet"
+        },
+        {
+          label: "Threat",
+          value: "Severe",
+          icon: POPUP_METADATA_ICONS.THREAT,
+          tone: "rose"
+        }
+      ]
+    }
   },
   [POPUP_IDS.SKILL_RAPID_FIRE]: {
     id: POPUP_IDS.SKILL_RAPID_FIRE,
