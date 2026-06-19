@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { type LearnedSkill, type SkillChoice } from "../systems/SkillController";
-import { type SkillStackState } from "../config/skill-config";
+import { type SkillId, type SkillStackState } from "../config/skill-config";
 import { type StageId } from "../config/stage-config";
 
 export const GAMEPLAY_EVENTS = {
@@ -17,6 +17,7 @@ export const GAMEPLAY_EVENTS = {
   PLAYER_PROGRESSION_CHANGED: "player:progression-changed",
   WAVE_CHANGED: "wave:changed",
   WAVE_ANNOUNCEMENT_CHANGED: "wave:announcement-changed",
+  SKILL_ACQUIRED: "skill:acquired",
 } as const;
 
 export type GameplayEventName = (typeof GAMEPLAY_EVENTS)[keyof typeof GAMEPLAY_EVENTS];
@@ -83,6 +84,10 @@ export type WaveAnnouncementChangedPayload = {
   isVisible: boolean;
 };
 
+export type SkillAcquiredPayload = {
+  skillId: SkillId;
+};
+
 export type GameplayEventPayloads = {
   [GAMEPLAY_EVENTS.GAME_STARTED]: GameStartedPayload;
   [GAMEPLAY_EVENTS.GAME_PAUSED]: undefined;
@@ -97,6 +102,7 @@ export type GameplayEventPayloads = {
   [GAMEPLAY_EVENTS.PLAYER_PROGRESSION_CHANGED]: PlayerProgressionChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_CHANGED]: WaveChangedPayload;
   [GAMEPLAY_EVENTS.WAVE_ANNOUNCEMENT_CHANGED]: WaveAnnouncementChangedPayload;
+  [GAMEPLAY_EVENTS.SKILL_ACQUIRED]: SkillAcquiredPayload;
 };
 
 type GameplayEventListener<EventName extends GameplayEventName> = (

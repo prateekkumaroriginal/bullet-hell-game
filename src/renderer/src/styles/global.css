@@ -6,6 +6,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --tutorial-popup-enter-duration: 240ms;
+  --tutorial-popup-exit-duration: 240ms;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -254,6 +256,85 @@ html {
     linear infinite;
 }
 
+@keyframes tutorial-popup-modal-enter {
+  0% {
+    filter: blur(var(--tutorial-popup-modal-enter-blur));
+    opacity: 0;
+    transform: scale(0.75);
+  }
+  100% {
+    filter: none;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes tutorial-popup-modal-exit {
+  0% {
+    filter: none;
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    filter: blur(var(--tutorial-popup-modal-exit-blur));
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes tutorial-popup-toast-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.96);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-0.125rem) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.tutorial-popup-modal-enter[data-state="open"] {
+  --tutorial-popup-modal-enter-blur: 12px;
+  animation: tutorial-popup-modal-enter
+    var(--tutorial-popup-enter-duration)
+    cubic-bezier(0.2, 0.9, 0.2, 1) both;
+
+  transform-origin: center;
+  will-change: filter, opacity, transform;
+}
+
+.tutorial-popup-modal-enter[data-state="closed"] {
+  --tutorial-popup-modal-exit-blur: 12px;
+  animation: tutorial-popup-modal-exit
+    var(--tutorial-popup-exit-duration)
+    cubic-bezier(0.4, 0, 0.2, 1) both;
+
+  transform-origin: center;
+  will-change: filter, opacity, transform;
+}
+
+.tutorial-popup-modal-overlay[data-state="open"] {
+  animation-duration: var(--tutorial-popup-enter-duration);
+}
+
+.tutorial-popup-modal-overlay[data-state="closed"] {
+  animation-duration: var(--tutorial-popup-exit-duration);
+}
+
+.tutorial-popup-toast-enter {
+  --tutorial-popup-toast-enter-duration: 320ms;
+  animation: tutorial-popup-toast-enter
+    var(--tutorial-popup-toast-enter-duration)
+    cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  transform-origin: center right;
+  will-change: opacity, transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   @keyframes wave-announcement-visibility {
     0% {
@@ -273,5 +354,13 @@ html {
     100% {
       transform: scale(1);
     }
+  }
+
+  .tutorial-popup-modal-enter[data-state="open"],
+  .tutorial-popup-modal-enter[data-state="closed"],
+  .tutorial-popup-modal-overlay,
+  .tutorial-popup-toast-enter {
+    animation: none;
+    opacity: 1;
   }
 }

@@ -21,6 +21,7 @@ const ENEMY_SPAWN_EDGES: EnemySpawnEdge[] = ["top", "right", "bottom", "left"];
 export type Enemy = {
   view: Phaser.GameObjects.Arc;
   poolIndex: number;
+  spawnId: number;
   typeId: EnemyTypeId;
   x: number;
   y: number;
@@ -31,6 +32,12 @@ export type Enemy = {
   experienceOrbCount: number;
   experienceValuePerOrb: number;
   collisionCategory: CollisionCategory;
+};
+
+export type EnemySpawnToken = {
+  poolIndex: number;
+  spawnId: number;
+  typeId: EnemyTypeId;
 };
 
 export type EnemyDeathDrop = {
@@ -47,6 +54,7 @@ export class EnemyPool {
   private readonly movementDirection = new Phaser.Math.Vector2();
   private readonly spawnPosition = new Phaser.Math.Vector2();
   private readonly separatedPosition = { x: 0, y: 0 };
+  private nextSpawnId = 1;
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -66,11 +74,11 @@ export class EnemyPool {
     return this.activeEnemies;
   }
 
-  spawn(enemyTypeId: EnemyTypeId): boolean {
+  spawn(enemyTypeId: EnemyTypeId): EnemySpawnToken | null {
     const enemyIndex = this.freeEnemyIndexes.pop();
 
     if (enemyIndex === undefined) {
-      return false;
+      return null;
     }
 
     const enemy = this.enemies[enemyIndex];
@@ -78,13 +86,25 @@ export class EnemyPool {
     const spawnPosition = this.getRandomEdgeSpawnPosition(enemyDefinition.radius);
 
     this.applyEnemyDefinition(enemy, enemyDefinition);
+    enemy.spawnId = this.nextSpawnId;
+    this.nextSpawnId += 1;
     enemy.x = spawnPosition.x;
     enemy.y = spawnPosition.y;
     enemy.view.setPosition(enemy.x, enemy.y);
     enemy.view.setActive(true);
     enemy.view.setVisible(true);
     this.activeEnemies.push(enemy);
-    return true;
+    return {
+      poolIndex: enemy.poolIndex,
+      spawnId: enemy.spawnId,
+      typeId: enemy.typeId
+    };
+  }
+
+  isSpawnActive(spawnToken: EnemySpawnToken): boolean {
+    const enemy = this.enemies[spawnToken.poolIndex];
+
+    return enemy.view.active && enemy.spawnId === spawnToken.spawnId;
   }
 
   update(delta: number): void {
@@ -159,6 +179,7 @@ export class EnemyPool {
     return {
       view,
       poolIndex,
+      spawnId: 0,
       typeId: enemyDefinition.id,
       x: 0,
       y: 0,

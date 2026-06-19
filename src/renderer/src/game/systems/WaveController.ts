@@ -1,5 +1,9 @@
 import Phaser from "phaser";
 import {
+  ENEMY_INTRO_DELAY_MS,
+  type EnemyTypeId,
+} from "../config/enemy-config";
+import {
   getWaveEnemyCount,
   WAVE_ANNOUNCEMENT_DURATION_MS,
   WAVE_ADVANCE_DELAY_MS,
@@ -11,6 +15,7 @@ import {
   GAMEPLAY_EVENTS,
 } from "../events/gameplay-events";
 import { EnemyController } from "./EnemyController";
+import { type EnemySpawnToken } from "./EnemyPool";
 import { type GameplayController } from "./GameplayController";
 
 export class WaveController implements GameplayController {
@@ -27,6 +32,8 @@ export class WaveController implements GameplayController {
     isComplete: boolean;
   };
   private readonly spawnTimers: Phaser.Time.TimerEvent[] = [];
+  private readonly enemyIntroTimers: Phaser.Time.TimerEvent[] = [];
+  private readonly introducedEnemyTypeIds = new Set<EnemyTypeId>();
   private advanceTimer?: Phaser.Time.TimerEvent;
   private announcementTimer?: Phaser.Time.TimerEvent;
 
@@ -36,6 +43,7 @@ export class WaveController implements GameplayController {
     private readonly waveDefinitions: readonly WaveDefinition[],
     private readonly onWaveComplete: (nextWaveNumber: number) => void,
     private readonly onStageComplete: () => void,
+    private readonly onEnemyIntroReady: (enemyTypeId: EnemyTypeId) => boolean,
     startingWaveNumber: number,
   ) {
     this.currentWaveIndex = startingWaveNumber - 1;
@@ -66,6 +74,7 @@ export class WaveController implements GameplayController {
 
   destroy(): void {
     this.clearSpawnTimers();
+    this.clearEnemyIntroTimers();
     this.advanceTimer?.remove();
     this.announcementTimer?.remove();
   }
@@ -116,14 +125,17 @@ export class WaveController implements GameplayController {
         return;
       }
 
-      const didSpawnEnemy = this.enemyController.spawnEnemy(spawnDefinition.enemyTypeId);
+      const enemySpawnToken = this.enemyController.spawnEnemy(
+        spawnDefinition.enemyTypeId
+      );
 
-      if (!didSpawnEnemy) {
+      if (!enemySpawnToken) {
         return;
       }
 
       spawnedGroupEnemyCount += 1;
       this.spawnedEnemyCount += 1;
+      this.scheduleEnemyIntro(enemySpawnToken);
       this.publishWaveState();
     };
 
@@ -183,6 +195,34 @@ export class WaveController implements GameplayController {
     );
   }
 
+  private scheduleEnemyIntro(enemySpawnToken: EnemySpawnToken): void {
+    const enemyTypeId = enemySpawnToken.typeId;
+
+    if (this.introducedEnemyTypeIds.has(enemyTypeId)) {
+      return;
+    }
+
+    const introTimer = this.scene.time.delayedCall(
+      ENEMY_INTRO_DELAY_MS,
+      () => {
+        this.removeEnemyIntroTimer(introTimer);
+
+        if (
+          this.introducedEnemyTypeIds.has(enemyTypeId) ||
+          !this.enemyController.isEnemySpawnActive(enemySpawnToken)
+        ) {
+          return;
+        }
+
+        if (this.onEnemyIntroReady(enemyTypeId)) {
+          this.introducedEnemyTypeIds.add(enemyTypeId);
+        }
+      }
+    );
+
+    this.enemyIntroTimers.push(introTimer);
+  }
+
   private hasCurrentWaveFinished(): boolean {
     return (
       !this.isAnnouncingWave &&
@@ -207,6 +247,24 @@ export class WaveController implements GameplayController {
     }
 
     this.spawnTimers.length = 0;
+  }
+
+  private clearEnemyIntroTimers(): void {
+    for (const introTimer of this.enemyIntroTimers) {
+      introTimer.remove();
+    }
+
+    this.enemyIntroTimers.length = 0;
+  }
+
+  private removeEnemyIntroTimer(introTimer: Phaser.Time.TimerEvent): void {
+    introTimer.remove();
+
+    const introTimerIndex = this.enemyIntroTimers.indexOf(introTimer);
+
+    if (introTimerIndex !== -1) {
+      this.enemyIntroTimers.splice(introTimerIndex, 1);
+    }
   }
 
   private trackSpawnTimer(spawnTimer: Phaser.Time.TimerEvent): void {

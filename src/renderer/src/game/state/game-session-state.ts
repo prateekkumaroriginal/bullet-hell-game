@@ -11,6 +11,7 @@ export const GAME_SESSION_PHASES = {
   IDLE: "idle",
   STAGE_SELECT: "stageSelect",
   PLAYING: "playing",
+  POPUP: "popup",
   SKILL_SELECT: "skillSelect",
   PAUSED: "paused",
   GAME_OVER: "gameOver",

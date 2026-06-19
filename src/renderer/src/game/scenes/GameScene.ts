@@ -28,6 +28,11 @@ import {
   type SkillRuntimeModifiers,
   type SkillStackState,
 } from "../config/skill-config";
+import { ENEMY_POPUP_ID_BY_TYPE } from "../config/popup-config";
+import {
+  hasSeenPopup,
+  showPopupOnce
+} from "../state/popup-ui-service";
 import { AimController } from "../systems/AimController";
 import { ArenaBounds } from "../systems/ArenaBounds";
 import { ArenaRenderer } from "../systems/ArenaRenderer";
@@ -74,7 +79,6 @@ export class GameScene extends Phaser.Scene {
     this.registerCleanup(bindGameUiStoreToGameplayEvents());
     this.arenaBounds = new ArenaBounds(this);
     this.arenaRenderer = new ArenaRenderer(this, this.arenaBounds);
-
     this.scale.on(Phaser.Scale.Events.RESIZE, this.handleResize, this);
     this.registerCleanup(() => {
       this.scale.off(Phaser.Scale.Events.RESIZE, this.handleResize, this);
@@ -176,6 +180,16 @@ export class GameScene extends Phaser.Scene {
     this.registerCleanup(
       onGameplayCommand(GAMEPLAY_COMMANDS.SELECT_SKILL, (command) => {
         this.selectSkill(command.skillId);
+      }),
+    );
+    this.registerCleanup(
+      onGameplayCommand(GAMEPLAY_COMMANDS.COMPLETE_POPUP_DISMISSAL, () => {
+        this.completePopupDismissal();
+      }),
+    );
+    this.registerCleanup(
+      onGameplayCommand(GAMEPLAY_COMMANDS.BLOCK_GAMEPLAY_FOR_POPUP, () => {
+        this.blockGameplayForPopup();
       }),
     );
   }
@@ -286,6 +300,11 @@ export class GameScene extends Phaser.Scene {
       () => {
         this.emitStageComplete();
       },
+      (enemyTypeId) => {
+        const popupId = ENEMY_POPUP_ID_BY_TYPE[enemyTypeId];
+
+        return showPopupOnce(popupId) !== null || hasSeenPopup(popupId);
+      },
       clampedStartingWave,
     );
     this.gameplayControllers.push(
@@ -383,6 +402,27 @@ export class GameScene extends Phaser.Scene {
     this.getSkillControllerOrThrow().applySkill(selectedChoice.id);
     this.publishLearnedSkills();
     this.startNextSkillSelection();
+    emitGameplayEvent(GAMEPLAY_EVENTS.SKILL_ACQUIRED, {
+      skillId: selectedChoice.id
+    });
+  }
+
+  private blockGameplayForPopup(): void {
+    if (this.sessionPhase !== GAME_SESSION_PHASES.PLAYING) {
+      return;
+    }
+
+    this.sessionPhase = GAME_SESSION_PHASES.POPUP;
+    this.time.paused = true;
+  }
+
+  private completePopupDismissal(): void {
+    if (this.sessionPhase !== GAME_SESSION_PHASES.POPUP) {
+      return;
+    }
+
+    this.sessionPhase = GAME_SESSION_PHASES.PLAYING;
+    this.time.paused = false;
   }
 
   private returnToMenu(): void {
