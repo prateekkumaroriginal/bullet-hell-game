@@ -152,56 +152,51 @@ export const Popups = () => {
 
   const renderedModal = renderedModalRef.current;
 
-  if (!renderedModal && toasts.length === 0) {
+  if (!renderedModal) {
     return null;
   }
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-30 text-white">
-      <Dialog
-        open={activeModal !== null}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            dismissActivePopup();
+    <Dialog
+      open={activeModal !== null}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          dismissActivePopup();
+        }
+      }}
+    >
+      <DialogContent
+        className={`${POPUP_MODAL_ENTRANCE_CLASS} popup-intel-modal !left-[50vw] !top-[50vh] !w-[min(68rem,calc(100vw-4rem))] !max-w-none !translate-x-[-50%] !translate-y-[-50%] flex max-h-[calc(100vh-3rem)] overflow-y-auto rounded-[2rem] border border-cyan-200/15 !bg-transparent bg-[linear-gradient(135deg,rgba(8,15,22,0.98),rgba(9,12,19,0.96))] p-8 text-white shadow-[0_2rem_6rem_rgba(0,0,0,0.72),inset_0_0_4rem_rgba(34,211,238,0.025)] max-md:!w-[min(42rem,calc(100vw-2rem))] max-md:p-5`}
+        onAnimationEnd={(event) => {
+          if (
+            event.target !== event.currentTarget ||
+            activeModal !== null
+          ) {
+            return;
           }
+
+          completePopupDismissal();
         }}
+        overlayClassName={POPUP_MODAL_OVERLAY_CLASS}
+        showCloseButton={false}
       >
-        {renderedModal && (
-          <DialogContent
-            className={`${POPUP_MODAL_ENTRANCE_CLASS} popup-intel-modal !left-[50vw] !top-[50vh] !w-[min(68rem,calc(100vw-4rem))] !max-w-none !translate-x-[-50%] !translate-y-[-50%] flex max-h-[calc(100vh-3rem)] overflow-y-auto rounded-[2rem] border border-cyan-200/15 bg-[linear-gradient(135deg,rgba(8,15,22,0.98),rgba(9,12,19,0.96))] p-8 text-white shadow-[0_2rem_6rem_rgba(0,0,0,0.72),inset_0_0_4rem_rgba(34,211,238,0.025)] max-md:!w-[min(42rem,calc(100vw-2rem))] max-md:p-5`}
-            onAnimationEnd={(event) => {
-              if (
-                event.target !== event.currentTarget ||
-                activeModal !== null
-              ) {
-                return;
-              }
-
-              completePopupDismissal();
-            }}
-            overlayClassName={POPUP_MODAL_OVERLAY_CLASS}
-            showCloseButton={false}
-          >
-            <PopupModalContent
-              footer={
-                <div className="flex justify-end">
-                  <DialogClose asChild>
-                    <Button
-                      className="h-14 rounded-2xl border border-white/15 bg-white px-10 text-base font-black uppercase tracking-[0.14em] text-zinc-950 shadow-none hover:bg-zinc-200 focus-visible:ring-white/30"
-                      type="button"
-                      variant="outline"
-                    >
-                      Continue
-                    </Button>
-                  </DialogClose>
-                </div>
-              }
-              popup={renderedModal}
-            />
-          </DialogContent>
-        )}
-      </Dialog>
-
-    </div>
+        <PopupModalContent
+          footer={
+            <div className="flex justify-end">
+              <DialogClose asChild>
+                <Button
+                  className="h-14 rounded-2xl border border-white/15 bg-white px-10 text-base font-black uppercase tracking-[0.14em] text-zinc-950 shadow-none hover:bg-zinc-200 focus-visible:ring-white/30"
+                  type="button"
+                  variant="outline"
+                >
+                  Continue
+                </Button>
+              </DialogClose>
+            </div>
+          }
+          popup={renderedModal}
+        />
+      </DialogContent>
+    </Dialog>
   );
 };

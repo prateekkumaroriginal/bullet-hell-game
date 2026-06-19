@@ -8,12 +8,18 @@ import {
   Skull
 } from "lucide-react";
 import {
+  ENEMY_TYPE_BY_POPUP_VISUAL,
   POPUP_METADATA_ICONS,
-  POPUP_VISUALS,
+  POPUP_ENEMY_PREVIEW_SCALE,
+  POPUP_ENEMY_PREVIEW_SIZE,
   type PopupMetadata,
   type PopupState,
   type PopupVisual
 } from "@/game/config/popup-config";
+import {
+  ENEMY_DEFINITIONS,
+  ENEMY_STROKE_WIDTH
+} from "@/game/config/enemy-config";
 import {
   DialogDescription,
   DialogHeader,
@@ -32,72 +38,51 @@ const METADATA_ICON_BY_TYPE = {
   [POPUP_METADATA_ICONS.THREAT]: Skull
 } as const;
 
-const ENEMY_VISUALS = new Set<PopupVisual>([
-  POPUP_VISUALS.CHASER,
-  POPUP_VISUALS.RUSHER,
-  POPUP_VISUALS.TANK
-]);
-
 type PopupModalContentProps = {
   footer: ReactNode;
   popup: PopupState;
 };
 
-const EnemySchematic = ({ visual }: { visual: PopupVisual }) => {
-  const isRusher = visual === POPUP_VISUALS.RUSHER;
-  const isTank = visual === POPUP_VISUALS.TANK;
+const toCssHexColor = (color: number): string =>
+  `#${color.toString(16).padStart(6, "0")}`;
+
+const isEnemyPopupVisual = (
+  visual: PopupVisual
+): visual is keyof typeof ENEMY_TYPE_BY_POPUP_VISUAL =>
+  visual in ENEMY_TYPE_BY_POPUP_VISUAL;
+
+const EnemyPreview = ({
+  visual
+}: {
+  visual: keyof typeof ENEMY_TYPE_BY_POPUP_VISUAL;
+}) => {
+  const enemyDefinition = ENEMY_DEFINITIONS[ENEMY_TYPE_BY_POPUP_VISUAL[visual]];
+  const center = POPUP_ENEMY_PREVIEW_SIZE / 2;
 
   return (
     <svg
-      aria-hidden="true"
+      aria-label={`${enemyDefinition.id} enemy`}
       className="h-full w-full overflow-visible"
-      viewBox="0 0 320 320"
+      role="img"
+      viewBox={`0 0 ${POPUP_ENEMY_PREVIEW_SIZE} ${POPUP_ENEMY_PREVIEW_SIZE}`}
     >
-      <defs>
-        <linearGradient id={`enemy-body-${visual}`} x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0" stopColor={isTank ? "#8e7cff" : "#ff8cac"} />
-          <stop offset="0.52" stopColor="#261827" />
-          <stop offset="1" stopColor={isRusher ? "#ff3f72" : "#65324f"} />
-        </linearGradient>
-        <filter id={`enemy-glow-${visual}`} x="-80%" y="-80%" width="260%" height="260%">
-          <feGaussianBlur stdDeviation="8" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-      <g className={isRusher ? "origin-center rotate-[-8deg]" : "origin-center"}>
-        <path
-          d={isTank ? "M160 54 257 120 232 240 160 276 88 240 63 120Z" : "M160 42 220 132 282 92 232 250 160 218 88 250 38 92 100 132Z"}
-          fill={`url(#enemy-body-${visual})`}
-          stroke={isTank ? "#c7beff" : "#ff7ca3"}
-          strokeWidth="4"
-        />
-        {!isTank && (
-          <>
-            <path d="M102 135 52 122 93 205 130 182Z" fill="#140e18" stroke="#ff426f" strokeWidth="3" />
-            <path d="M218 135 268 122 227 205 190 182Z" fill="#140e18" stroke="#ff426f" strokeWidth="3" />
-          </>
-        )}
-        <path
-          d={isTank ? "M160 82 213 134 200 213 160 245 120 213 107 134Z" : "M160 76 198 143 179 207 160 226 141 207 122 143Z"}
-          fill="#100c14"
-          stroke={isTank ? "#a99cff" : "#ff426f"}
-          strokeWidth="4"
-        />
-        <circle cx="160" cy="160" fill="#ff315f" filter={`url(#enemy-glow-${visual})`} r={isTank ? "30" : "23"} />
-        <circle cx="160" cy="160" fill="#fff" r={isTank ? "10" : "8"} />
-      </g>
+      <circle
+        cx={center}
+        cy={center}
+        fill={toCssHexColor(enemyDefinition.fillColor)}
+        r={enemyDefinition.radius * POPUP_ENEMY_PREVIEW_SCALE}
+        stroke={toCssHexColor(enemyDefinition.strokeColor)}
+        strokeWidth={ENEMY_STROKE_WIDTH * POPUP_ENEMY_PREVIEW_SCALE}
+      />
     </svg>
   );
 };
 
 const PopupVisualPanel = ({ visual }: { visual?: PopupVisual }) => (
   <div className="popup-intel-visual relative grid min-h-0 flex-[0.9] place-items-center overflow-hidden rounded-[1.35rem] max-md:min-h-64 max-md:flex-none">
-    {visual && ENEMY_VISUALS.has(visual) ? (
+    {visual && isEnemyPopupVisual(visual) ? (
       <div className="relative aspect-square w-[min(82%,19rem)] drop-shadow-[0_0_2rem_rgba(255,49,95,0.28)]">
-        <EnemySchematic visual={visual} />
+        <EnemyPreview visual={visual} />
       </div>
     ) : (
       <div className="relative flex flex-col items-center gap-5 text-cyan-200">

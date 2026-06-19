@@ -46,6 +46,15 @@ export const POPUP_VISUALS = {
 export type PopupVisual =
   (typeof POPUP_VISUALS)[keyof typeof POPUP_VISUALS];
 
+export const ENEMY_TYPE_BY_POPUP_VISUAL = {
+  [POPUP_VISUALS.CHASER]: ENEMY_TYPE_IDS.CHASER,
+  [POPUP_VISUALS.RUSHER]: ENEMY_TYPE_IDS.RUSHER,
+  [POPUP_VISUALS.TANK]: ENEMY_TYPE_IDS.TANK
+} as const satisfies Partial<Record<PopupVisual, EnemyTypeId>>;
+
+export const POPUP_ENEMY_PREVIEW_SIZE = 320;
+export const POPUP_ENEMY_PREVIEW_SCALE = 4;
+
 export const POPUP_METADATA_ICONS = {
   SPEED: "speed",
   BEHAVIOR: "behavior",
