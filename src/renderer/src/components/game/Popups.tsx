@@ -23,7 +23,6 @@ import {
 } from "@/game/state/popup-ui-service";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
 
-const TOAST_PRUNE_INTERVAL_MS = 500;
 const POPUP_MODAL_ENTRANCE_CLASS = "tutorial-popup-modal-enter";
 const POPUP_MODAL_OVERLAY_CLASS = "tutorial-popup-modal-overlay";
 const POPUP_TOAST_ENTRANCE_CLASS = "tutorial-popup-toast-enter";
@@ -39,20 +38,30 @@ export const Popups = () => {
   );
 
   useEffect(() => {
-    const pruneToasts = () => {
-      prunePopupToasts(Date.now(), POPUP_TOAST_DURATION_MS);
-    };
+    if (toasts.length === 0) {
+      return;
+    }
 
-    pruneToasts();
-    const pruneInterval = window.setInterval(
-      pruneToasts,
-      TOAST_PRUNE_INTERVAL_MS
+    const currentTimeMs = Date.now();
+    const nextExpirationTimeMs = toasts.reduce(
+      (earliestExpirationTimeMs, toast) =>
+        Math.min(
+          earliestExpirationTimeMs,
+          toast.shownAtMs + POPUP_TOAST_DURATION_MS
+        ),
+      Number.POSITIVE_INFINITY
+    );
+    const pruneTimeout = window.setTimeout(
+      () => {
+        prunePopupToasts(Date.now(), POPUP_TOAST_DURATION_MS);
+      },
+      Math.max(0, nextExpirationTimeMs - currentTimeMs)
     );
 
     return () => {
-      window.clearInterval(pruneInterval);
+      window.clearTimeout(pruneTimeout);
     };
-  }, [prunePopupToasts]);
+  }, [prunePopupToasts, toasts]);
 
   useEffect(() => {
     const removeSkillAcquiredListener = onGameplayEvent(
