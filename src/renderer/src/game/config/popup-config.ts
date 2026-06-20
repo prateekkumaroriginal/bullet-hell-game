@@ -2,6 +2,7 @@ import { ENEMY_TYPE_IDS, type EnemyTypeId } from "./enemy-config";
 import { SKILL_IDS, type SkillId } from "./skill-config";
 
 export const POPUP_STORAGE_KEY = "bullet-hell-game:seen-popups";
+export const POPUP_MODAL_DISMISSAL_FALLBACK_DELAY_MS = 1000;
 export const POPUP_TOAST_DURATION_MS = 4200;
 export const POPUP_MAX_TOAST_COUNT = 3;
 

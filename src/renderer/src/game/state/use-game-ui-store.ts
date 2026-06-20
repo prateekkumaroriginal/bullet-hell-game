@@ -213,14 +213,24 @@ export const useGameUiStore = create<GameUiState>((set) => ({
     }));
   },
   prunePopupToasts: (currentTimeMs, toastDurationMs) => {
-    set((state) => ({
-      popups: {
-        ...state.popups,
-        toasts: state.popups.toasts.filter(
-          (toast) => currentTimeMs - toast.shownAtMs < toastDurationMs,
-        ),
-      },
-    }));
+    set((state) => {
+      const hasExpiredToast = state.popups.toasts.some(
+        (toast) => currentTimeMs - toast.shownAtMs >= toastDurationMs
+      );
+
+      if (!hasExpiredToast) {
+        return state;
+      }
+
+      return {
+        popups: {
+          ...state.popups,
+          toasts: state.popups.toasts.filter(
+            (toast) => currentTimeMs - toast.shownAtMs < toastDurationMs
+          )
+        }
+      };
+    });
   },
   resetGameUiState: () => {
     set({

@@ -9,6 +9,7 @@ import {
   DialogContent
 } from "@/components/ui/dialog";
 import {
+  POPUP_MODAL_DISMISSAL_FALLBACK_DELAY_MS,
   POPUP_TOAST_DURATION_MS,
   SKILL_POPUP_ID_BY_SKILL
 } from "@/game/config/popup-config";
@@ -32,10 +33,20 @@ export const Popups = () => {
   const activeModal = useGameUiStore((state) => state.popups.activeModal);
   const toasts = useGameUiStore((state) => state.popups.toasts);
   const renderedModalRef = useRef(activeModal);
+  const popupDismissalTimeoutRef = useRef<number | null>(null);
   const shownToastIds = useRef(new Set<string>());
   const prunePopupToasts = useGameUiStore(
     (state) => state.prunePopupToasts
   );
+
+  const completeModalDismissal = () => {
+    if (popupDismissalTimeoutRef.current !== null) {
+      window.clearTimeout(popupDismissalTimeoutRef.current);
+      popupDismissalTimeoutRef.current = null;
+    }
+
+    completePopupDismissal();
+  };
 
   useEffect(() => {
     if (toasts.length === 0) {
@@ -146,13 +157,27 @@ export const Popups = () => {
   useEffect(() => {
     if (
       activeModal !== null ||
-      !renderedModalRef.current ||
-      !window.matchMedia(REDUCED_MOTION_MEDIA_QUERY).matches
+      !renderedModalRef.current
     ) {
       return;
     }
 
-    completePopupDismissal();
+    if (window.matchMedia(REDUCED_MOTION_MEDIA_QUERY).matches) {
+      completeModalDismissal();
+      return;
+    }
+
+    popupDismissalTimeoutRef.current = window.setTimeout(
+      completeModalDismissal,
+      POPUP_MODAL_DISMISSAL_FALLBACK_DELAY_MS
+    );
+
+    return () => {
+      if (popupDismissalTimeoutRef.current !== null) {
+        window.clearTimeout(popupDismissalTimeoutRef.current);
+        popupDismissalTimeoutRef.current = null;
+      }
+    };
   }, [activeModal]);
 
   if (activeModal) {
@@ -184,7 +209,7 @@ export const Popups = () => {
             return;
           }
 
-          completePopupDismissal();
+          completeModalDismissal();
         }}
         overlayClassName={POPUP_MODAL_OVERLAY_CLASS}
         showCloseButton={false}
