@@ -36,6 +36,20 @@ export const POPUP_IDS = {
 
 export type PopupId = (typeof POPUP_IDS)[keyof typeof POPUP_IDS];
 
+type EnemyPopupId = (typeof POPUP_IDS)[
+  | "ENEMY_CHASER"
+  | "ENEMY_RUSHER"
+  | "ENEMY_TANK"
+];
+
+type SkillPopupId = (typeof POPUP_IDS)[
+  | "SKILL_RAPID_FIRE"
+  | "SKILL_HEAVY_SHOT"
+  | "SKILL_FLEET_FOOTED"
+  | "SKILL_MAGNET_CORE"
+  | "SKILL_REINFORCED_HULL"
+];
+
 export type PopupDefinition = {
   id: PopupId;
   mode: PopupMode;
@@ -87,7 +101,7 @@ export type PopupState = PopupDefinition & {
 };
 
 const createEnemyPopupDefinition = (
-  id: PopupId,
+  id: EnemyPopupId,
   enemyTypeId: EnemyTypeId,
   visual: PopupVisual
 ): PopupDefinition => {
@@ -126,7 +140,7 @@ const createEnemyPopupDefinition = (
 };
 
 const createSkillPopupDefinition = (
-  id: PopupId,
+  id: SkillPopupId,
   skillId: SkillId
 ): PopupDefinition => {
   const skill = SKILL_DEFINITION_BY_ID[skillId];
@@ -192,7 +206,7 @@ export const ENEMY_POPUP_ID_BY_TYPE = {
   [ENEMY_TYPE_IDS.CHASER]: POPUP_IDS.ENEMY_CHASER,
   [ENEMY_TYPE_IDS.RUSHER]: POPUP_IDS.ENEMY_RUSHER,
   [ENEMY_TYPE_IDS.TANK]: POPUP_IDS.ENEMY_TANK,
-} as const satisfies Record<EnemyTypeId, PopupId>;
+} as const satisfies Record<EnemyTypeId, EnemyPopupId>;
 
 export const SKILL_POPUP_ID_BY_SKILL = {
   [SKILL_IDS.RAPID_FIRE]: POPUP_IDS.SKILL_RAPID_FIRE,
@@ -200,4 +214,4 @@ export const SKILL_POPUP_ID_BY_SKILL = {
   [SKILL_IDS.FLEET_FOOTED]: POPUP_IDS.SKILL_FLEET_FOOTED,
   [SKILL_IDS.MAGNET_CORE]: POPUP_IDS.SKILL_MAGNET_CORE,
   [SKILL_IDS.REINFORCED_HULL]: POPUP_IDS.SKILL_REINFORCED_HULL,
-} as const satisfies Record<SkillId, PopupId>;
+} as const satisfies Record<SkillId, SkillPopupId>;
