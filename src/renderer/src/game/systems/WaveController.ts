@@ -34,6 +34,7 @@ export class WaveController implements GameplayController {
   private readonly spawnTimers: Phaser.Time.TimerEvent[] = [];
   private readonly enemyIntroTimers: Phaser.Time.TimerEvent[] = [];
   private readonly introducedEnemyTypeIds = new Set<EnemyTypeId>();
+  private readonly discoveredEnemyTypeIds = new Set<EnemyTypeId>();
   private advanceTimer?: Phaser.Time.TimerEvent;
   private announcementTimer?: Phaser.Time.TimerEvent;
 
@@ -135,6 +136,7 @@ export class WaveController implements GameplayController {
 
       spawnedGroupEnemyCount += 1;
       this.spawnedEnemyCount += 1;
+      this.publishEnemyDiscovery(enemySpawnToken.typeId);
       this.scheduleEnemyIntro(enemySpawnToken);
       this.publishWaveState();
     };
@@ -221,6 +223,15 @@ export class WaveController implements GameplayController {
     );
 
     this.enemyIntroTimers.push(introTimer);
+  }
+
+  private publishEnemyDiscovery(enemyTypeId: EnemyTypeId): void {
+    if (this.discoveredEnemyTypeIds.has(enemyTypeId)) {
+      return;
+    }
+
+    this.discoveredEnemyTypeIds.add(enemyTypeId);
+    emitGameplayEvent(GAMEPLAY_EVENTS.ENEMY_DISCOVERED, { enemyTypeId });
   }
 
   private hasCurrentWaveFinished(): boolean {

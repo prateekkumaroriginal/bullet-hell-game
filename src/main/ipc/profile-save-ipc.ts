@@ -26,17 +26,18 @@ async function loadProfileSave(): Promise<LoadProfileSaveResult> {
   try {
     const fileText = await readFile(getProfileSavePath(), "utf8");
     const parsedSave = JSON.parse(fileText) as unknown;
+    const result = profileSaveSchema.safeParse(parsedSave);
 
-    if (!isProfileSave(parsedSave)) {
+    if (!result.success) {
       return {
         ok: false,
-        reason: "invalid",
+        reason: "invalid"
       };
     }
 
     return {
       ok: true,
-      save: parsedSave,
+      save: result.data
     };
   } catch (error) {
     if (isFileMissingError(error)) {
@@ -54,7 +55,9 @@ async function loadProfileSave(): Promise<LoadProfileSaveResult> {
 }
 
 async function writeProfileSave(save: ProfileSave): Promise<void> {
-  if (!isProfileSave(save)) {
+  const result = profileSaveSchema.safeParse(save);
+
+  if (!result.success) {
     throw new Error("Cannot write invalid profile save.");
   }
 
@@ -64,7 +67,7 @@ async function writeProfileSave(save: ProfileSave): Promise<void> {
   await mkdir(dirname(savePath), { recursive: true });
   await writeFile(
     tempSavePath,
-    `${JSON.stringify(save, null, JSON_INDENT_SPACES)}\n`,
+    `${JSON.stringify(result.data, null, JSON_INDENT_SPACES)}\n`,
     "utf8",
   );
   await rename(tempSavePath, savePath);
@@ -76,10 +79,6 @@ function getProfileSavePath(): string {
     SAVE_DIRECTORY_NAME,
     SAVE_FILE_NAMES.PROFILE,
   );
-}
-
-function isProfileSave(value: unknown): value is ProfileSave {
-  return profileSaveSchema.safeParse(value).success;
 }
 
 function isFileMissingError(error: unknown): boolean {

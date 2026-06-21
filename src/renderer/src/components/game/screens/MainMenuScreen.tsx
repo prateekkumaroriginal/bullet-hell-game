@@ -85,6 +85,13 @@ export const MainMenuScreen = () => {
           >
             PLAY
           </ScreenButton>
+          <ScreenButton
+            onClick={() => {
+              setGameSessionPhase(GAME_SESSION_PHASES.ARCHIVE);
+            }}
+          >
+            ARCHIVE
+          </ScreenButton>
           <ScreenButton onClick={quitToDesktop}>QUIT</ScreenButton>
         </ScreenMenuGrid>
       </div>

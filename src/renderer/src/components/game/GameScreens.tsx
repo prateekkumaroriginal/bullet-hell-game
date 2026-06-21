@@ -17,6 +17,7 @@ import {
 
 const SESSION_PHASE_SCREEN_MAP = {
   [GAME_SESSION_PHASES.IDLE]: OVERLAY_SCREENS.MAIN,
+  [GAME_SESSION_PHASES.ARCHIVE]: OVERLAY_SCREENS.ARCHIVE,
   [GAME_SESSION_PHASES.STAGE_SELECT]: OVERLAY_SCREENS.STAGE_SELECT,
   [GAME_SESSION_PHASES.PLAYING]: OVERLAY_SCREENS.MAIN,
   [GAME_SESSION_PHASES.POPUP]: OVERLAY_SCREENS.MAIN,
@@ -82,6 +83,11 @@ export const GameScreens = () => {
 
       if (gamePhase === GAME_SESSION_PHASES.PAUSED) {
         emitGameplayCommand(GAMEPLAY_COMMANDS.RESUME_GAME, undefined);
+        return;
+      }
+
+      if (gamePhase === GAME_SESSION_PHASES.ARCHIVE) {
+        useGameUiStore.getState().setGameSessionPhase(GAME_SESSION_PHASES.IDLE);
       }
     };
 

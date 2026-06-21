@@ -3,6 +3,7 @@ import {
   ACTIVE_RUN_SAVE_SCHEMA_VERSION,
   PROFILE_SAVE_SCHEMA_VERSION,
 } from "./save-config";
+import { ENEMY_TYPE_IDS, SKILL_IDS } from "./game-ids";
 
 export const activeRunSaveSchema = z.object({
   schemaVersion: z.literal(ACTIVE_RUN_SAVE_SCHEMA_VERSION),
@@ -58,6 +59,8 @@ export const profileSaveSchema = z.object({
   schemaVersion: z.literal(PROFILE_SAVE_SCHEMA_VERSION),
   savedAt: z.string().min(1),
   clearedStageIds: z.array(z.string().min(1)).readonly(),
+  discoveredEnemyIds: z.array(z.enum(ENEMY_TYPE_IDS)).readonly().default([]),
+  unlockedSkillIds: z.array(z.enum(SKILL_IDS)).readonly().default([])
 });
 
 export type ProfileSave = z.infer<typeof profileSaveSchema>;

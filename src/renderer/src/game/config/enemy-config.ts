@@ -1,3 +1,10 @@
+import {
+  ENEMY_TYPE_IDS,
+  type EnemyTypeId
+} from "../../../../shared/game-ids";
+
+export { ENEMY_TYPE_IDS, type EnemyTypeId };
+
 export const ENEMY_POOL_SIZE = 48;
 export const ENEMY_INTRO_DELAY_MS = 1000;
 
@@ -5,17 +12,18 @@ export const ENEMY_SEPARATION_RADIUS_MULTIPLIER = 1.175;
 export const ENEMY_SEPARATION_STRENGTH = 0.5;
 export const ENEMY_OVERLAP_FALLBACK_DISTANCE = 1;
 export const ENEMY_STROKE_WIDTH = 2;
-
-export const ENEMY_TYPE_IDS = {
-  CHASER: "chaser",
-  RUSHER: "rusher",
-  TANK: "tank",
-} as const;
-
-export type EnemyTypeId = (typeof ENEMY_TYPE_IDS)[keyof typeof ENEMY_TYPE_IDS];
+export const ENEMY_PREVIEW_SIZE = 320;
+export const ENEMY_PREVIEW_SCALE = 4;
 
 export type EnemyDefinition = {
   id: EnemyTypeId;
+  name: string;
+  intel: {
+    description: string;
+    speed: string;
+    behavior: string;
+    threat: string;
+  };
   radius: number;
   moveSpeed: number;
   maxHealth: number;
@@ -28,6 +36,13 @@ export type EnemyDefinition = {
 export const ENEMY_DEFINITIONS = {
   [ENEMY_TYPE_IDS.CHASER]: {
     id: ENEMY_TYPE_IDS.CHASER,
+    name: "Chaser",
+    intel: {
+      description: "Tracks directly toward you. Circle wide before the arena gets crowded.",
+      speed: "Fast",
+      behavior: "Tracks player",
+      threat: "Moderate"
+    },
     radius: 18,
     moveSpeed: 95,
     maxHealth: 2,
@@ -38,6 +53,13 @@ export const ENEMY_DEFINITIONS = {
   },
   [ENEMY_TYPE_IDS.RUSHER]: {
     id: ENEMY_TYPE_IDS.RUSHER,
+    name: "Rusher",
+    intel: {
+      description: "Fast and fragile. Clear space early so it cannot force a panic turn.",
+      speed: "Very fast",
+      behavior: "Rushes player",
+      threat: "High"
+    },
     radius: 13,
     moveSpeed: 150,
     maxHealth: 1,
@@ -48,6 +70,13 @@ export const ENEMY_DEFINITIONS = {
   },
   [ENEMY_TYPE_IDS.TANK]: {
     id: ENEMY_TYPE_IDS.TANK,
+    name: "Tank",
+    intel: {
+      description: "Slow, heavy, and worth more experience. Kite it while thinning the smaller enemies.",
+      speed: "Slow",
+      behavior: "Absorbs fire",
+      threat: "Severe"
+    },
     radius: 26,
     moveSpeed: 58,
     maxHealth: 6,
@@ -57,3 +86,7 @@ export const ENEMY_DEFINITIONS = {
     strokeColor: 0xe0dcff,
   },
 } as const satisfies Record<EnemyTypeId, EnemyDefinition>;
+
+export function isEnemyTypeId(enemyTypeId: string): enemyTypeId is EnemyTypeId {
+  return Object.hasOwn(ENEMY_DEFINITIONS, enemyTypeId);
+}

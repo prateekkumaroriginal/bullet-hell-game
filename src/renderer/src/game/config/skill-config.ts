@@ -1,17 +1,14 @@
+import {
+  SKILL_IDS,
+  type SkillId
+} from "../../../../shared/game-ids";
+
+export { SKILL_IDS, type SkillId };
+
 export const SKILL_CHOICE_COUNT = 3;
 export const SKILL_MAX_STACK_COUNT = 5;
 export const SKILL_STAR_COUNT = SKILL_MAX_STACK_COUNT;
 export const MIN_FIRE_COOLDOWN_MULTIPLIER = 0.28;
-
-export const SKILL_IDS = {
-  RAPID_FIRE: "rapidFire",
-  HEAVY_SHOT: "heavyShot",
-  FLEET_FOOTED: "fleetFooted",
-  MAGNET_CORE: "magnetCore",
-  REINFORCED_HULL: "reinforcedHull",
-} as const;
-
-export type SkillId = (typeof SKILL_IDS)[keyof typeof SKILL_IDS];
 
 export type SkillModifierDelta = {
   fireCooldownMultiplierDelta: number;
@@ -27,6 +24,7 @@ export type SkillDefinition = {
   name: string;
   summary: string;
   detail: string;
+  pickupMessage: string;
   modifierDelta: SkillModifierDelta;
 };
 
@@ -70,6 +68,7 @@ export const SKILL_DEFINITIONS = [
     name: "Rapid Fire",
     summary: "Weapon cooldown reduced.",
     detail: "Your cannon cycles faster.",
+    pickupMessage: "Your weapon cycles faster. More shots means more pressure, but aim still matters.",
     modifierDelta: {
       ...EMPTY_MODIFIER_DELTA,
       fireCooldownMultiplierDelta: RAPID_FIRE_COOLDOWN_MULTIPLIER_DELTA,
@@ -80,6 +79,7 @@ export const SKILL_DEFINITIONS = [
     name: "Heavy Shot",
     summary: "Bullets deal more damage.",
     detail: "Each shot hits harder.",
+    pickupMessage: "Each hit lands harder. Strong against tougher targets and crowded lanes.",
     modifierDelta: {
       ...EMPTY_MODIFIER_DELTA,
       bulletDamageBonus: HEAVY_SHOT_DAMAGE_BONUS,
@@ -90,6 +90,7 @@ export const SKILL_DEFINITIONS = [
     name: "Fleet Footed",
     summary: "Movement speed increased.",
     detail: "Strafe through tighter gaps.",
+    pickupMessage: "Your movement speed is up. Use the extra pace to keep escape routes open.",
     modifierDelta: {
       ...EMPTY_MODIFIER_DELTA,
       moveSpeedMultiplierDelta: FLEET_FOOTED_MOVE_MULTIPLIER_DELTA,
@@ -100,6 +101,7 @@ export const SKILL_DEFINITIONS = [
     name: "Magnet Core",
     summary: "XP pickup range expanded.",
     detail: "Orbs bend toward you sooner.",
+    pickupMessage: "Experience orbs pull in from farther away. Safer collection means faster scaling.",
     modifierDelta: {
       ...EMPTY_MODIFIER_DELTA,
       experienceCollectRadiusBonus: MAGNET_CORE_COLLECT_RADIUS_BONUS,
@@ -111,6 +113,7 @@ export const SKILL_DEFINITIONS = [
     name: "Reinforced Hull",
     summary: "Maximum health increased.",
     detail: "Gain room for one more mistake.",
+    pickupMessage: "Maximum health increased. It gives breathing room, not permission to stop dodging.",
     modifierDelta: {
       ...EMPTY_MODIFIER_DELTA,
       maxHealthBonus: REINFORCED_HULL_MAX_HEALTH_BONUS,

@@ -9,6 +9,7 @@ const DEFAULT_STAGE_TOTAL_WAVES = getStageDefinition(DEFAULT_STAGE_ID).waves.len
 
 export const GAME_SESSION_PHASES = {
   IDLE: "idle",
+  ARCHIVE: "archive",
   STAGE_SELECT: "stageSelect",
   PLAYING: "playing",
   POPUP: "popup",
