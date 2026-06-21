@@ -10,14 +10,14 @@ import {
 import {
   ENEMY_TYPE_BY_POPUP_VISUAL,
   POPUP_METADATA_ICONS,
-  POPUP_ENEMY_PREVIEW_SCALE,
-  POPUP_ENEMY_PREVIEW_SIZE,
   type PopupMetadata,
   type PopupState,
   type PopupVisual
 } from "@/game/config/popup-config";
 import {
   ENEMY_DEFINITIONS,
+  ENEMY_PREVIEW_SCALE,
+  ENEMY_PREVIEW_SIZE,
   ENEMY_STROKE_WIDTH
 } from "@/game/config/enemy-config";
 import {
@@ -57,22 +57,22 @@ const EnemyPreview = ({
   visual: keyof typeof ENEMY_TYPE_BY_POPUP_VISUAL;
 }) => {
   const enemyDefinition = ENEMY_DEFINITIONS[ENEMY_TYPE_BY_POPUP_VISUAL[visual]];
-  const center = POPUP_ENEMY_PREVIEW_SIZE / 2;
+  const center = ENEMY_PREVIEW_SIZE / 2;
 
   return (
     <svg
       aria-label={`${enemyDefinition.id} enemy`}
       className="h-full w-full overflow-visible"
       role="img"
-      viewBox={`0 0 ${POPUP_ENEMY_PREVIEW_SIZE} ${POPUP_ENEMY_PREVIEW_SIZE}`}
+      viewBox={`0 0 ${ENEMY_PREVIEW_SIZE} ${ENEMY_PREVIEW_SIZE}`}
     >
       <circle
         cx={center}
         cy={center}
         fill={toCssHexColor(enemyDefinition.fillColor)}
-        r={enemyDefinition.radius * POPUP_ENEMY_PREVIEW_SCALE}
+        r={enemyDefinition.radius * ENEMY_PREVIEW_SCALE}
         stroke={toCssHexColor(enemyDefinition.strokeColor)}
-        strokeWidth={ENEMY_STROKE_WIDTH * POPUP_ENEMY_PREVIEW_SCALE}
+        strokeWidth={ENEMY_STROKE_WIDTH * ENEMY_PREVIEW_SCALE}
       />
     </svg>
   );

@@ -6,7 +6,11 @@ import {
   deleteActiveRunSave,
   writeActiveRunSave,
 } from "../save/active-run-save-service";
-import { markStageCleared } from "../save/profile-save-service";
+import {
+  markEnemyDiscovered,
+  markSkillUnlocked,
+  markStageCleared
+} from "../save/profile-save-service";
 import { POPUP_IDS } from "../config/popup-config";
 import { GAME_SESSION_PHASES } from "./game-session-state";
 import { showPopupOnce } from "./popup-ui-service";
@@ -80,6 +84,18 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
       useGameUiStore.getState().setLearnedSkills(skills.learnedSkills);
     },
   );
+  const removeSkillAcquiredListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.SKILL_ACQUIRED,
+    ({ skillId }) => {
+      void markSkillUnlocked(skillId);
+    }
+  );
+  const removeEnemyDiscoveredListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.ENEMY_DISCOVERED,
+    ({ enemyTypeId }) => {
+      void markEnemyDiscovered(enemyTypeId);
+    }
+  );
   const removeStageCompleteListener = onGameplayEvent(
     GAMEPLAY_EVENTS.STAGE_COMPLETE,
     (gameSession) => {
@@ -144,6 +160,8 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     removeSkillSelectionStartedListener();
     removeSkillSelectionEndedListener();
     removeSkillsChangedListener();
+    removeSkillAcquiredListener();
+    removeEnemyDiscoveredListener();
     removeWaveCompletedListener();
     removeStageCompleteListener();
     removeHealthListener();

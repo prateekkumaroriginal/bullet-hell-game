@@ -1,7 +1,7 @@
 import { PROFILE_SAVE_SCHEMA_VERSION } from "../../../../shared/save-config";
-import {
-  type ProfileSave,
-} from "../../../../shared/save-types";
+import { type ProfileSave } from "../../../../shared/save-types";
+import { type EnemyTypeId } from "../config/enemy-config";
+import { type SkillId } from "../config/skill-config";
 import { STAGE_DEFINITIONS, type StageId } from "../config/stage-config";
 
 export type ValidatedProfileSave = Omit<ProfileSave, "clearedStageIds"> & {
@@ -18,13 +18,19 @@ export type LoadValidatedProfileSaveResult =
       reason: "missing" | "invalid" | "unavailable";
     };
 
+type ProfileMutation = (
+  profile: ValidatedProfileSave
+) => ValidatedProfileSave;
+
+let profileMutationQueueTail: Promise<unknown> = Promise.resolve();
+
 export async function loadProfileSave(): Promise<LoadValidatedProfileSaveResult> {
   const result = await window.electron?.profileSave.loadProfileSave();
 
   if (!result) {
     return {
       ok: false,
-      reason: "unavailable",
+      reason: "unavailable"
     };
   }
 
@@ -34,33 +40,86 @@ export async function loadProfileSave(): Promise<LoadValidatedProfileSaveResult>
 
   return {
     ok: true,
-    save: {
-      ...result.save,
-      clearedStageIds: result.save.clearedStageIds.filter(isKnownStageId),
-    },
+    save: validateProfileSave(result.save)
   };
 }
 
-export async function markStageCleared(
-  stageId: StageId,
+export function markStageCleared(
+  stageId: StageId
 ): Promise<ValidatedProfileSave> {
-  const existingProfile = await loadProfileSave();
-  const clearedStageIds = existingProfile.ok
-    ? existingProfile.save.clearedStageIds.filter(isKnownStageId)
-    : [];
+  return updateProfileSave((profile) => ({
+    ...profile,
+    clearedStageIds: appendUnique(profile.clearedStageIds, stageId)
+  }));
+}
 
-  const nextClearedStageIds = clearedStageIds.includes(stageId)
-    ? clearedStageIds
-    : [...clearedStageIds, stageId];
-  const save = {
+export function markEnemyDiscovered(
+  enemyTypeId: EnemyTypeId
+): Promise<ValidatedProfileSave> {
+  return updateProfileSave((profile) => ({
+    ...profile,
+    discoveredEnemyIds: appendUnique(
+      profile.discoveredEnemyIds,
+      enemyTypeId
+    )
+  }));
+}
+
+export function markSkillUnlocked(
+  skillId: SkillId
+): Promise<ValidatedProfileSave> {
+  return updateProfileSave((profile) => ({
+    ...profile,
+    unlockedSkillIds: appendUnique(profile.unlockedSkillIds, skillId)
+  }));
+}
+
+function updateProfileSave(
+  mutateProfile: ProfileMutation
+): Promise<ValidatedProfileSave> {
+  const mutation = profileMutationQueueTail.then(async () => {
+    const existingProfile = await loadProfileSave();
+    const currentProfile = existingProfile.ok
+      ? existingProfile.save
+      : createEmptyProfileSave();
+    const nextProfile = mutateProfile(currentProfile);
+    const save = {
+      ...nextProfile,
+      savedAt: new Date().toISOString()
+    } satisfies ProfileSave;
+
+    await window.electron?.profileSave.writeProfileSave(save);
+
+    return validateProfileSave(save);
+  });
+
+  profileMutationQueueTail = mutation.catch(() => undefined);
+
+  return mutation;
+}
+
+function createEmptyProfileSave(): ValidatedProfileSave {
+  return {
     schemaVersion: PROFILE_SAVE_SCHEMA_VERSION,
     savedAt: new Date().toISOString(),
-    clearedStageIds: nextClearedStageIds,
-  } satisfies ProfileSave;
+    clearedStageIds: [],
+    discoveredEnemyIds: [],
+    unlockedSkillIds: []
+  };
+}
 
-  await window.electron?.profileSave.writeProfileSave(save);
+function validateProfileSave(save: ProfileSave): ValidatedProfileSave {
+  return {
+    ...save,
+    clearedStageIds: save.clearedStageIds.filter(isKnownStageId)
+  };
+}
 
-  return save;
+function appendUnique<Value>(
+  values: readonly Value[],
+  value: Value
+): readonly Value[] {
+  return values.includes(value) ? values : [...values, value];
 }
 
 function isKnownStageId(stageId: string): stageId is StageId {

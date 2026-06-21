@@ -5,9 +5,11 @@ import { PauseMenuScreen } from "./PauseMenuScreen";
 import { SkillSelectScreen } from "./SkillSelectScreen";
 import { StageSelectScreen } from "./StageSelectScreen";
 import { StageCompleteScreen } from "./StageCompleteScreen";
+import { ArchiveScreen } from "./ArchiveScreen";
 
 export const OVERLAY_SCREENS = {
   MAIN: "main",
+  ARCHIVE: "archive",
   STAGE_SELECT: "stageSelect",
   SKILL_SELECT: "skillSelect",
   PAUSE: "pause",
@@ -21,6 +23,7 @@ type ScreenComponent = () => ReactNode;
 
 export const SCREEN_COMPONENTS = {
   [OVERLAY_SCREENS.MAIN]: MainMenuScreen,
+  [OVERLAY_SCREENS.ARCHIVE]: ArchiveScreen,
   [OVERLAY_SCREENS.STAGE_SELECT]: StageSelectScreen,
   [OVERLAY_SCREENS.SKILL_SELECT]: SkillSelectScreen,
   [OVERLAY_SCREENS.PAUSE]: PauseMenuScreen,

@@ -1,5 +1,13 @@
-import { ENEMY_TYPE_IDS, type EnemyTypeId } from "./enemy-config";
-import { SKILL_IDS, type SkillId } from "./skill-config";
+import {
+  ENEMY_DEFINITIONS,
+  ENEMY_TYPE_IDS,
+  type EnemyTypeId
+} from "./enemy-config";
+import {
+  SKILL_DEFINITION_BY_ID,
+  SKILL_IDS,
+  type SkillId
+} from "./skill-config";
 
 export const POPUP_STORAGE_KEY = "bullet-hell-game:seen-popups";
 export const POPUP_MODAL_DISMISSAL_FALLBACK_DELAY_MS = 1000;
@@ -53,9 +61,6 @@ export const ENEMY_TYPE_BY_POPUP_VISUAL = {
   [POPUP_VISUALS.TANK]: ENEMY_TYPE_IDS.TANK
 } as const satisfies Partial<Record<PopupVisual, EnemyTypeId>>;
 
-export const POPUP_ENEMY_PREVIEW_SIZE = 320;
-export const POPUP_ENEMY_PREVIEW_SCALE = 4;
-
 export const POPUP_METADATA_ICONS = {
   SPEED: "speed",
   BEHAVIOR: "behavior",
@@ -81,6 +86,60 @@ export type PopupState = PopupDefinition & {
   shownAtMs: number;
 };
 
+const createEnemyPopupDefinition = (
+  id: PopupId,
+  enemyTypeId: EnemyTypeId,
+  visual: PopupVisual
+): PopupDefinition => {
+  const enemy = ENEMY_DEFINITIONS[enemyTypeId];
+
+  return {
+    id,
+    mode: POPUP_MODES.MODAL,
+    eyebrow: "Enemy Intel",
+    title: enemy.name,
+    body: enemy.intel.description,
+    presentation: {
+      visual,
+      metadata: [
+        {
+          label: "Speed",
+          value: enemy.intel.speed,
+          icon: POPUP_METADATA_ICONS.SPEED,
+          tone: "cyan"
+        },
+        {
+          label: "Behavior",
+          value: enemy.intel.behavior,
+          icon: POPUP_METADATA_ICONS.BEHAVIOR,
+          tone: "violet"
+        },
+        {
+          label: "Threat",
+          value: enemy.intel.threat,
+          icon: POPUP_METADATA_ICONS.THREAT,
+          tone: "rose"
+        }
+      ]
+    }
+  };
+};
+
+const createSkillPopupDefinition = (
+  id: PopupId,
+  skillId: SkillId
+): PopupDefinition => {
+  const skill = SKILL_DEFINITION_BY_ID[skillId];
+
+  return {
+    id,
+    mode: POPUP_MODES.TOAST,
+    eyebrow: "Skill Online",
+    title: skill.name,
+    body: skill.pickupMessage
+  };
+};
+
 export const POPUP_DEFINITIONS = {
   [POPUP_IDS.CONTROLS]: {
     id: POPUP_IDS.CONTROLS,
@@ -92,131 +151,41 @@ export const POPUP_DEFINITIONS = {
       visual: POPUP_VISUALS.CONTROLS
     }
   },
-  [POPUP_IDS.ENEMY_CHASER]: {
-    id: POPUP_IDS.ENEMY_CHASER,
-    mode: POPUP_MODES.MODAL,
-    eyebrow: "Enemy Intel",
-    title: "Chaser",
-    body: "Tracks directly toward you. Circle wide before the arena gets crowded.",
-    presentation: {
-      visual: POPUP_VISUALS.CHASER,
-      metadata: [
-        {
-          label: "Speed",
-          value: "Fast",
-          icon: POPUP_METADATA_ICONS.SPEED,
-          tone: "cyan"
-        },
-        {
-          label: "Behavior",
-          value: "Tracks player",
-          icon: POPUP_METADATA_ICONS.BEHAVIOR,
-          tone: "violet"
-        },
-        {
-          label: "Threat",
-          value: "Moderate",
-          icon: POPUP_METADATA_ICONS.THREAT,
-          tone: "rose"
-        }
-      ]
-    }
-  },
-  [POPUP_IDS.ENEMY_RUSHER]: {
-    id: POPUP_IDS.ENEMY_RUSHER,
-    mode: POPUP_MODES.MODAL,
-    eyebrow: "Enemy Intel",
-    title: "Rusher",
-    body: "Fast and fragile. Clear space early so it cannot force a panic turn.",
-    presentation: {
-      visual: POPUP_VISUALS.RUSHER,
-      metadata: [
-        {
-          label: "Speed",
-          value: "Very fast",
-          icon: POPUP_METADATA_ICONS.SPEED,
-          tone: "cyan"
-        },
-        {
-          label: "Behavior",
-          value: "Rushes player",
-          icon: POPUP_METADATA_ICONS.BEHAVIOR,
-          tone: "violet"
-        },
-        {
-          label: "Threat",
-          value: "High",
-          icon: POPUP_METADATA_ICONS.THREAT,
-          tone: "rose"
-        }
-      ]
-    }
-  },
-  [POPUP_IDS.ENEMY_TANK]: {
-    id: POPUP_IDS.ENEMY_TANK,
-    mode: POPUP_MODES.MODAL,
-    eyebrow: "Enemy Intel",
-    title: "Tank",
-    body: "Slow, heavy, and worth more experience. Kite it while thinning the smaller enemies.",
-    presentation: {
-      visual: POPUP_VISUALS.TANK,
-      metadata: [
-        {
-          label: "Speed",
-          value: "Slow",
-          icon: POPUP_METADATA_ICONS.SPEED,
-          tone: "cyan"
-        },
-        {
-          label: "Behavior",
-          value: "Absorbs fire",
-          icon: POPUP_METADATA_ICONS.BEHAVIOR,
-          tone: "violet"
-        },
-        {
-          label: "Threat",
-          value: "Severe",
-          icon: POPUP_METADATA_ICONS.THREAT,
-          tone: "rose"
-        }
-      ]
-    }
-  },
-  [POPUP_IDS.SKILL_RAPID_FIRE]: {
-    id: POPUP_IDS.SKILL_RAPID_FIRE,
-    mode: POPUP_MODES.TOAST,
-    eyebrow: "Skill Online",
-    title: "Rapid Fire",
-    body: "Your weapon cycles faster. More shots means more pressure, but aim still matters.",
-  },
-  [POPUP_IDS.SKILL_HEAVY_SHOT]: {
-    id: POPUP_IDS.SKILL_HEAVY_SHOT,
-    mode: POPUP_MODES.TOAST,
-    eyebrow: "Skill Online",
-    title: "Heavy Shot",
-    body: "Each hit lands harder. Strong against tougher targets and crowded lanes.",
-  },
-  [POPUP_IDS.SKILL_FLEET_FOOTED]: {
-    id: POPUP_IDS.SKILL_FLEET_FOOTED,
-    mode: POPUP_MODES.TOAST,
-    eyebrow: "Skill Online",
-    title: "Fleet Footed",
-    body: "Your movement speed is up. Use the extra pace to keep escape routes open.",
-  },
-  [POPUP_IDS.SKILL_MAGNET_CORE]: {
-    id: POPUP_IDS.SKILL_MAGNET_CORE,
-    mode: POPUP_MODES.TOAST,
-    eyebrow: "Skill Online",
-    title: "Magnet Core",
-    body: "Experience orbs pull in from farther away. Safer collection means faster scaling.",
-  },
-  [POPUP_IDS.SKILL_REINFORCED_HULL]: {
-    id: POPUP_IDS.SKILL_REINFORCED_HULL,
-    mode: POPUP_MODES.TOAST,
-    eyebrow: "Skill Online",
-    title: "Reinforced Hull",
-    body: "Maximum health increased. It gives breathing room, not permission to stop dodging.",
-  },
+  [POPUP_IDS.ENEMY_CHASER]: createEnemyPopupDefinition(
+    POPUP_IDS.ENEMY_CHASER,
+    ENEMY_TYPE_IDS.CHASER,
+    POPUP_VISUALS.CHASER
+  ),
+  [POPUP_IDS.ENEMY_RUSHER]: createEnemyPopupDefinition(
+    POPUP_IDS.ENEMY_RUSHER,
+    ENEMY_TYPE_IDS.RUSHER,
+    POPUP_VISUALS.RUSHER
+  ),
+  [POPUP_IDS.ENEMY_TANK]: createEnemyPopupDefinition(
+    POPUP_IDS.ENEMY_TANK,
+    ENEMY_TYPE_IDS.TANK,
+    POPUP_VISUALS.TANK
+  ),
+  [POPUP_IDS.SKILL_RAPID_FIRE]: createSkillPopupDefinition(
+    POPUP_IDS.SKILL_RAPID_FIRE,
+    SKILL_IDS.RAPID_FIRE
+  ),
+  [POPUP_IDS.SKILL_HEAVY_SHOT]: createSkillPopupDefinition(
+    POPUP_IDS.SKILL_HEAVY_SHOT,
+    SKILL_IDS.HEAVY_SHOT
+  ),
+  [POPUP_IDS.SKILL_FLEET_FOOTED]: createSkillPopupDefinition(
+    POPUP_IDS.SKILL_FLEET_FOOTED,
+    SKILL_IDS.FLEET_FOOTED
+  ),
+  [POPUP_IDS.SKILL_MAGNET_CORE]: createSkillPopupDefinition(
+    POPUP_IDS.SKILL_MAGNET_CORE,
+    SKILL_IDS.MAGNET_CORE
+  ),
+  [POPUP_IDS.SKILL_REINFORCED_HULL]: createSkillPopupDefinition(
+    POPUP_IDS.SKILL_REINFORCED_HULL,
+    SKILL_IDS.REINFORCED_HULL
+  ),
 } as const satisfies Record<PopupId, PopupDefinition>;
 
 export const ENEMY_POPUP_ID_BY_TYPE = {
