@@ -2,13 +2,9 @@ import Phaser from "phaser";
 import {
   BULLET_DEFAULT_DAMAGE,
   BULLET_DESPAWN_PADDING,
-  BULLET_FILL_COLOR,
-  BULLET_HEIGHT,
   BULLET_POOL_SIZE,
+  BULLET_PROJECTILE_DESIGN,
   BULLET_SPEED,
-  BULLET_STROKE_COLOR,
-  BULLET_STROKE_WIDTH,
-  BULLET_WIDTH,
 } from "../config/bullet-config";
 import { MILLISECONDS_PER_SECOND } from "../config/time-config";
 import { COLLISION_CATEGORIES, type CollisionCategory } from "../config/collision-config";
@@ -16,7 +12,7 @@ import { type SkillRuntimeModifiers } from "../config/skill-config";
 import { ArenaBounds } from "./ArenaBounds";
 
 export type Bullet = {
-  view: Phaser.GameObjects.Ellipse;
+  view: Phaser.GameObjects.Image;
   poolIndex: number;
   x: number;
   y: number;
@@ -44,6 +40,7 @@ export class BulletPool {
     private readonly arenaBounds: ArenaBounds,
     private readonly getSkillModifiers: () => SkillRuntimeModifiers,
   ) {
+    this.ensureBulletTexture();
     this.bullets = Array.from({ length: BULLET_POOL_SIZE }, (_, index) =>
       this.createBullet(index),
     );
@@ -126,15 +123,13 @@ export class BulletPool {
   }
 
   private createBullet(poolIndex: number): Bullet {
-    const view = this.scene.add.ellipse(
+    const view = this.scene.add.image(
       0,
       0,
-      BULLET_WIDTH,
-      BULLET_HEIGHT,
-      BULLET_FILL_COLOR,
+      BULLET_PROJECTILE_DESIGN.texture.key
     );
 
-    view.setStrokeStyle(BULLET_STROKE_WIDTH, BULLET_STROKE_COLOR);
+    view.setBlendMode(Phaser.BlendModes.ADD);
     view.setActive(false);
     view.setVisible(false);
 
@@ -148,6 +143,98 @@ export class BulletPool {
       damage: BULLET_DEFAULT_DAMAGE,
       collisionCategory: COLLISION_CATEGORIES.PLAYER_BULLET,
     };
+  }
+
+  private ensureBulletTexture(): void {
+    if (this.scene.textures.exists(BULLET_PROJECTILE_DESIGN.texture.key)) {
+      return;
+    }
+
+    const graphics = this.scene.add.graphics();
+    const design = BULLET_PROJECTILE_DESIGN;
+    const centerY = design.texture.height / 2;
+
+    graphics.fillStyle(design.colors.shadow, design.alpha.trail);
+    graphics.fillEllipse(
+      design.trail.endX,
+      centerY,
+      design.trail.width,
+      design.trail.height
+    );
+
+    graphics.fillStyle(design.colors.glow, design.alpha.outerGlow);
+    graphics.fillEllipse(
+      design.body.x,
+      design.body.y,
+      design.glow.outer.width,
+      design.glow.outer.height
+    );
+
+    graphics.fillStyle(design.colors.glow, design.alpha.midGlow);
+    graphics.fillEllipse(
+      design.body.x,
+      design.body.y,
+      design.glow.mid.width,
+      design.glow.mid.height
+    );
+
+    graphics.fillStyle(design.colors.trail, design.alpha.trail);
+    graphics.fillEllipse(
+      design.trail.endX,
+      centerY,
+      design.trail.width,
+      design.trail.height
+    );
+
+    graphics.fillStyle(design.colors.glow, design.alpha.body);
+    graphics.fillEllipse(
+      design.body.x,
+      design.body.y,
+      design.body.width,
+      design.body.height
+    );
+    graphics.fillTriangle(
+      design.body.x,
+      design.nose.topY,
+      design.nose.x,
+      centerY,
+      design.body.x,
+      design.nose.bottomY
+    );
+
+    graphics.fillStyle(design.colors.core, design.alpha.core);
+    graphics.fillEllipse(
+      design.body.x,
+      design.body.y,
+      design.core.width,
+      design.core.height
+    );
+
+    graphics.lineStyle(
+      design.trail.streakWidth,
+      design.colors.trail,
+      design.alpha.streak
+    );
+    for (const streak of design.trail.streaks) {
+      graphics.lineStyle(
+        design.trail.streakWidth,
+        design.colors.trail,
+        streak.alpha
+      );
+      graphics.lineBetween(streak.startX, streak.startY, streak.endX, streak.endY);
+    }
+
+    for (const spark of design.trail.sparks) {
+      graphics.fillStyle(design.colors.trail, spark.alpha);
+      graphics.fillPoint(spark.x, spark.y, design.trail.sparkSize);
+    }
+
+    graphics.generateTexture(
+      design.texture.key,
+      design.texture.width,
+      design.texture.height
+    );
+    graphics.destroy();
   }
 
   private deactivateActiveBullet(activeBulletIndex: number): void {
