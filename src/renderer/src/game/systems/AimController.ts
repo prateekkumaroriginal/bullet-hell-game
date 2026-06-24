@@ -7,7 +7,9 @@ import {
   AIM_GUIDE_LENGTH,
   AIM_GUIDE_START_OFFSET,
 } from "../config/aim-config";
+import { PLAYER_SPRITE_FORWARD_ROTATION_OFFSET_RADIANS } from "../config/player-config";
 import { type GameplayController } from "./GameplayController";
+import { type PlayerGameObject } from "./PlayerController";
 
 export class AimController implements GameplayController {
   private readonly aimDirection = new Phaser.Math.Vector2();
@@ -15,7 +17,7 @@ export class AimController implements GameplayController {
 
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly getPlayer: () => Phaser.GameObjects.Arc,
+    private readonly getPlayer: () => PlayerGameObject,
   ) {
     this.aimGuide = scene.add.graphics();
   }
@@ -35,6 +37,9 @@ export class AimController implements GameplayController {
     }
 
     this.aimDirection.normalize();
+    player.setRotation(
+      this.aimDirection.angle() + PLAYER_SPRITE_FORWARD_ROTATION_OFFSET_RADIANS,
+    );
     this.aimGuide.fillStyle(AIM_GUIDE_COLOR, AIM_GUIDE_ALPHA);
     this.drawDottedAimGuide(player);
   }
@@ -50,7 +55,7 @@ export class AimController implements GameplayController {
     this.aimDirection.set(pointer.worldX - player.x, pointer.worldY - player.y);
   }
 
-  private drawDottedAimGuide(player: Phaser.GameObjects.Arc): void {
+  private drawDottedAimGuide(player: PlayerGameObject): void {
     for (
       let distance = AIM_GUIDE_START_OFFSET;
       distance < AIM_GUIDE_LENGTH;

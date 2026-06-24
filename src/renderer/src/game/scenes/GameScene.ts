@@ -5,6 +5,10 @@ import {
   type StageId,
 } from "../config/stage-config";
 import {
+  PLAYER_TEXTURE_KEY,
+  PLAYER_TEXTURE_URL,
+} from "../config/player-config";
+import {
   GAMEPLAY_COMMANDS,
   onGameplayCommand,
 } from "../events/gameplay-commands";
@@ -71,6 +75,10 @@ export class GameScene extends Phaser.Scene {
 
   constructor() {
     super(GAME_SCENE_KEY);
+  }
+
+  preload(): void {
+    this.load.image(PLAYER_TEXTURE_KEY, PLAYER_TEXTURE_URL);
   }
 
   create(): void {

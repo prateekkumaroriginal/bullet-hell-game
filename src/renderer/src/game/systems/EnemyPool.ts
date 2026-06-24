@@ -13,6 +13,7 @@ import {
 import { MILLISECONDS_PER_SECOND } from "../config/time-config";
 import { COLLISION_CATEGORIES, type CollisionCategory } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
+import { type PlayerGameObject } from "./PlayerController";
 
 type EnemySpawnEdge = "top" | "right" | "bottom" | "left";
 
@@ -59,7 +60,7 @@ export class EnemyPool {
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly arenaBounds: ArenaBounds,
-    private readonly getPlayer: () => Phaser.GameObjects.Arc,
+    private readonly getPlayer: () => PlayerGameObject,
   ) {
     this.enemies = Array.from({ length: ENEMY_POOL_SIZE }, (_, index) =>
       this.createEnemy(index),

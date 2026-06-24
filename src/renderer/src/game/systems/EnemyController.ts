@@ -14,7 +14,7 @@ import {
   type EnemySpawnToken
 } from "./EnemyPool";
 import { type GameplayController } from "./GameplayController";
-import { PlayerController } from "./PlayerController";
+import { PlayerController, type PlayerGameObject } from "./PlayerController";
 
 export class EnemyController implements GameplayController {
   private readonly enemyPool: EnemyPool;
@@ -22,7 +22,7 @@ export class EnemyController implements GameplayController {
   constructor(
     scene: Phaser.Scene,
     arenaBounds: ArenaBounds,
-    getPlayer: () => Phaser.GameObjects.Arc,
+    getPlayer: () => PlayerGameObject,
   ) {
     this.enemyPool = new EnemyPool(scene, arenaBounds, getPlayer);
   }
