@@ -110,7 +110,7 @@ export const SkillCard = ({
           {Array.from({ length: SKILL_STAR_COUNT }, (_, stackIndex) => (
             <span
               className="skill-selection-card__stack"
-              data-filled={stackIndex <= choice.stackCount}
+              data-filled={stackIndex < choice.stackCount}
               key={stackIndex}
             />
           ))}
