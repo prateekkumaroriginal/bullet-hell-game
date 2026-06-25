@@ -432,7 +432,7 @@ html {
   width: 2rem;
   height: 2rem;
   flex: none;
-  margin-top: -0.08rem;
+  transform: translateY(-0.08rem);
 }
 
 @media (max-width: 48rem) {
