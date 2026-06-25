@@ -1,5 +1,5 @@
 export const BULLET_POOL_SIZE = 96;
-export const BULLET_SPEED = 520;
+export const BULLET_SPEED = 1000;
 export const BULLET_DEFAULT_DAMAGE = 1;
 export const BULLET_FIRE_COOLDOWN_MS = 1000;
 export const BULLET_DESPAWN_PADDING = 32;
@@ -7,84 +7,117 @@ export const BULLET_DEFAULT_DIRECTION_X = 0;
 export const BULLET_DEFAULT_DIRECTION_Y = -1;
 export const BULLET_HIT_RADIUS = 5;
 
-export type BulletTrailStreak = {
-  startX: number;
-  startY: number;
-  endX: number;
-  endY: number;
-  alpha: number;
-};
-
-export type BulletSpark = {
-  x: number;
-  y: number;
-  alpha: number;
-};
-
 export const BULLET_PROJECTILE_DESIGN = {
   texture: {
-    key: "player-plasma-projectile-green-small",
-    width: 48,
-    height: 20
+    key: "player-energy-capsule-forked-trail-v2",
+    width: 78,
+    height: 14
   },
   colors: {
-    glow: 0x63ff3f,
-    core: 0x8bff5c,
-    trail: 0x37ff2f,
-    shadow: 0x0d1b12
+    glow: 0x5dff17,
+    rim: 0x96ff23,
+    body: 0x2fd915,
+    core: 0x0f7c19,
+    highlight: 0xc8ff3d,
+    trail: 0x38ff20
   },
   alpha: {
-    outerGlow: 0.24,
-    midGlow: 0.42,
-    body: 0.76,
-    core: 0.88,
-    trail: 0.3,
-    streak: 0.45
+    outerGlow: 0.22,
+    innerGlow: 0.44,
+    body: 0.78,
+    core: 0.64,
+    rim: 0.95,
+    highlight: 0.78,
+    capHighlight: 0.5,
+    trailGlow: 0.2,
+    trail: 0.82,
+    trailCore: 0.58
   },
-  body: {
-    x: 27,
-    y: 10,
-    width: 30,
-    height: 12
+  trail: {
+    center: {
+      startX: 1,
+      startY: 7,
+      endX: 55,
+      endY: 7,
+      width: 1
+    },
+    upper: {
+      startX: 4,
+      startY: 4,
+      endX: 55,
+      endY: 7,
+      width: 1
+    },
+    lower: {
+      startX: 4,
+      startY: 10,
+      endX: 55,
+      endY: 7,
+      width: 1
+    }
   },
   glow: {
     outer: {
-      width: 42,
-      height: 18
+      x: 51,
+      y: 2,
+      width: 26,
+      height: 10,
+      radius: 5
     },
-    mid: {
-      width: 35,
-      height: 14
+    inner: {
+      x: 54,
+      y: 4,
+      width: 20,
+      height: 6,
+      radius: 3
     }
   },
+  body: {
+    x: 55,
+    y: 4,
+    width: 18,
+    height: 6,
+    radius: 3
+  },
   core: {
-    width: 22,
-    height: 6
+    x: 58,
+    y: 5,
+    width: 12,
+    height: 4,
+    radius: 2
   },
-  nose: {
-    x: 45,
-    topY: 7,
-    bottomY: 13
+  rim: {
+    x: 54,
+    y: 3,
+    width: 20,
+    height: 8,
+    radius: 4,
+    lineWidth: 1
   },
-  trail: {
-    endX: 22,
-    width: 22,
-    height: 11,
-    streakWidth: 1,
-    sparkSize: 1,
-    streaks: [
-      { startX: 1, startY: 6, endX: 19, endY: 7, alpha: 0.38 },
-      { startX: 1, startY: 10, endX: 22, endY: 10, alpha: 0.5 },
-      { startX: 4, startY: 15, endX: 18, endY: 12, alpha: 0.28 },
-      { startX: 9, startY: 3, endX: 26, endY: 5, alpha: 0.24 }
-    ] satisfies readonly BulletTrailStreak[],
-    sparks: [
-      { x: 6, y: 5, alpha: 0.36 },
-      { x: 8, y: 10, alpha: 0.56 },
-      { x: 11, y: 16, alpha: 0.3 },
-      { x: 14, y: 6, alpha: 0.7 },
-      { x: 17, y: 11, alpha: 0.46 },
-      { x: 20, y: 4, alpha: 0.34 }
-    ] satisfies readonly BulletSpark[]
+  highlights: {
+    top: {
+      x: 59,
+      y: 5,
+      width: 10,
+      height: 1
+    },
+    bottom: {
+      x: 59,
+      y: 10,
+      width: 11,
+      height: 1
+    },
+    rightCap: {
+      x: 70,
+      y: 5,
+      width: 1,
+      height: 4
+    },
+    leftCap: {
+      x: 55,
+      y: 5,
+      width: 1,
+      height: 4
+    }
   }
 } as const;

@@ -152,82 +152,125 @@ export class BulletPool {
 
     const graphics = this.scene.add.graphics();
     const design = BULLET_PROJECTILE_DESIGN;
-    const centerY = design.texture.height / 2;
 
-    graphics.fillStyle(design.colors.shadow, design.alpha.trail);
-    graphics.fillEllipse(
-      design.trail.endX,
-      centerY,
-      design.trail.width,
-      design.trail.height
+    graphics.lineStyle(
+      design.trail.center.width,
+      design.colors.trail,
+      design.alpha.trailGlow
     );
-
-    graphics.fillStyle(design.colors.glow, design.alpha.outerGlow);
-    graphics.fillEllipse(
-      design.body.x,
-      design.body.y,
-      design.glow.outer.width,
-      design.glow.outer.height
-    );
-
-    graphics.fillStyle(design.colors.glow, design.alpha.midGlow);
-    graphics.fillEllipse(
-      design.body.x,
-      design.body.y,
-      design.glow.mid.width,
-      design.glow.mid.height
-    );
-
-    graphics.fillStyle(design.colors.trail, design.alpha.trail);
-    graphics.fillEllipse(
-      design.trail.endX,
-      centerY,
-      design.trail.width,
-      design.trail.height
-    );
-
-    graphics.fillStyle(design.colors.glow, design.alpha.body);
-    graphics.fillEllipse(
-      design.body.x,
-      design.body.y,
-      design.body.width,
-      design.body.height
-    );
-    graphics.fillTriangle(
-      design.body.x,
-      design.nose.topY,
-      design.nose.x,
-      centerY,
-      design.body.x,
-      design.nose.bottomY
-    );
-
-    graphics.fillStyle(design.colors.core, design.alpha.core);
-    graphics.fillEllipse(
-      design.body.x,
-      design.body.y,
-      design.core.width,
-      design.core.height
+    graphics.lineBetween(
+      design.trail.center.startX,
+      design.trail.center.startY,
+      design.trail.center.endX,
+      design.trail.center.endY
     );
 
     graphics.lineStyle(
-      design.trail.streakWidth,
+      design.trail.upper.width,
       design.colors.trail,
-      design.alpha.streak
+      design.alpha.trail
     );
-    for (const streak of design.trail.streaks) {
-      graphics.lineStyle(
-        design.trail.streakWidth,
-        design.colors.trail,
-        streak.alpha
-      );
-      graphics.lineBetween(streak.startX, streak.startY, streak.endX, streak.endY);
-    }
+    graphics.lineBetween(
+      design.trail.upper.startX,
+      design.trail.upper.startY,
+      design.trail.upper.endX,
+      design.trail.upper.endY
+    );
+    graphics.lineBetween(
+      design.trail.lower.startX,
+      design.trail.lower.startY,
+      design.trail.lower.endX,
+      design.trail.lower.endY
+    );
 
-    for (const spark of design.trail.sparks) {
-      graphics.fillStyle(design.colors.trail, spark.alpha);
-      graphics.fillPoint(spark.x, spark.y, design.trail.sparkSize);
-    }
+    graphics.lineStyle(
+      design.trail.center.width,
+      design.colors.highlight,
+      design.alpha.trailCore
+    );
+    graphics.lineBetween(
+      design.trail.center.startX,
+      design.trail.center.startY,
+      design.trail.center.endX,
+      design.trail.center.endY
+    );
+
+    graphics.fillStyle(design.colors.glow, design.alpha.outerGlow);
+    graphics.fillRoundedRect(
+      design.glow.outer.x,
+      design.glow.outer.y,
+      design.glow.outer.width,
+      design.glow.outer.height,
+      design.glow.outer.radius
+    );
+
+    graphics.fillStyle(design.colors.glow, design.alpha.innerGlow);
+    graphics.fillRoundedRect(
+      design.glow.inner.x,
+      design.glow.inner.y,
+      design.glow.inner.width,
+      design.glow.inner.height,
+      design.glow.inner.radius
+    );
+
+    graphics.fillStyle(design.colors.body, design.alpha.body);
+    graphics.fillRoundedRect(
+      design.body.x,
+      design.body.y,
+      design.body.width,
+      design.body.height,
+      design.body.radius
+    );
+
+    graphics.fillStyle(design.colors.core, design.alpha.core);
+    graphics.fillRoundedRect(
+      design.core.x,
+      design.core.y,
+      design.core.width,
+      design.core.height,
+      design.core.radius
+    );
+
+    graphics.lineStyle(
+      design.rim.lineWidth,
+      design.colors.rim,
+      design.alpha.rim
+    );
+    graphics.strokeRoundedRect(
+      design.rim.x,
+      design.rim.y,
+      design.rim.width,
+      design.rim.height,
+      design.rim.radius
+    );
+
+    graphics.fillStyle(design.colors.highlight, design.alpha.highlight);
+    graphics.fillRect(
+      design.highlights.top.x,
+      design.highlights.top.y,
+      design.highlights.top.width,
+      design.highlights.top.height
+    );
+    graphics.fillRect(
+      design.highlights.bottom.x,
+      design.highlights.bottom.y,
+      design.highlights.bottom.width,
+      design.highlights.bottom.height
+    );
+
+    graphics.fillStyle(design.colors.highlight, design.alpha.capHighlight);
+    graphics.fillRect(
+      design.highlights.rightCap.x,
+      design.highlights.rightCap.y,
+      design.highlights.rightCap.width,
+      design.highlights.rightCap.height
+    );
+    graphics.fillRect(
+      design.highlights.leftCap.x,
+      design.highlights.leftCap.y,
+      design.highlights.leftCap.width,
+      design.highlights.leftCap.height
+    );
 
     graphics.generateTexture(
       design.texture.key,
