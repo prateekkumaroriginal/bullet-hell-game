@@ -8,10 +8,21 @@ export const BULLET_DEFAULT_DIRECTION_Y = -1;
 export const BULLET_HIT_RADIUS = 5;
 
 export const BULLET_PROJECTILE_DESIGN = {
-  texture: {
-    key: "player-energy-capsule-forked-trail-v2",
-    width: 78,
-    height: 14
+  textures: {
+    body: {
+      key: "player-energy-capsule-body-v2",
+      width: 78,
+      height: 14,
+      originX: 0.8205128205128205,
+      originY: 0.5
+    },
+    tail: {
+      key: "player-energy-capsule-beam-tail-v1",
+      width: 98,
+      height: 14,
+      originX: 1,
+      originY: 0.5
+    }
   },
   colors: {
     glow: 0x5dff17,
@@ -34,27 +45,22 @@ export const BULLET_PROJECTILE_DESIGN = {
     trailCore: 0.58
   },
   trail: {
-    center: {
-      startX: 1,
-      startY: 7,
-      endX: 55,
-      endY: 7,
-      width: 1
-    },
-    upper: {
-      startX: 4,
-      startY: 4,
-      endX: 55,
-      endY: 7,
-      width: 1
-    },
-    lower: {
-      startX: 4,
-      startY: 10,
-      endX: 55,
-      endY: 7,
-      width: 1
-    }
+    y: 7,
+    startX: 0,
+    endX: 98,
+    attachOffsetX: -10,
+    glowWidth: 10,
+    beamWidth: 3,
+    coreWidth: 1,
+    growDurationMs: 90,
+    spawnScaleX: 0.04,
+    spawnAlpha: 0.2,
+    fadeSegments: [
+      { startX: 0, endX: 22, alphaScale: 0.12 },
+      { startX: 14, endX: 45, alphaScale: 0.24 },
+      { startX: 37, endX: 71, alphaScale: 0.44 },
+      { startX: 63, endX: 98, alphaScale: 0.78 }
+    ]
   },
   glow: {
     outer: {
