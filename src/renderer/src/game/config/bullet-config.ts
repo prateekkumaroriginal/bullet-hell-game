@@ -17,9 +17,9 @@ export const BULLET_PROJECTILE_DESIGN = {
       originY: 0.5
     },
     tail: {
-      key: "player-energy-capsule-beam-tail-v1",
-      width: 98,
-      height: 14,
+      key: "player-energy-capsule-beam-tail-v5",
+      width: 168,
+      height: 18,
       originX: 1,
       originY: 0.5
     }
@@ -40,27 +40,36 @@ export const BULLET_PROJECTILE_DESIGN = {
     rim: 0.95,
     highlight: 0.78,
     capHighlight: 0.5,
-    trailGlow: 0.2,
-    trail: 0.82,
-    trailCore: 0.58
+    trailGlow: 0.68,
+    trail: 1,
+    trailCore: 0.9
   },
   trail: {
-    y: 7,
+    y: 9,
     startX: 0,
-    endX: 98,
-    attachOffsetX: -10,
-    glowWidth: 10,
-    beamWidth: 3,
-    coreWidth: 1,
+    endX: 168,
+    attachOffsetX: -5,
+    glowWidth: 16,
+    beamWidth: 4.2,
+    coreWidth: 1.2,
     growDurationMs: 90,
     spawnScaleX: 0.04,
     spawnAlpha: 0.2,
-    fadeSegments: [
-      { startX: 0, endX: 22, alphaScale: 0.12 },
-      { startX: 14, endX: 45, alphaScale: 0.24 },
-      { startX: 37, endX: 71, alphaScale: 0.44 },
-      { startX: 63, endX: 98, alphaScale: 0.78 }
-    ]
+    farFadeHold: 0.04,
+    nearSoftFadeStart: 0.9,
+    nearSoftFadeAlphaFloor: 0.28,
+    glowMinWidthScale: 0.45,
+    beamMinWidthScale: 0.24,
+    coreMinWidthScale: 0.08,
+    glowAlphaPower: 2.55,
+    beamAlphaPower: 2.15,
+    coreAlphaPower: 1.85,
+    glowTaperPower: 0.85,
+    beamTaperPower: 1.1,
+    coreTaperPower: 1.35,
+    glowVerticalPower: 1.1,
+    beamVerticalPower: 1.75,
+    coreVerticalPower: 2.8
   },
   glow: {
     outer: {

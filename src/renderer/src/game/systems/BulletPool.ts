@@ -14,6 +14,26 @@ import {
 import { type SkillRuntimeModifiers } from "../config/skill-config";
 import { ArenaBounds } from "./ArenaBounds";
 
+const COLOR_CHANNEL_MAX = 255;
+const COLOR_RED_SHIFT = 16;
+const COLOR_GREEN_SHIFT = 8;
+const COLOR_BYTE_MASK = 0xff;
+const IMAGE_DATA_RED_OFFSET = 0;
+const IMAGE_DATA_GREEN_OFFSET = 1;
+const IMAGE_DATA_BLUE_OFFSET = 2;
+const IMAGE_DATA_ALPHA_OFFSET = 3;
+const IMAGE_DATA_CHANNEL_COUNT = 4;
+
+type RgbColor = {
+  red: number;
+  green: number;
+  blue: number;
+};
+
+type RgbaColor = RgbColor & {
+  alpha: number;
+};
+
 export type Bullet = {
   bodyView: Phaser.GameObjects.Image;
   tailView: Phaser.GameObjects.Image;
@@ -189,72 +209,175 @@ export class BulletPool {
       return;
     }
 
-    const graphics = this.scene.add.graphics();
-
     if (!this.scene.textures.exists(design.textures.tail.key)) {
-      this.drawBulletTailTexture(graphics);
-      graphics.generateTexture(
-        design.textures.tail.key,
-        design.textures.tail.width,
-        design.textures.tail.height
-      );
-      graphics.clear();
+      this.createBulletTailTexture();
     }
 
     if (!this.scene.textures.exists(design.textures.body.key)) {
+      const graphics = this.scene.add.graphics();
+
       this.drawBulletBodyTexture(graphics);
       graphics.generateTexture(
         design.textures.body.key,
         design.textures.body.width,
         design.textures.body.height
       );
-    }
 
-    graphics.destroy();
+      graphics.destroy();
+    }
   }
 
-  private drawBulletTailTexture(graphics: Phaser.GameObjects.Graphics): void {
+  private createBulletTailTexture(): void {
     const design = BULLET_PROJECTILE_DESIGN;
+    const texture = this.scene.textures.createCanvas(
+      design.textures.tail.key,
+      design.textures.tail.width,
+      design.textures.tail.height
+    );
 
-    for (const segment of design.trail.fadeSegments) {
-      graphics.lineStyle(
-        design.trail.glowWidth,
-        design.colors.trail,
-        design.alpha.trailGlow * segment.alphaScale
-      );
-      graphics.lineBetween(
-        segment.startX,
-        design.trail.y,
-        segment.endX,
-        design.trail.y
-      );
+    if (!texture) {
+      return;
     }
 
-    for (const segment of design.trail.fadeSegments) {
-      graphics.lineStyle(
-        design.trail.beamWidth,
-        design.colors.trail,
-        design.alpha.trail * segment.alphaScale
-      );
-      graphics.lineBetween(
-        segment.startX,
-        design.trail.y,
-        segment.endX,
-        design.trail.y
-      );
+    const { context } = texture;
+    const imageData = context.createImageData(
+      design.textures.tail.width,
+      design.textures.tail.height
+    );
+    const trailColor = this.unpackColor(design.colors.trail);
+    const coreColor = this.unpackColor(design.colors.highlight);
+
+    for (let y = 0; y < design.textures.tail.height; y += 1) {
+      for (let x = 0; x < design.textures.tail.width; x += 1) {
+        const pixel = this.resolveTailPixel(x, y, trailColor, coreColor);
+        const offset =
+          (y * design.textures.tail.width + x) * IMAGE_DATA_CHANNEL_COUNT;
+
+        imageData.data[offset + IMAGE_DATA_RED_OFFSET] = pixel.red;
+        imageData.data[offset + IMAGE_DATA_GREEN_OFFSET] = pixel.green;
+        imageData.data[offset + IMAGE_DATA_BLUE_OFFSET] = pixel.blue;
+        imageData.data[offset + IMAGE_DATA_ALPHA_OFFSET] = pixel.alpha;
+      }
     }
 
-    graphics.lineStyle(
+    context.putImageData(imageData, design.trail.startX, 0);
+    texture.refresh();
+  }
+
+  private resolveTailPixel(
+    x: number,
+    y: number,
+    trailColor: RgbColor,
+    coreColor: RgbColor
+  ): RgbaColor {
+    const design = BULLET_PROJECTILE_DESIGN;
+    const progress = Phaser.Math.Clamp(
+      (x - design.trail.startX) / (design.trail.endX - design.trail.startX),
+      0,
+      1
+    );
+    const fadeProgress = Phaser.Math.Clamp(
+      (progress - design.trail.farFadeHold) / (1 - design.trail.farFadeHold),
+      0,
+      1
+    );
+    const nearSoftFadeProgress = Phaser.Math.Clamp(
+      (progress - design.trail.nearSoftFadeStart) /
+        (1 - design.trail.nearSoftFadeStart),
+      0,
+      1
+    );
+    const nearSoftFadeAlpha =
+      1 -
+      (1 - design.trail.nearSoftFadeAlphaFloor) * nearSoftFadeProgress;
+    const glowAlpha = this.resolveTailLayerAlpha(
+      y,
+      fadeProgress,
+      design.trail.glowWidth,
+      design.trail.glowMinWidthScale,
+      design.trail.glowAlphaPower,
+      design.trail.glowTaperPower,
+      design.trail.glowVerticalPower,
+      design.alpha.trailGlow
+    ) * nearSoftFadeAlpha;
+    const beamAlpha = this.resolveTailLayerAlpha(
+      y,
+      fadeProgress,
+      design.trail.beamWidth,
+      design.trail.beamMinWidthScale,
+      design.trail.beamAlphaPower,
+      design.trail.beamTaperPower,
+      design.trail.beamVerticalPower,
+      design.alpha.trail
+    ) * nearSoftFadeAlpha;
+    const coreAlpha = this.resolveTailLayerAlpha(
+      y,
+      fadeProgress,
       design.trail.coreWidth,
-      design.colors.highlight,
+      design.trail.coreMinWidthScale,
+      design.trail.coreAlphaPower,
+      design.trail.coreTaperPower,
+      design.trail.coreVerticalPower,
       design.alpha.trailCore
+    ) * nearSoftFadeAlpha;
+    const alpha = Phaser.Math.Clamp(glowAlpha + beamAlpha + coreAlpha, 0, 1);
+
+    if (alpha === 0) {
+      return { red: 0, green: 0, blue: 0, alpha: 0 };
+    }
+
+    return {
+      red: this.toColorChannel(
+        (trailColor.red * (glowAlpha + beamAlpha) + coreColor.red * coreAlpha) /
+          alpha
+      ),
+      green: this.toColorChannel(
+        (trailColor.green * (glowAlpha + beamAlpha) +
+          coreColor.green * coreAlpha) /
+          alpha
+      ),
+      blue: this.toColorChannel(
+        (trailColor.blue * (glowAlpha + beamAlpha) +
+          coreColor.blue * coreAlpha) /
+          alpha
+      ),
+      alpha: this.toColorChannel(alpha * COLOR_CHANNEL_MAX)
+    };
+  }
+
+  private resolveTailLayerAlpha(
+    y: number,
+    fadeProgress: number,
+    maxWidth: number,
+    minWidthScale: number,
+    alphaPower: number,
+    taperPower: number,
+    verticalPower: number,
+    alpha: number
+  ): number {
+    const design = BULLET_PROJECTILE_DESIGN;
+    const widthScale =
+      minWidthScale + (1 - minWidthScale) * fadeProgress ** taperPower;
+    const radius = (maxWidth * widthScale) / 2;
+    const verticalProgress = Phaser.Math.Clamp(
+      1 - Math.abs(y - design.trail.y) / radius,
+      0,
+      1
     );
-    graphics.lineBetween(
-      design.trail.startX,
-      design.trail.y,
-      design.trail.endX,
-      design.trail.y
-    );
+
+    return alpha * fadeProgress ** alphaPower * verticalProgress ** verticalPower;
+  }
+
+  private unpackColor(color: number): RgbColor {
+    return {
+      red: (color >> COLOR_RED_SHIFT) & COLOR_BYTE_MASK,
+      green: (color >> COLOR_GREEN_SHIFT) & COLOR_BYTE_MASK,
+      blue: color & COLOR_BYTE_MASK
+    };
+  }
+
+  private toColorChannel(value: number): number {
+    return Math.round(Phaser.Math.Clamp(value, 0, COLOR_CHANNEL_MAX));
   }
 
   private drawBulletBodyTexture(graphics: Phaser.GameObjects.Graphics): void {
