@@ -6,11 +6,10 @@ import {
   ENEMY_SEPARATION_RADIUS_MULTIPLIER,
   ENEMY_SEPARATION_STRENGTH,
   ENEMY_SPRITE_DEFINITIONS,
-  ENEMY_STROKE_WIDTH,
   ENEMY_TYPE_IDS,
   type EnemyDefinition,
   type EnemySpriteDefinition,
-  type EnemyTypeId,
+  type EnemyTypeId
 } from "../config/enemy-config";
 import { MILLISECONDS_PER_SECOND } from "../config/time-config";
 import { COLLISION_CATEGORIES, type CollisionCategory } from "../config/collision-config";
@@ -18,15 +17,12 @@ import { ArenaBounds } from "./ArenaBounds";
 import { type PlayerGameObject } from "./PlayerController";
 
 type EnemySpawnEdge = "top" | "right" | "bottom" | "left";
-type EnemyViewMode = "circle" | "sprite";
 
 const ENEMY_SPAWN_EDGES: EnemySpawnEdge[] = ["top", "right", "bottom", "left"];
 
 export type Enemy = {
-  circleView: Phaser.GameObjects.Arc;
   spriteView: Phaser.GameObjects.Sprite;
-  viewMode: EnemyViewMode;
-  spriteDefinition: EnemySpriteDefinition | null;
+  spriteDefinition: EnemySpriteDefinition;
   isActive: boolean;
   poolIndex: number;
   spawnId: number;
@@ -99,8 +95,8 @@ export class EnemyPool {
     enemy.x = spawnPosition.x;
     enemy.y = spawnPosition.y;
     enemy.isActive = true;
-    this.setEnemyViewsPosition(enemy);
-    this.setEnemyViewsActive(enemy, true);
+    this.setEnemySpritePosition(enemy);
+    this.setEnemySpriteActive(enemy, true);
     this.activeEnemies.push(enemy);
     return {
       poolIndex: enemy.poolIndex,
@@ -164,7 +160,6 @@ export class EnemyPool {
 
   destroy(): void {
     for (const enemy of this.enemies) {
-      enemy.circleView.destroy();
       enemy.spriteView.destroy();
     }
 
@@ -175,21 +170,12 @@ export class EnemyPool {
   private createEnemy(poolIndex: number): Enemy {
     const enemyDefinition = ENEMY_DEFINITIONS[ENEMY_TYPE_IDS.CHASER];
     const enemySpriteDefinition = ENEMY_SPRITE_DEFINITIONS[ENEMY_TYPE_IDS.CHASER];
-    const circleView = this.scene.add.circle(
-      0,
-      0,
-      enemyDefinition.radius,
-      enemyDefinition.fillColor
-    );
     const spriteView = this.scene.add.sprite(
       0,
       0,
       enemySpriteDefinition.textureKey
     );
 
-    circleView.setStrokeStyle(ENEMY_STROKE_WIDTH, enemyDefinition.strokeColor);
-    circleView.setActive(false);
-    circleView.setVisible(false);
     spriteView.setDisplaySize(
       enemySpriteDefinition.displaySize,
       enemySpriteDefinition.displaySize
@@ -198,9 +184,7 @@ export class EnemyPool {
     spriteView.setVisible(false);
 
     return {
-      circleView,
       spriteView,
-      viewMode: "sprite",
       spriteDefinition: enemySpriteDefinition,
       isActive: false,
       poolIndex,
@@ -231,28 +215,13 @@ export class EnemyPool {
     enemy.experienceValuePerOrb = enemyDefinition.experienceValuePerOrb;
     const enemySpriteDefinition = ENEMY_SPRITE_DEFINITIONS[enemyDefinition.id];
 
-    if (enemySpriteDefinition) {
-      enemy.viewMode = "sprite";
-      enemy.spriteDefinition = enemySpriteDefinition;
-      enemy.circleView.setActive(false);
-      enemy.circleView.setVisible(false);
-      enemy.spriteView.setTexture(enemySpriteDefinition.textureKey);
-      enemy.spriteView.setDisplaySize(
-        enemySpriteDefinition.displaySize,
-        enemySpriteDefinition.displaySize
-      );
-      enemy.spriteView.play(enemySpriteDefinition.animationKey, true);
-      return;
-    }
-
-    enemy.viewMode = "circle";
-    enemy.spriteDefinition = null;
-    enemy.spriteView.stop();
-    enemy.spriteView.setActive(false);
-    enemy.spriteView.setVisible(false);
-    enemy.circleView.setRadius(enemyDefinition.radius);
-    enemy.circleView.setFillStyle(enemyDefinition.fillColor);
-    enemy.circleView.setStrokeStyle(ENEMY_STROKE_WIDTH, enemyDefinition.strokeColor);
+    enemy.spriteDefinition = enemySpriteDefinition;
+    enemy.spriteView.setTexture(enemySpriteDefinition.textureKey);
+    enemy.spriteView.setDisplaySize(
+      enemySpriteDefinition.displaySize,
+      enemySpriteDefinition.displaySize
+    );
+    enemy.spriteView.play(enemySpriteDefinition.animationKey, true);
   }
 
   private deactivateActiveEnemy(activeEnemyIndex: number): void {
@@ -267,8 +236,8 @@ export class EnemyPool {
     enemy.y = 0;
     enemy.health = enemy.maxHealth;
     enemy.isActive = false;
-    this.setEnemyViewsPosition(enemy);
-    this.setEnemyViewsActive(enemy, false);
+    this.setEnemySpritePosition(enemy);
+    this.setEnemySpriteActive(enemy, false);
     this.freeEnemyIndexes.push(enemy.poolIndex);
   }
 
@@ -320,33 +289,21 @@ export class EnemyPool {
 
   private syncActiveEnemyViews(player: PlayerGameObject): void {
     for (const enemy of this.activeEnemies) {
-      this.setEnemyViewsPosition(enemy);
-
-      if (enemy.viewMode === "sprite") {
-        const rotationOffset =
-          enemy.spriteDefinition?.forwardRotationOffsetRadians ?? 0;
-
-        enemy.spriteView.setRotation(
-          Phaser.Math.Angle.Between(enemy.x, enemy.y, player.x, player.y) +
-            rotationOffset
-        );
-      }
+      this.setEnemySpritePosition(enemy);
+      enemy.spriteView.setRotation(
+        Phaser.Math.Angle.Between(enemy.x, enemy.y, player.x, player.y) +
+          enemy.spriteDefinition.forwardRotationOffsetRadians
+      );
     }
   }
 
-  private setEnemyViewsPosition(enemy: Enemy): void {
-    enemy.circleView.setPosition(enemy.x, enemy.y);
+  private setEnemySpritePosition(enemy: Enemy): void {
     enemy.spriteView.setPosition(enemy.x, enemy.y);
   }
 
-  private setEnemyViewsActive(enemy: Enemy, isActive: boolean): void {
-    const shouldShowCircle = isActive && enemy.viewMode === "circle";
-    const shouldShowSprite = isActive && enemy.viewMode === "sprite";
-
-    enemy.circleView.setActive(shouldShowCircle);
-    enemy.circleView.setVisible(shouldShowCircle);
-    enemy.spriteView.setActive(shouldShowSprite);
-    enemy.spriteView.setVisible(shouldShowSprite);
+  private setEnemySpriteActive(enemy: Enemy, isActive: boolean): void {
+    enemy.spriteView.setActive(isActive);
+    enemy.spriteView.setVisible(isActive);
   }
 
   private setEnemyPosition(enemy: Enemy, x: number, y: number): void {
