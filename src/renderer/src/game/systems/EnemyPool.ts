@@ -5,9 +5,11 @@ import {
   ENEMY_POOL_SIZE,
   ENEMY_SEPARATION_RADIUS_MULTIPLIER,
   ENEMY_SEPARATION_STRENGTH,
+  ENEMY_SPRITE_DEFINITIONS,
   ENEMY_STROKE_WIDTH,
   ENEMY_TYPE_IDS,
   type EnemyDefinition,
+  type EnemySpriteDefinition,
   type EnemyTypeId,
 } from "../config/enemy-config";
 import { MILLISECONDS_PER_SECOND } from "../config/time-config";
@@ -16,11 +18,16 @@ import { ArenaBounds } from "./ArenaBounds";
 import { type PlayerGameObject } from "./PlayerController";
 
 type EnemySpawnEdge = "top" | "right" | "bottom" | "left";
+type EnemyViewMode = "circle" | "sprite";
 
 const ENEMY_SPAWN_EDGES: EnemySpawnEdge[] = ["top", "right", "bottom", "left"];
 
 export type Enemy = {
-  view: Phaser.GameObjects.Arc;
+  circleView: Phaser.GameObjects.Arc;
+  spriteView: Phaser.GameObjects.Sprite;
+  viewMode: EnemyViewMode;
+  spriteDefinition: EnemySpriteDefinition | null;
+  isActive: boolean;
   poolIndex: number;
   spawnId: number;
   typeId: EnemyTypeId;
@@ -91,9 +98,9 @@ export class EnemyPool {
     this.nextSpawnId += 1;
     enemy.x = spawnPosition.x;
     enemy.y = spawnPosition.y;
-    enemy.view.setPosition(enemy.x, enemy.y);
-    enemy.view.setActive(true);
-    enemy.view.setVisible(true);
+    enemy.isActive = true;
+    this.setEnemyViewsPosition(enemy);
+    this.setEnemyViewsActive(enemy, true);
     this.activeEnemies.push(enemy);
     return {
       poolIndex: enemy.poolIndex,
@@ -105,7 +112,7 @@ export class EnemyPool {
   isSpawnActive(spawnToken: EnemySpawnToken): boolean {
     const enemy = this.enemies[spawnToken.poolIndex];
 
-    return enemy.view.active && enemy.spawnId === spawnToken.spawnId;
+    return enemy.isActive && enemy.spawnId === spawnToken.spawnId;
   }
 
   update(delta: number): void {
@@ -125,7 +132,7 @@ export class EnemyPool {
     }
 
     this.separateEnemies();
-    this.syncActiveEnemyViews();
+    this.syncActiveEnemyViews(player);
   }
 
   damageActive(
@@ -157,7 +164,8 @@ export class EnemyPool {
 
   destroy(): void {
     for (const enemy of this.enemies) {
-      enemy.view.destroy();
+      enemy.circleView.destroy();
+      enemy.spriteView.destroy();
     }
 
     this.activeEnemies.length = 0;
@@ -166,19 +174,35 @@ export class EnemyPool {
 
   private createEnemy(poolIndex: number): Enemy {
     const enemyDefinition = ENEMY_DEFINITIONS[ENEMY_TYPE_IDS.CHASER];
-    const view = this.scene.add.circle(
+    const enemySpriteDefinition = ENEMY_SPRITE_DEFINITIONS[ENEMY_TYPE_IDS.CHASER];
+    const circleView = this.scene.add.circle(
       0,
       0,
       enemyDefinition.radius,
-      enemyDefinition.fillColor,
+      enemyDefinition.fillColor
+    );
+    const spriteView = this.scene.add.sprite(
+      0,
+      0,
+      enemySpriteDefinition.textureKey
     );
 
-    view.setStrokeStyle(ENEMY_STROKE_WIDTH, enemyDefinition.strokeColor);
-    view.setActive(false);
-    view.setVisible(false);
+    circleView.setStrokeStyle(ENEMY_STROKE_WIDTH, enemyDefinition.strokeColor);
+    circleView.setActive(false);
+    circleView.setVisible(false);
+    spriteView.setDisplaySize(
+      enemySpriteDefinition.displaySize,
+      enemySpriteDefinition.displaySize
+    );
+    spriteView.setActive(false);
+    spriteView.setVisible(false);
 
     return {
-      view,
+      circleView,
+      spriteView,
+      viewMode: "sprite",
+      spriteDefinition: enemySpriteDefinition,
+      isActive: false,
       poolIndex,
       spawnId: 0,
       typeId: enemyDefinition.id,
@@ -205,9 +229,30 @@ export class EnemyPool {
     enemy.moveSpeed = enemyDefinition.moveSpeed;
     enemy.experienceOrbCount = enemyDefinition.experienceOrbCount;
     enemy.experienceValuePerOrb = enemyDefinition.experienceValuePerOrb;
-    enemy.view.setRadius(enemyDefinition.radius);
-    enemy.view.setFillStyle(enemyDefinition.fillColor);
-    enemy.view.setStrokeStyle(ENEMY_STROKE_WIDTH, enemyDefinition.strokeColor);
+    const enemySpriteDefinition = ENEMY_SPRITE_DEFINITIONS[enemyDefinition.id];
+
+    if (enemySpriteDefinition) {
+      enemy.viewMode = "sprite";
+      enemy.spriteDefinition = enemySpriteDefinition;
+      enemy.circleView.setActive(false);
+      enemy.circleView.setVisible(false);
+      enemy.spriteView.setTexture(enemySpriteDefinition.textureKey);
+      enemy.spriteView.setDisplaySize(
+        enemySpriteDefinition.displaySize,
+        enemySpriteDefinition.displaySize
+      );
+      enemy.spriteView.play(enemySpriteDefinition.animationKey, true);
+      return;
+    }
+
+    enemy.viewMode = "circle";
+    enemy.spriteDefinition = null;
+    enemy.spriteView.stop();
+    enemy.spriteView.setActive(false);
+    enemy.spriteView.setVisible(false);
+    enemy.circleView.setRadius(enemyDefinition.radius);
+    enemy.circleView.setFillStyle(enemyDefinition.fillColor);
+    enemy.circleView.setStrokeStyle(ENEMY_STROKE_WIDTH, enemyDefinition.strokeColor);
   }
 
   private deactivateActiveEnemy(activeEnemyIndex: number): void {
@@ -221,9 +266,9 @@ export class EnemyPool {
     enemy.x = 0;
     enemy.y = 0;
     enemy.health = enemy.maxHealth;
-    enemy.view.setPosition(enemy.x, enemy.y);
-    enemy.view.setActive(false);
-    enemy.view.setVisible(false);
+    enemy.isActive = false;
+    this.setEnemyViewsPosition(enemy);
+    this.setEnemyViewsActive(enemy, false);
     this.freeEnemyIndexes.push(enemy.poolIndex);
   }
 
@@ -273,10 +318,35 @@ export class EnemyPool {
     }
   }
 
-  private syncActiveEnemyViews(): void {
+  private syncActiveEnemyViews(player: PlayerGameObject): void {
     for (const enemy of this.activeEnemies) {
-      enemy.view.setPosition(enemy.x, enemy.y);
+      this.setEnemyViewsPosition(enemy);
+
+      if (enemy.viewMode === "sprite") {
+        const rotationOffset =
+          enemy.spriteDefinition?.forwardRotationOffsetRadians ?? 0;
+
+        enemy.spriteView.setRotation(
+          Phaser.Math.Angle.Between(enemy.x, enemy.y, player.x, player.y) +
+            rotationOffset
+        );
+      }
     }
+  }
+
+  private setEnemyViewsPosition(enemy: Enemy): void {
+    enemy.circleView.setPosition(enemy.x, enemy.y);
+    enemy.spriteView.setPosition(enemy.x, enemy.y);
+  }
+
+  private setEnemyViewsActive(enemy: Enemy, isActive: boolean): void {
+    const shouldShowCircle = isActive && enemy.viewMode === "circle";
+    const shouldShowSprite = isActive && enemy.viewMode === "sprite";
+
+    enemy.circleView.setActive(shouldShowCircle);
+    enemy.circleView.setVisible(shouldShowCircle);
+    enemy.spriteView.setActive(shouldShowSprite);
+    enemy.spriteView.setVisible(shouldShowSprite);
   }
 
   private setEnemyPosition(enemy: Enemy, x: number, y: number): void {

@@ -16,9 +16,7 @@ import {
 } from "@/game/config/popup-config";
 import {
   ENEMY_DEFINITIONS,
-  ENEMY_PREVIEW_SCALE,
-  ENEMY_PREVIEW_SIZE,
-  ENEMY_STROKE_WIDTH
+  ENEMY_SPRITE_DEFINITIONS
 } from "@/game/config/enemy-config";
 import {
   DialogDescription,
@@ -43,9 +41,6 @@ type PopupModalContentProps = {
   popup: PopupState;
 };
 
-const toCssHexColor = (color: number): string =>
-  `#${color.toString(16).padStart(6, "0")}`;
-
 const isEnemyPopupVisual = (
   visual: PopupVisual
 ): visual is keyof typeof ENEMY_TYPE_BY_POPUP_VISUAL =>
@@ -57,31 +52,23 @@ const EnemyPreview = ({
   visual: keyof typeof ENEMY_TYPE_BY_POPUP_VISUAL;
 }) => {
   const enemyDefinition = ENEMY_DEFINITIONS[ENEMY_TYPE_BY_POPUP_VISUAL[visual]];
-  const center = ENEMY_PREVIEW_SIZE / 2;
+  const enemySpriteDefinition = ENEMY_SPRITE_DEFINITIONS[enemyDefinition.id];
 
   return (
-    <svg
+    <img
       aria-label={`${enemyDefinition.id} enemy`}
-      className="h-full w-full overflow-visible"
+      className="h-full w-full object-contain"
+      draggable={false}
       role="img"
-      viewBox={`0 0 ${ENEMY_PREVIEW_SIZE} ${ENEMY_PREVIEW_SIZE}`}
-    >
-      <circle
-        cx={center}
-        cy={center}
-        fill={toCssHexColor(enemyDefinition.fillColor)}
-        r={enemyDefinition.radius * ENEMY_PREVIEW_SCALE}
-        stroke={toCssHexColor(enemyDefinition.strokeColor)}
-        strokeWidth={ENEMY_STROKE_WIDTH * ENEMY_PREVIEW_SCALE}
-      />
-    </svg>
+      src={enemySpriteDefinition.previewUrl}
+    />
   );
 };
 
 const PopupVisualPanel = ({ visual }: { visual?: PopupVisual }) => (
   <div className="popup-intel-visual relative grid min-h-0 flex-[0.9] place-items-center overflow-hidden rounded-[1.35rem] max-md:min-h-64 max-md:flex-none">
     {visual && isEnemyPopupVisual(visual) ? (
-      <div className="relative aspect-square w-[min(82%,19rem)] drop-shadow-[0_0_2rem_rgba(255,49,95,0.28)]">
+      <div className="relative aspect-square w-[min(82%,19rem)] drop-shadow-[0_0_2rem_rgba(34,211,238,0.18)]">
         <EnemyPreview visual={visual} />
       </div>
     ) : (

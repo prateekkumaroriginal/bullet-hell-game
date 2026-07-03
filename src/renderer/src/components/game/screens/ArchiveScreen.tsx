@@ -14,9 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   ENEMY_DEFINITIONS,
-  ENEMY_PREVIEW_SCALE,
-  ENEMY_PREVIEW_SIZE,
-  ENEMY_STROKE_WIDTH,
+  ENEMY_SPRITE_DEFINITIONS,
   type EnemyDefinition,
   type EnemyTypeId
 } from "@/game/config/enemy-config";
@@ -61,9 +59,6 @@ const INTEL_TONE_CLASSES = {
   rose: "text-rose-400"
 } as const satisfies Record<IntelTone, string>;
 
-const toCssHexColor = (color: number): string =>
-  `#${color.toString(16).padStart(6, "0")}`;
-
 const EnemyVisual = ({
   enemy,
   isLocked = false
@@ -71,28 +66,19 @@ const EnemyVisual = ({
   enemy: EnemyDefinition;
   isLocked?: boolean;
 }) => {
-  const center = ENEMY_PREVIEW_SIZE / 2;
+  const enemySpriteDefinition = ENEMY_SPRITE_DEFINITIONS[enemy.id];
 
   return (
-    <svg
+    <img
+      alt=""
       aria-hidden="true"
       className={cn(
-        "h-full w-full overflow-visible transition duration-300",
-        isLocked && "opacity-20 grayscale"
+        "h-full w-full object-contain transition duration-300",
+        isLocked && "opacity-25 grayscale"
       )}
-      viewBox={`0 0 ${ENEMY_PREVIEW_SIZE} ${ENEMY_PREVIEW_SIZE}`}
-    >
-      <circle
-        cx={center}
-        cy={center}
-        fill={isLocked ? "#11151b" : toCssHexColor(enemy.fillColor)}
-        r={enemy.radius * ENEMY_PREVIEW_SCALE}
-        stroke={
-          isLocked ? "#5f6878" : toCssHexColor(enemy.strokeColor)
-        }
-        strokeWidth={ENEMY_STROKE_WIDTH * ENEMY_PREVIEW_SCALE}
-      />
-    </svg>
+      draggable={false}
+      src={enemySpriteDefinition.previewUrl}
+    />
   );
 };
 
