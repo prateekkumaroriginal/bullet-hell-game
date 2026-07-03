@@ -5,6 +5,10 @@ import {
   type StageId,
 } from "../config/stage-config";
 import {
+  PLAYER_TEXTURE_KEY,
+  PLAYER_TEXTURE_URL,
+} from "../config/player-config";
+import {
   GAMEPLAY_COMMANDS,
   onGameplayCommand,
 } from "../events/gameplay-commands";
@@ -28,6 +32,9 @@ import {
   type SkillRuntimeModifiers,
   type SkillStackState,
 } from "../config/skill-config";
+import {
+  ENEMY_SPRITE_DEFINITIONS
+} from "../config/enemy-config";
 import { ENEMY_POPUP_ID_BY_TYPE } from "../config/popup-config";
 import {
   hasSeenPopup,
@@ -73,8 +80,24 @@ export class GameScene extends Phaser.Scene {
     super(GAME_SCENE_KEY);
   }
 
+  preload(): void {
+    this.load.image(PLAYER_TEXTURE_KEY, PLAYER_TEXTURE_URL);
+
+    for (const enemySpriteDefinition of Object.values(ENEMY_SPRITE_DEFINITIONS)) {
+      this.load.spritesheet(
+        enemySpriteDefinition.textureKey,
+        enemySpriteDefinition.textureUrl,
+        {
+          frameWidth: enemySpriteDefinition.frameWidth,
+          frameHeight: enemySpriteDefinition.frameHeight
+        }
+      );
+    }
+  }
+
   create(): void {
     this.hasDestroyedSceneResources = false;
+    this.registerEnemyAnimations();
     useGameUiStore.getState().resetGameUiState();
     this.registerCleanup(bindGameUiStoreToGameplayEvents());
     this.arenaBounds = new ArenaBounds(this);
@@ -85,6 +108,23 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.registerGameplayCommandListeners();
+    if (import.meta.env.DEV) {
+      void import("../debug/install-hitbox-debug-overlay").then(
+        ({ installHitboxDebugOverlay }) => {
+          if (this.hasDestroyedSceneResources) {
+            return;
+          }
+
+          this.registerCleanup(
+            installHitboxDebugOverlay(this, () => ({
+              enemyController: this.enemyController,
+              playerController: this.playerController,
+              weaponController: this.weaponController
+            }))
+          );
+        }
+      );
+    }
     this.registerCleanup(
       onGameplayEvent(GAMEPLAY_EVENTS.STAGE_COMPLETE, () => {
         this.endSession(GAME_SESSION_PHASES.STAGE_COMPLETE);
@@ -100,6 +140,27 @@ export class GameScene extends Phaser.Scene {
       this.destroySceneResources,
       this,
     );
+  }
+
+  private registerEnemyAnimations(): void {
+    for (const enemySpriteDefinition of Object.values(ENEMY_SPRITE_DEFINITIONS)) {
+      if (this.anims.exists(enemySpriteDefinition.animationKey)) {
+        continue;
+      }
+
+      this.anims.create({
+        key: enemySpriteDefinition.animationKey,
+        frames: this.anims.generateFrameNumbers(
+          enemySpriteDefinition.textureKey,
+          {
+            start: enemySpriteDefinition.frameStart,
+            end: enemySpriteDefinition.frameEnd
+          }
+        ),
+        frameRate: enemySpriteDefinition.frameRate,
+        repeat: enemySpriteDefinition.repeat
+      });
+    }
   }
 
   update(_: number, delta: number): void {

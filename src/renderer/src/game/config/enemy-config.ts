@@ -2,6 +2,12 @@ import {
   ENEMY_TYPE_IDS,
   type EnemyTypeId
 } from "../../../../shared/game-ids";
+import chaserTextureUrl from "../../../../../assets/enemies/chaser.png?url";
+import chaserPreviewUrl from "../../../../../assets/enemies/previews/chaser-preview.png?url";
+import rusherPreviewUrl from "../../../../../assets/enemies/previews/rusher-preview.png?url";
+import rusherTextureUrl from "../../../../../assets/enemies/rusher.png?url";
+import tankPreviewUrl from "../../../../../assets/enemies/previews/tank-preview.png?url";
+import tankTextureUrl from "../../../../../assets/enemies/tank.png?url";
 
 export { ENEMY_TYPE_IDS, type EnemyTypeId };
 
@@ -11,9 +17,6 @@ export const ENEMY_INTRO_DELAY_MS = 1000;
 export const ENEMY_SEPARATION_RADIUS_MULTIPLIER = 1.175;
 export const ENEMY_SEPARATION_STRENGTH = 0.5;
 export const ENEMY_OVERLAP_FALLBACK_DISTANCE = 1;
-export const ENEMY_STROKE_WIDTH = 2;
-export const ENEMY_PREVIEW_SIZE = 320;
-export const ENEMY_PREVIEW_SCALE = 4;
 
 export type EnemyDefinition = {
   id: EnemyTypeId;
@@ -29,8 +32,21 @@ export type EnemyDefinition = {
   maxHealth: number;
   experienceOrbCount: number;
   experienceValuePerOrb: number;
-  fillColor: number;
-  strokeColor: number;
+};
+
+export type EnemySpriteDefinition = {
+  textureKey: string;
+  textureUrl: string;
+  previewUrl: string;
+  animationKey: string;
+  frameWidth: number;
+  frameHeight: number;
+  frameStart: number;
+  frameEnd: number;
+  frameRate: number;
+  repeat: number;
+  displaySize: number;
+  forwardRotationOffsetRadians: number;
 };
 
 export const ENEMY_DEFINITIONS = {
@@ -47,9 +63,7 @@ export const ENEMY_DEFINITIONS = {
     moveSpeed: 95,
     maxHealth: 2,
     experienceOrbCount: 1,
-    experienceValuePerOrb: 1,
-    fillColor: 0xff5c7a,
-    strokeColor: 0xffd6df,
+    experienceValuePerOrb: 1
   },
   [ENEMY_TYPE_IDS.RUSHER]: {
     id: ENEMY_TYPE_IDS.RUSHER,
@@ -64,9 +78,7 @@ export const ENEMY_DEFINITIONS = {
     moveSpeed: 150,
     maxHealth: 1,
     experienceOrbCount: 1,
-    experienceValuePerOrb: 1,
-    fillColor: 0xffc857,
-    strokeColor: 0xfff2c2,
+    experienceValuePerOrb: 1
   },
   [ENEMY_TYPE_IDS.TANK]: {
     id: ENEMY_TYPE_IDS.TANK,
@@ -77,16 +89,55 @@ export const ENEMY_DEFINITIONS = {
       behavior: "Absorbs fire",
       threat: "Severe"
     },
-    radius: 26,
+    radius: 42,
     moveSpeed: 58,
     maxHealth: 6,
     experienceOrbCount: 3,
-    experienceValuePerOrb: 1,
-    fillColor: 0x8e7cff,
-    strokeColor: 0xe0dcff,
-  },
+    experienceValuePerOrb: 1
+  }
 } as const satisfies Record<EnemyTypeId, EnemyDefinition>;
 
-export function isEnemyTypeId(enemyTypeId: string): enemyTypeId is EnemyTypeId {
-  return Object.hasOwn(ENEMY_DEFINITIONS, enemyTypeId);
-}
+export const ENEMY_SPRITE_DEFINITIONS = {
+  [ENEMY_TYPE_IDS.CHASER]: {
+    textureKey: "chaser",
+    textureUrl: chaserTextureUrl,
+    previewUrl: chaserPreviewUrl,
+    animationKey: "chaser-move",
+    frameWidth: 48,
+    frameHeight: 48,
+    frameStart: 0,
+    frameEnd: 7,
+    frameRate: 8,
+    repeat: -1,
+    displaySize: 48,
+    forwardRotationOffsetRadians: Math.PI / 2
+  },
+  [ENEMY_TYPE_IDS.RUSHER]: {
+    textureKey: "rusher",
+    textureUrl: rusherTextureUrl,
+    previewUrl: rusherPreviewUrl,
+    animationKey: "rusher-move",
+    frameWidth: 50,
+    frameHeight: 50,
+    frameStart: 0,
+    frameEnd: 7,
+    frameRate: 12,
+    repeat: -1,
+    displaySize: 50,
+    forwardRotationOffsetRadians: Math.PI / 2
+  },
+  [ENEMY_TYPE_IDS.TANK]: {
+    textureKey: "tank",
+    textureUrl: tankTextureUrl,
+    previewUrl: tankPreviewUrl,
+    animationKey: "tank-move",
+    frameWidth: 84,
+    frameHeight: 84,
+    frameStart: 0,
+    frameEnd: 7,
+    frameRate: 8,
+    repeat: -1,
+    displaySize: 84,
+    forwardRotationOffsetRadians: Math.PI / 2
+  }
+} as const satisfies Record<EnemyTypeId, EnemySpriteDefinition>;

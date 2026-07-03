@@ -1,14 +1,13 @@
 import Phaser from "phaser";
 import {
   PLAYER_DAMAGE_INVULNERABILITY_MS,
-  PLAYER_FILL_COLOR,
+  PLAYER_DISPLAY_SIZE,
   PLAYER_MAX_HEALTH,
   PLAYER_MOVE_SPEED,
   PLAYER_RADIUS,
   PLAYER_START_X,
   PLAYER_START_Y,
-  PLAYER_STROKE_COLOR,
-  PLAYER_STROKE_WIDTH,
+  PLAYER_TEXTURE_KEY,
 } from "../config/player-config";
 import { MILLISECONDS_PER_SECOND } from "../config/time-config";
 import {
@@ -26,9 +25,11 @@ type MovementKeys = {
   right: Phaser.Input.Keyboard.Key;
 };
 
+export type PlayerGameObject = Phaser.GameObjects.Image;
+
 export class PlayerController implements GameplayController {
   private readonly movement = new Phaser.Math.Vector2();
-  private readonly player: Phaser.GameObjects.Arc;
+  private readonly player: PlayerGameObject;
   private readonly cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private readonly movementKeys?: MovementKeys;
   private currentHealth = PLAYER_MAX_HEALTH;
@@ -49,13 +50,12 @@ export class PlayerController implements GameplayController {
       0,
       this.currentMaxHealth,
     );
-    this.player = scene.add.circle(
+    this.player = scene.add.image(
       PLAYER_START_X,
       PLAYER_START_Y,
-      PLAYER_RADIUS,
-      PLAYER_FILL_COLOR,
+      PLAYER_TEXTURE_KEY,
     );
-    this.player.setStrokeStyle(PLAYER_STROKE_WIDTH, PLAYER_STROKE_COLOR);
+    this.player.setDisplaySize(PLAYER_DISPLAY_SIZE, PLAYER_DISPLAY_SIZE);
 
     this.cursors = scene.input.keyboard?.createCursorKeys();
 
@@ -73,7 +73,7 @@ export class PlayerController implements GameplayController {
     this.publishHealth();
   }
 
-  get gameObject(): Phaser.GameObjects.Arc {
+  get gameObject(): PlayerGameObject {
     return this.player;
   }
 

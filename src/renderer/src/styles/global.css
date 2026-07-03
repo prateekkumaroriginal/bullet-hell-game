@@ -532,25 +532,6 @@ html {
       linear both;
 }
 
-@keyframes wave-announcement-debug-progress {
-  from {
-    left: 0;
-  }
-  to {
-    left: 100%;
-  }
-}
-
-.wave-announcement-debug-heartbeat {
-  left: var(--wave-announcement-heartbeat-start);
-  right: calc(100% - var(--wave-announcement-heartbeat-end));
-}
-
-.wave-announcement-debug-progress {
-  animation: wave-announcement-debug-progress var(--wave-announcement-duration)
-    linear infinite;
-}
-
 @keyframes tutorial-popup-modal-enter {
   0% {
     filter: blur(var(--tutorial-popup-modal-enter-blur));

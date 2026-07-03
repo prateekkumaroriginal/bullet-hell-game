@@ -4,6 +4,7 @@ import {
   BULLET_DEFAULT_DIRECTION_Y,
   BULLET_FIRE_COOLDOWN_MS,
 } from "../config/bullet-config";
+import { PLAYER_BULLET_MUZZLE_OFFSET } from "../config/player-config";
 import {
   MIN_FIRE_COOLDOWN_MULTIPLIER,
   type SkillRuntimeModifiers,
@@ -11,15 +12,17 @@ import {
 import { ArenaBounds } from "./ArenaBounds";
 import { BulletPool } from "./BulletPool";
 import { type GameplayController } from "./GameplayController";
+import { type PlayerGameObject } from "./PlayerController";
 
 export class WeaponController implements GameplayController {
   private readonly bulletPool: BulletPool;
+  private readonly fireDirection = new Phaser.Math.Vector2();
   private fireCooldownRemainingMs = 0;
 
   constructor(
     private readonly scene: Phaser.Scene,
     arenaBounds: ArenaBounds,
-    private readonly getPlayer: () => Phaser.GameObjects.Arc,
+    private readonly getPlayer: () => PlayerGameObject,
     private readonly updateAimDirection: () => void,
     private readonly getAimDirection: () => Phaser.Math.Vector2,
     private readonly getSkillModifiers: () => SkillRuntimeModifiers,
@@ -57,16 +60,22 @@ export class WeaponController implements GameplayController {
     this.updateAimDirection();
 
     const aimDirection = this.getAimDirection();
+    this.fireDirection.set(aimDirection.x, aimDirection.y);
 
-    if (aimDirection.lengthSq() === 0) {
-      aimDirection.set(BULLET_DEFAULT_DIRECTION_X, BULLET_DEFAULT_DIRECTION_Y);
+    if (this.fireDirection.lengthSq() === 0) {
+      this.fireDirection.set(
+        BULLET_DEFAULT_DIRECTION_X,
+        BULLET_DEFAULT_DIRECTION_Y,
+      );
     }
 
+    this.fireDirection.normalize();
+
     this.bulletPool.spawn({
-      x: player.x,
-      y: player.y,
-      directionX: aimDirection.x,
-      directionY: aimDirection.y,
+      x: player.x + this.fireDirection.x * PLAYER_BULLET_MUZZLE_OFFSET,
+      y: player.y + this.fireDirection.y * PLAYER_BULLET_MUZZLE_OFFSET,
+      directionX: this.fireDirection.x,
+      directionY: this.fireDirection.y,
     });
   }
 

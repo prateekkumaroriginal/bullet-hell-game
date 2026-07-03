@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { PROFILE_SAVE_CHANNELS } from "../../shared/ipc-channels";
 import {
+  JSON_INDENT_SPACES,
   SAVE_DIRECTORY_NAME,
   SAVE_FILE_NAMES,
 } from "../../shared/save-config";
@@ -12,8 +13,6 @@ import {
   type ProfileSave,
   profileSaveSchema,
 } from "../../shared/save-types";
-
-const JSON_INDENT_SPACES = 2;
 
 export function registerProfileSaveIpcHandlers(): void {
   ipcMain.handle(PROFILE_SAVE_CHANNELS.LOAD, loadProfileSave);
