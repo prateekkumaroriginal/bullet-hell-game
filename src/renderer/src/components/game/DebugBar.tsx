@@ -1,25 +1,32 @@
 import { useEffect, useState } from "react";
-import { Bug, ChevronDown, MessageSquareMore } from "lucide-react";
+import { Bug, ChevronDown, Crosshair, MessageSquareMore } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger
 } from "@/components/ui/collapsible";
+import { Switch } from "@/components/ui/switch";
 import {
   onDebugStatsChanged,
-  type DebugStatsChangedPayload,
+  type DebugStatsChangedPayload
 } from "@/game/debug/debug-stats-events";
+import {
+  isDebugHitboxOverlayVisible,
+  setDebugHitboxOverlayVisible
+} from "@/game/debug/debug-hitbox-events";
 import { POPUP_IDS } from "@/game/config/popup-config";
 import { GAME_SESSION_PHASES } from "@/game/state/game-session-state";
 import { showPopup } from "@/game/state/popup-ui-service";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
 
 const DEBUG_PANEL_WIDTH_CLASS = "w-80 max-w-[calc(100vw-1rem)]";
+const HITBOX_SWITCH_ID = "debug-hitbox-overlay-switch";
 const INITIAL_OPEN_CATEGORY_NAMES = new Set<string>();
 const debugBarUiState = {
   isStatsVisible: false,
-  openCategoryNames: INITIAL_OPEN_CATEGORY_NAMES,
+  isHitboxOverlayVisible: isDebugHitboxOverlayVisible(),
+  openCategoryNames: INITIAL_OPEN_CATEGORY_NAMES
 };
 
 const INITIAL_DEBUG_STATS: DebugStatsChangedPayload = {
@@ -34,11 +41,14 @@ const INITIAL_DEBUG_STATS: DebugStatsChangedPayload = {
 export const DebugBar = () => {
   const gamePhase = useGameUiStore((state) => state.gameSession.phase);
   const [isStatsVisible, setIsStatsVisible] = useState(
-    debugBarUiState.isStatsVisible,
+    debugBarUiState.isStatsVisible
+  );
+  const [isHitboxOverlayVisible, setIsHitboxOverlayVisible] = useState(
+    debugBarUiState.isHitboxOverlayVisible
   );
   const [debugStats, setDebugStats] = useState(INITIAL_DEBUG_STATS);
   const [openCategoryNames, setOpenCategoryNames] = useState<ReadonlySet<string>>(
-    () => new Set(debugBarUiState.openCategoryNames),
+    () => new Set(debugBarUiState.openCategoryNames)
   );
 
   useEffect(() => onDebugStatsChanged(setDebugStats), []);
@@ -70,6 +80,27 @@ export const DebugBar = () => {
         <div
           className={`pointer-events-auto flex max-h-[calc(100vh-4.5rem)] ${DEBUG_PANEL_WIDTH_CLASS} flex-col gap-1 overflow-y-auto border border-slate-400/25 bg-zinc-950/82 p-2 shadow-[0_0_22px_rgba(0,0,0,0.52)] backdrop-blur-sm`}
         >
+          <div className="flex items-center justify-between gap-3 border border-white/10 bg-white/[0.045] px-3 py-2">
+            <label
+              className="flex min-w-0 flex-1 items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-cyan-100 max-md:text-[0.65rem]"
+              htmlFor={HITBOX_SWITCH_ID}
+            >
+              <Crosshair className="size-3.5 shrink-0" />
+              <span className="truncate">Hitboxes</span>
+            </label>
+            <Switch
+              checked={isHitboxOverlayVisible}
+              className="data-checked:bg-cyan-300 data-unchecked:bg-zinc-700"
+              id={HITBOX_SWITCH_ID}
+              onCheckedChange={(nextValue) => {
+                debugBarUiState.isHitboxOverlayVisible = nextValue;
+                setDebugHitboxOverlayVisible(nextValue);
+                setIsHitboxOverlayVisible(nextValue);
+              }}
+              size="sm"
+            />
+          </div>
+
           <Button
             className="pointer-events-auto flex h-auto w-full justify-start gap-2 rounded-none border-white/10 bg-white/[0.045] px-3 py-2 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-cyan-100 hover:bg-cyan-300/10 max-md:text-[0.65rem]"
             disabled={gamePhase !== GAME_SESSION_PHASES.PLAYING}

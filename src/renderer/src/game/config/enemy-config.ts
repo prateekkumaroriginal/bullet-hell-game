@@ -89,7 +89,7 @@ export const ENEMY_DEFINITIONS = {
       behavior: "Absorbs fire",
       threat: "Severe"
     },
-    radius: 26,
+    radius: 42,
     moveSpeed: 58,
     maxHealth: 6,
     experienceOrbCount: 3,

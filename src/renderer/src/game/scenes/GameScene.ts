@@ -108,6 +108,23 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.registerGameplayCommandListeners();
+    if (import.meta.env.DEV) {
+      void import("../debug/install-hitbox-debug-overlay").then(
+        ({ installHitboxDebugOverlay }) => {
+          if (this.hasDestroyedSceneResources) {
+            return;
+          }
+
+          this.registerCleanup(
+            installHitboxDebugOverlay(this, () => ({
+              enemyController: this.enemyController,
+              playerController: this.playerController,
+              weaponController: this.weaponController
+            }))
+          );
+        }
+      );
+    }
     this.registerCleanup(
       onGameplayEvent(GAMEPLAY_EVENTS.STAGE_COMPLETE, () => {
         this.endSession(GAME_SESSION_PHASES.STAGE_COMPLETE);

@@ -11,6 +11,7 @@ import { type BulletPool } from "./BulletPool";
 import {
   EnemyPool,
   type EnemyDeathDrop,
+  type Enemy,
   type EnemySpawnToken
 } from "./EnemyPool";
 import { type GameplayController } from "./GameplayController";
@@ -29,6 +30,10 @@ export class EnemyController implements GameplayController {
 
   get activeEnemyCount(): number {
     return this.enemyPool.active.length;
+  }
+
+  get activeEnemies(): readonly Enemy[] {
+    return this.enemyPool.active;
   }
 
   spawnEnemy(enemyTypeId: EnemyTypeId): EnemySpawnToken | null {
