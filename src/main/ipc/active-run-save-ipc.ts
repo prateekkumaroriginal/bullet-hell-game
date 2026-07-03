@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { ACTIVE_RUN_SAVE_CHANNELS } from "../../shared/ipc-channels";
 import {
+  JSON_INDENT_SPACES,
   SAVE_DIRECTORY_NAME,
   SAVE_FILE_NAMES,
 } from "../../shared/save-config";
@@ -12,8 +13,6 @@ import {
   type ActiveRunSave,
   type LoadActiveRunSaveResult,
 } from "../../shared/save-types";
-
-const JSON_INDENT_SPACES = 2;
 
 export function registerActiveRunSaveIpcHandlers(): void {
   ipcMain.handle(ACTIVE_RUN_SAVE_CHANNELS.HAS, hasActiveRunSave);

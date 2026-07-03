@@ -7,3 +7,4 @@ export const SAVE_FILE_NAMES = {
 } as const;
 
 export const SAVE_DIRECTORY_NAME = "saves";
+export const JSON_INDENT_SPACES = 2;
