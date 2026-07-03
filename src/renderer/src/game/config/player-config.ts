@@ -6,8 +6,9 @@ export const PLAYER_SIZE = 28;
 export const PLAYER_RADIUS = PLAYER_SIZE / 2;
 export const PLAYER_TEXTURE_KEY = "player-spaceship";
 export const PLAYER_TEXTURE_URL = playerSpaceshipUrl;
-export const PLAYER_DISPLAY_SIZE = PLAYER_SIZE;
-export const PLAYER_BULLET_MUZZLE_OFFSET = PLAYER_RADIUS;
+// The ship art is intentionally larger than the damage hitbox, as in bullet hell games.
+export const PLAYER_DISPLAY_SIZE = 56;
+export const PLAYER_BULLET_MUZZLE_OFFSET = PLAYER_DISPLAY_SIZE / 2;
 export const PLAYER_SPRITE_FORWARD_ROTATION_OFFSET_RADIANS = Math.PI / 2;
 export const PLAYER_MOVE_SPEED = 360;
 export const PLAYER_MAX_HEALTH = 100;
