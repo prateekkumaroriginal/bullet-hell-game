@@ -2,6 +2,7 @@ import {
   emitGameplayCommand,
   GAMEPLAY_COMMANDS
 } from "@/game/events/gameplay-commands";
+import { markUiFocusIntent } from "@/audio/audio-interactions";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
 import { ScreenCenter, ScreenTitle, StageDivider } from "./ScreenPrimitives";
 import { SkillCard } from "./SkillCard";
@@ -59,6 +60,7 @@ export const SkillSelectScreen = () => {
           const nextCardIndex =
             (startingCardIndex + direction + cards.length) % cards.length;
 
+          markUiFocusIntent();
           cards[nextCardIndex]?.focus();
         }}
       >

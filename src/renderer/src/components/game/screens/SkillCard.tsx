@@ -8,6 +8,12 @@ import {
   Zap,
   type LucideIcon
 } from "lucide-react";
+import { UI_AUDIO_EVENTS } from "@/audio/audio-catalog";
+import { audio } from "@/audio/audio-controller";
+import {
+  markUiFocusIntent,
+  playUiFocusForElement
+} from "@/audio/audio-interactions";
 import {
   SKILL_STAR_COUNT,
   SKILL_IDS,
@@ -94,10 +100,18 @@ export const SkillCard = ({
       data-accent={accent}
       data-skill-card="true"
       onClick={() => {
+        audio.playUi(UI_AUDIO_EVENTS.SELECT);
         onSelect(choice.id);
       }}
+      onFocus={(event) => {
+        playUiFocusForElement(event.currentTarget);
+      }}
       onMouseEnter={(event) => {
+        markUiFocusIntent();
         event.currentTarget.focus();
+      }}
+      onPointerDown={() => {
+        markUiFocusIntent();
       }}
       tabIndex={isTabStop ? 0 : -1}
       type="button"

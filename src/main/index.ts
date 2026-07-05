@@ -8,6 +8,7 @@ import {
 } from "./config/electron-window";
 import { registerActiveRunSaveIpcHandlers } from "./ipc/active-run-save-ipc";
 import { registerAppIpcHandlers } from "./ipc/app-ipc";
+import { registerAppSettingsIpcHandlers } from "./ipc/app-settings-ipc";
 import { registerProfileSaveIpcHandlers } from "./ipc/profile-save-ipc";
 
 const createMainWindow = (): void => {
@@ -42,6 +43,7 @@ void app.whenReady().then(() => {
   registerAppIpcHandlers();
   registerActiveRunSaveIpcHandlers();
   registerProfileSaveIpcHandlers();
+  registerAppSettingsIpcHandlers();
 
   createMainWindow();
 

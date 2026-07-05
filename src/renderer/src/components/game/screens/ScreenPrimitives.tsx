@@ -1,5 +1,6 @@
 import type { ComponentProps, KeyboardEvent, ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { markUiFocusIntent } from "@/audio/audio-interactions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -153,5 +154,6 @@ function handleScreenNavigationKeyDown(
   const nextButtonIndex =
     (startingButtonIndex + direction + buttons.length) % buttons.length;
 
+  markUiFocusIntent();
   buttons[nextButtonIndex]?.focus();
 }

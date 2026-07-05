@@ -1,4 +1,6 @@
 import { type CSSProperties, useEffect } from "react";
+import { UI_AUDIO_EVENTS } from "@/audio/audio-catalog";
+import { audio } from "@/audio/audio-controller";
 import {
   emitGameplayCommand,
   GAMEPLAY_COMMANDS,
@@ -77,16 +79,19 @@ export const GameScreens = () => {
       }
 
       if (gamePhase === GAME_SESSION_PHASES.PLAYING) {
+        audio.playUi(UI_AUDIO_EVENTS.PANEL_OPEN);
         emitGameplayCommand(GAMEPLAY_COMMANDS.PAUSE_GAME, undefined);
         return;
       }
 
       if (gamePhase === GAME_SESSION_PHASES.PAUSED) {
+        audio.playUi(UI_AUDIO_EVENTS.PANEL_CLOSE);
         emitGameplayCommand(GAMEPLAY_COMMANDS.RESUME_GAME, undefined);
         return;
       }
 
       if (gamePhase === GAME_SESSION_PHASES.ARCHIVE) {
+        audio.playUi(UI_AUDIO_EVENTS.BACK);
         useGameUiStore.getState().setGameSessionPhase(GAME_SESSION_PHASES.IDLE);
       }
     };

@@ -1,4 +1,7 @@
 import Phaser from "phaser";
+import { AUDIO_SOUND_DEFINITION_LIST } from "@/audio/audio-catalog";
+import { registerAudioBackend } from "@/audio/audio-controller";
+import { PhaserAudioBackend } from "@/audio/phaser-audio-backend";
 import { GAME_SCENE_KEY } from "../config/scene-keys";
 import {
   getStageDefinition,
@@ -81,6 +84,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   preload(): void {
+    for (const soundDefinition of AUDIO_SOUND_DEFINITION_LIST) {
+      this.load.audio(soundDefinition.phaserKey, [...soundDefinition.urls]);
+    }
+
     this.load.image(PLAYER_TEXTURE_KEY, PLAYER_TEXTURE_URL);
 
     for (const enemySpriteDefinition of Object.values(ENEMY_SPRITE_DEFINITIONS)) {
@@ -97,6 +104,7 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     this.hasDestroyedSceneResources = false;
+    this.registerCleanup(registerAudioBackend(new PhaserAudioBackend(this.sound)));
     this.registerEnemyAnimations();
     useGameUiStore.getState().resetGameUiState();
     this.registerCleanup(bindGameUiStoreToGameplayEvents());

@@ -2,6 +2,12 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
 
+import { UI_AUDIO_EVENTS } from "@/audio/audio-catalog"
+import { audio } from "@/audio/audio-controller"
+import {
+  markUiFocusIntent,
+  playUiFocusForElement
+} from "@/audio/audio-interactions"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
@@ -49,6 +55,10 @@ function Button({
   variant = "default",
   size = "default",
   asChild = false,
+  onClick,
+  onFocus,
+  onPointerDown,
+  onPointerEnter,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
@@ -62,6 +72,22 @@ function Button({
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
+      onClick={(event) => {
+        audio.playUi(UI_AUDIO_EVENTS.SELECT)
+        onClick?.(event)
+      }}
+      onFocus={(event) => {
+        playUiFocusForElement(event.currentTarget as HTMLElement)
+        onFocus?.(event)
+      }}
+      onPointerDown={(event) => {
+        markUiFocusIntent()
+        onPointerDown?.(event)
+      }}
+      onPointerEnter={(event) => {
+        markUiFocusIntent()
+        onPointerEnter?.(event)
+      }}
       {...props}
     />
   )

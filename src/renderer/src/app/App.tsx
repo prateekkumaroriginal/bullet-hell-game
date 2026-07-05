@@ -1,4 +1,6 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
+import { initializeAudioSettings } from "@/audio/audio-controller";
+import { installAudioInteractionIntentListeners } from "@/audio/audio-interactions";
 import { GameCanvas } from "@/components/game/GameCanvas";
 import { GameHud } from "@/components/game/GameHud";
 import { Popups } from "@/components/game/Popups";
@@ -35,6 +37,12 @@ export const App = () => {
   const gamePhase = useGameUiStore((state) => state.gameSession.phase);
   const shouldShowHud = HUD_GAME_PHASES.includes(gamePhase);
   const shouldShowDebugBar = isDebugStatsEnabled() && DEBUG_BAR_GAME_PHASES.includes(gamePhase);
+
+  useEffect(() => {
+    void initializeAudioSettings();
+
+    return installAudioInteractionIntentListeners();
+  }, []);
 
   return (
     <main className="relative h-screen w-screen overflow-hidden bg-black">

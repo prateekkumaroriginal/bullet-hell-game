@@ -11,3 +11,8 @@ export const PROFILE_SAVE_CHANNELS = {
   LOAD: "profile-save:load",
   WRITE: "profile-save:write",
 } as const;
+
+export const APP_SETTINGS_CHANNELS = {
+  LOAD: "app-settings:load",
+  WRITE: "app-settings:write"
+} as const;
