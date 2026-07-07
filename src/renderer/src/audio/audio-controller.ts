@@ -11,26 +11,29 @@ import {
 import {
   AUDIO_CATEGORIES,
   AUDIO_SOUND_DEFINITIONS,
+  getAudioSourceDefinition,
   type AudioCategory,
   type AudioSoundDefinition,
   type AudioSoundId,
+  type AudioSourceDefinition,
   type PlayableAudioCategory,
   UI_AUDIO_EVENT_SOUND_IDS,
   type UiAudioEvent
 } from "./audio-catalog";
 
 export type AudioPlayOptions = {
-  volumeMultiplier?: number;
+  ignoreCooldown?: boolean;
 };
 
 export type AudioBackendPlayOptions = {
   volume: number;
   detune: number;
+  rate: number;
 };
 
 export type AudioBackend = {
   play: (
-    soundDefinition: AudioSoundDefinition,
+    sourceDefinition: AudioSourceDefinition,
     options: AudioBackendPlayOptions
   ) => boolean;
   getActiveCount: (phaserKey: string) => number;
@@ -39,7 +42,6 @@ export type AudioBackend = {
 
 const RANDOM_SIGNED_RANGE_MULTIPLIER = 2;
 const RANDOM_SIGNED_RANGE_OFFSET = 1;
-const DEFAULT_VOLUME_MULTIPLIER = 1;
 
 let audioBackend: AudioBackend | null = null;
 let audioSettings: AudioSettings = { ...DEFAULT_AUDIO_SETTINGS };
@@ -55,7 +57,8 @@ export const audio = {
   playUi: playUiAudio,
   getSettings: getAudioSettings,
   setVolume: setAudioCategoryVolume,
-  setMuted: setAudioCategoryMuted
+  setMuted: setAudioCategoryMuted,
+  setUiSoundVariation: setUiSoundVariation
 } as const;
 
 export async function initializeAudioSettings(): Promise<AudioSettings> {
@@ -64,7 +67,7 @@ export async function initializeAudioSettings(): Promise<AudioSettings> {
   }
 
   settingsLoadPromise = loadPersistedAudioSettings().then((settings) => {
-    audioSettings = settings;
+    audioSettings = normalizeAudioSettings(settings);
     audioBackend?.applySettings(audioSettings);
 
     return audioSettings;
@@ -75,6 +78,7 @@ export async function initializeAudioSettings(): Promise<AudioSettings> {
 
 export function registerAudioBackend(backend: AudioBackend): () => void {
   audioBackend = backend;
+  audioSettings = normalizeAudioSettings(audioSettings);
   audioBackend.applySettings(audioSettings);
 
   return () => {
@@ -84,15 +88,21 @@ export function registerAudioBackend(backend: AudioBackend): () => void {
   };
 }
 
-export function playUiAudio(eventName: UiAudioEvent): boolean {
-  return playAudio(UI_AUDIO_EVENT_SOUND_IDS[eventName]);
+export function playUiAudio(
+  eventName: UiAudioEvent,
+  options: AudioPlayOptions = {}
+): boolean {
+  return playAudio(UI_AUDIO_EVENT_SOUND_IDS[eventName], options);
 }
 
 export function playAudio(
   soundId: AudioSoundId,
   options: AudioPlayOptions = {}
 ): boolean {
+  audioSettings = normalizeAudioSettings(audioSettings);
   const soundDefinition = AUDIO_SOUND_DEFINITIONS[soundId];
+  const variation = getSelectedVariation(soundDefinition);
+  const sourceDefinition = getAudioSourceDefinition(variation.sourceId);
   const backend = audioBackend;
 
   if (!backend || isCategoryMuted(soundDefinition.category)) {
@@ -103,6 +113,7 @@ export function playAudio(
   const lastPlayedAtMs = lastPlayedAtBySoundId.get(soundId);
 
   if (
+    !options.ignoreCooldown &&
     lastPlayedAtMs !== undefined &&
     currentTimeMs - lastPlayedAtMs < soundDefinition.cooldownMs
   ) {
@@ -110,18 +121,18 @@ export function playAudio(
   }
 
   if (
-    backend.getActiveCount(soundDefinition.phaserKey) >=
+    backend.getActiveCount(sourceDefinition.phaserKey) >=
     soundDefinition.maxConcurrent
   ) {
     return false;
   }
 
-  const didPlay = backend.play(soundDefinition, {
-    volume:
-      getCategoryVolume(soundDefinition.category) *
-      soundDefinition.volume *
-      (options.volumeMultiplier ?? DEFAULT_VOLUME_MULTIPLIER),
-    detune: getRandomSignedValue(soundDefinition.detuneJitterCents)
+  const didPlay = backend.play(sourceDefinition, {
+    volume: getCategoryVolume(soundDefinition.category),
+    detune:
+      variation.detuneCents +
+      getRandomSignedValue(soundDefinition.detuneJitterCents),
+    rate: variation.rate
   });
 
   if (didPlay) {
@@ -133,7 +144,14 @@ export function playAudio(
 }
 
 export function getAudioSettings(): AudioSettings {
-  return { ...audioSettings };
+  audioSettings = normalizeAudioSettings(audioSettings);
+
+  return {
+    ...audioSettings,
+    uiSoundSelections: {
+      ...audioSettings.uiSoundSelections
+    }
+  };
 }
 
 export function setAudioCategoryVolume(
@@ -179,14 +197,36 @@ export function setAudioCategoryMuted(
   persistAudioSettings(audioSettings);
 }
 
+export function setUiSoundVariation(
+  eventName: UiAudioEvent,
+  variationIndex: number
+): void {
+  audioSettings = normalizeAudioSettings(audioSettings);
+  audioSettings = {
+    ...audioSettings,
+    uiSoundSelections: {
+      ...audioSettings.uiSoundSelections,
+      [eventName]: variationIndex
+    }
+  };
+
+  persistAudioSettings(audioSettings);
+}
+
 async function loadPersistedAudioSettings(): Promise<AudioSettings> {
   const result = await window.electron?.settings.loadSettings();
 
   if (result?.ok) {
-    return result.settings.audio;
+    const settings = normalizeAudioSettings(result.settings.audio);
+
+    if (!hasUiSoundSelections(result.settings.audio)) {
+      persistAudioSettings(settings);
+    }
+
+    return settings;
   }
 
-  const defaultSettings = { ...DEFAULT_AUDIO_SETTINGS };
+  const defaultSettings = normalizeAudioSettings(DEFAULT_AUDIO_SETTINGS);
 
   if (result?.reason === "missing") {
     persistAudioSettings(defaultSettings);
@@ -207,8 +247,27 @@ function createAppSettings(settings: AudioSettings): AppSettings {
   return {
     schemaVersion: APP_SETTINGS_SCHEMA_VERSION,
     savedAt: new Date().toISOString(),
-    audio: settings
+    audio: normalizeAudioSettings(settings)
   };
+}
+
+function normalizeAudioSettings(settings: Partial<AudioSettings>): AudioSettings {
+  return {
+    ...DEFAULT_AUDIO_SETTINGS,
+    ...settings,
+    uiSoundSelections: {
+      ...DEFAULT_AUDIO_SETTINGS.uiSoundSelections,
+      ...settings.uiSoundSelections
+    }
+  };
+}
+
+function hasUiSoundSelections(settings: AudioSettings): boolean {
+  return (
+    "uiSoundSelections" in settings &&
+    typeof settings.uiSoundSelections === "object" &&
+    settings.uiSoundSelections !== null
+  );
 }
 
 function isCategoryMuted(category: PlayableAudioCategory): boolean {
@@ -217,6 +276,31 @@ function isCategoryMuted(category: PlayableAudioCategory): boolean {
 
 function getCategoryVolume(category: PlayableAudioCategory): number {
   return audioSettings[getCategoryVolumeSettingKey(category)];
+}
+
+function getSelectedVariation(soundDefinition: AudioSoundDefinition) {
+  const eventName = getUiAudioEventForSoundId(soundDefinition.id);
+  const selectedVariationIndex = eventName
+    ? normalizeAudioSettings(audioSettings).uiSoundSelections[eventName]
+    : undefined;
+
+  return (
+    soundDefinition.variations.find(
+      (variation) => variation.index === selectedVariationIndex
+    ) ?? soundDefinition.variations[0]
+  );
+}
+
+function getUiAudioEventForSoundId(soundId: AudioSoundId): UiAudioEvent | null {
+  for (const [eventName, eventSoundId] of Object.entries(
+    UI_AUDIO_EVENT_SOUND_IDS
+  ) as [UiAudioEvent, AudioSoundId][]) {
+    if (eventSoundId === soundId) {
+      return eventName;
+    }
+  }
+
+  return null;
 }
 
 function getCategoryVolumeSettingKey(

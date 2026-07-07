@@ -4,22 +4,23 @@ import {
   type AudioBackend,
   type AudioBackendPlayOptions
 } from "./audio-controller";
-import { type AudioSoundDefinition } from "./audio-catalog";
+import { type AudioSourceDefinition } from "./audio-catalog";
 
 export class PhaserAudioBackend implements AudioBackend {
   constructor(private readonly soundManager: Phaser.Sound.BaseSoundManager) {}
 
   play(
-    soundDefinition: AudioSoundDefinition,
+    sourceDefinition: AudioSourceDefinition,
     options: AudioBackendPlayOptions
   ): boolean {
-    if (!this.soundManager.game.cache.audio.exists(soundDefinition.phaserKey)) {
+    if (!this.soundManager.game.cache.audio.exists(sourceDefinition.phaserKey)) {
       return false;
     }
 
-    return this.soundManager.play(soundDefinition.phaserKey, {
+    return this.soundManager.play(sourceDefinition.phaserKey, {
       volume: options.volume,
-      detune: options.detune
+      detune: options.detune,
+      rate: options.rate
     });
   }
 

@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { initializeAudioSettings } from "@/audio/audio-controller";
 import { installAudioInteractionIntentListeners } from "@/audio/audio-interactions";
 import { GameCanvas } from "@/components/game/GameCanvas";
+import { FloatingSoundSelector } from "@/components/game/FloatingSoundSelector";
 import { GameHud } from "@/components/game/GameHud";
 import { Popups } from "@/components/game/Popups";
 import { GameScreens } from "@/components/game/GameScreens";
@@ -56,6 +57,7 @@ export const App = () => {
       <Popups />
       <Toaster expand richColors />
       <GameScreens />
+      {import.meta.env.DEV ? <FloatingSoundSelector /> : null}
     </main>
   );
 };

@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { AUDIO_SOUND_DEFINITION_LIST } from "@/audio/audio-catalog";
+import { AUDIO_SOURCE_DEFINITION_LIST } from "@/audio/audio-catalog";
 import { registerAudioBackend } from "@/audio/audio-controller";
 import { PhaserAudioBackend } from "@/audio/phaser-audio-backend";
 import { GAME_SCENE_KEY } from "../config/scene-keys";
@@ -84,8 +84,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   preload(): void {
-    for (const soundDefinition of AUDIO_SOUND_DEFINITION_LIST) {
-      this.load.audio(soundDefinition.phaserKey, [...soundDefinition.urls]);
+    for (const sourceDefinition of AUDIO_SOURCE_DEFINITION_LIST) {
+      this.load.audio(sourceDefinition.phaserKey, [...sourceDefinition.urls]);
     }
 
     this.load.image(PLAYER_TEXTURE_KEY, PLAYER_TEXTURE_URL);
