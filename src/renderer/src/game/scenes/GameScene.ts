@@ -18,8 +18,7 @@ import {
 import {
   emitGameplayEvent,
   GAMEPLAY_EVENTS,
-  onGameplayEvent,
-  type PlayerProgressionChangedPayload,
+  type PlayerProgressionChangedPayload
 } from "../events/gameplay-events";
 import {
   GAME_SESSION_PHASES,
@@ -133,11 +132,6 @@ export class GameScene extends Phaser.Scene {
         }
       );
     }
-    this.registerCleanup(
-      onGameplayEvent(GAMEPLAY_EVENTS.STAGE_COMPLETE, () => {
-        this.endSession(GAME_SESSION_PHASES.STAGE_COMPLETE);
-      }),
-    );
     this.events.once(
       Phaser.Scenes.Events.SHUTDOWN,
       this.destroySceneResources,
@@ -591,12 +585,13 @@ export class GameScene extends Phaser.Scene {
 
     if (this.playerController.health <= 0) {
       const selectedStageId = this.getSelectedStageIdOrThrow();
+      const currentWave = this.waveController.currentWaveNumber;
 
+      this.endSession(GAME_SESSION_PHASES.GAME_OVER);
       emitGameplayEvent(GAMEPLAY_EVENTS.GAME_OVER, {
         selectedStageId,
-        currentWave: this.waveController.currentWaveNumber,
+        currentWave
       });
-      this.endSession(GAME_SESSION_PHASES.GAME_OVER);
     }
   }
 
@@ -605,10 +600,15 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    const selectedStageId = this.getSelectedStageIdOrThrow();
+    const currentWave = this.waveController.currentWaveNumber;
+    const totalWaves = this.waveController.totalWaves;
+
+    this.endSession(GAME_SESSION_PHASES.STAGE_COMPLETE);
     emitGameplayEvent(GAMEPLAY_EVENTS.STAGE_COMPLETE, {
-      selectedStageId: this.getSelectedStageIdOrThrow(),
-      currentWave: this.waveController.currentWaveNumber,
-      totalWaves: this.waveController.totalWaves,
+      selectedStageId,
+      currentWave,
+      totalWaves
     });
   }
 
