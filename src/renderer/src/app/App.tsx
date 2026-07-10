@@ -20,6 +20,7 @@ const DebugBar = import.meta.env.DEV
   : null;
 
 const DEBUG_BAR_GAME_PHASES: readonly GameSessionPhase[] = [
+  GAME_SESSION_PHASES.IDLE,
   GAME_SESSION_PHASES.PLAYING,
   GAME_SESSION_PHASES.PAUSED,
   GAME_SESSION_PHASES.GAME_OVER,
