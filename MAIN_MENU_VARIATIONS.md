@@ -41,8 +41,9 @@ the same typed variant list.
   resolution, shared gameplay actions, and variant routing.
 - `src/renderer/src/components/game/screens/main-menu/` contains the five
   independent menu implementations and their small shared primitives.
-- `src/renderer/src/styles/main-menu.css` contains responsive layout, focus
-  treatment, cheap CSS motion, and reduced-motion behavior.
+- `src/renderer/src/styles/main-menu.css` contains responsive layout, a named
+  `--main-menu-*` dimension/timing token layer, focus treatment, cheap CSS
+  motion, and reduced-motion behavior.
 - `assets/menu/` contains the five original generated backgrounds.
 
 ## Verification

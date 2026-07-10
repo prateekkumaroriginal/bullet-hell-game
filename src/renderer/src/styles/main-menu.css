@@ -43,6 +43,347 @@
   --main-menu-rail-option-letter-spacing: 0.1em;
   --main-menu-rail-option-padding: 0.34rem 0.42rem;
   --main-menu-reduced-motion-duration: 0.01ms;
+  --main-menu-main-menu-action-box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+  --main-menu-main-menu-action-box-shadow-2: 0 0 1.4rem rgb(166 236 255 / 0.16), inset 0 1px 0 rgb(255 255 255 / 0.18);
+  --main-menu-main-menu-action-outline: 2px solid var(--menu-accent);
+  --main-menu-main-menu-action-outline-offset: 0.2rem;
+  --main-menu-menu-status-light-dot-border-radius: 999px;
+  --main-menu-menu-status-light-dot-box-shadow: 0 0 0.8rem var(--menu-accent);
+  --main-menu-menu-status-light-dot-box-shadow-2: 0 0 0.8rem #ff5e62;
+  --main-menu-main-menu-variant-rail-inset-block-start: 1.25rem;
+  --main-menu-main-menu-variant-rail-inset-inline-end: 1.25rem;
+  --main-menu-main-menu-variant-rail-label-font-size: 0.52rem;
+  --main-menu-main-menu-variant-rail-label-letter-spacing: 0.16em;
+  --main-menu-main-menu-variant-rail-option-box-shadow: 0 0 0 2px rgb(255 255 255 / 0.5);
+  --main-menu-flight-deck-eyebrow-block-size: 0.9rem;
+  --main-menu-flight-deck-eyebrow-inline-size: 0.9rem;
+  --main-menu-flight-deck-title-text-shadow: 0 0 2rem rgb(92 213 255 / 0.24);
+  --main-menu-flight-deck-title-accent-font-size: 0.72em;
+  --main-menu-flight-deck-title-accent-letter-spacing: 0.16em;
+  --main-menu-flight-deck-header-readout-padding-block-start: 0.4rem;
+  --main-menu-flight-deck-body-grid-template-columns: minmax(10rem, 0.7fr) minmax(20rem, 1.6fr) minmax(10rem, 0.7fr);
+  --main-menu-flight-deck-console-box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  --main-menu-flight-deck-airframe-font-size: clamp(2rem, 4vw, 3.6rem);
+  --main-menu-flight-deck-airframe-letter-spacing: 0.09em;
+  --main-menu-flight-deck-airframe-line-height: 0.9;
+  --main-menu-flight-deck-airframe-font-size-2: 1.25rem;
+  --main-menu-flight-deck-airframe-letter-spacing-2: 0.14em;
+  --main-menu-flight-deck-instrument-note-font-size: 0.55rem;
+  --main-menu-flight-deck-instrument-note-letter-spacing: 0.12em;
+  --main-menu-flight-deck-instrument-note-line-height: 1.5;
+  --main-menu-flight-deck-readout-list-gap: 0.55rem;
+  --main-menu-flight-deck-readout-list-padding-block: 0.85rem;
+  --main-menu-flight-deck-telemetry-gap: 0.55rem;
+  --main-menu-flight-deck-readout-list-font-size: 0.56rem;
+  --main-menu-flight-deck-readout-list-letter-spacing: 0.1em;
+  --main-menu-flight-deck-readout-list-padding-block-start: 0.55rem;
+  --main-menu-flight-deck-telemetry-font-size: 0.58rem;
+  --main-menu-flight-deck-telemetry-letter-spacing: 0.08em;
+  --main-menu-flight-deck-radar-ring-outer-inset: 18%;
+  --main-menu-flight-deck-radar-ring-inner-inset: 38%;
+  --main-menu-flight-deck-radar-sweep-box-shadow: 0 0 0.7rem var(--menu-accent);
+  --main-menu-flight-deck-radar-blip-block-size: 0.34rem;
+  --main-menu-flight-deck-radar-blip-inline-size: 0.34rem;
+  --main-menu-flight-deck-radar-blip-box-shadow: 0 0 0.65rem var(--menu-accent);
+  --main-menu-flight-deck-radar-blip-one-inset-block-start: 28%;
+  --main-menu-flight-deck-radar-blip-one-inset-inline-start: 64%;
+  --main-menu-flight-deck-radar-blip-two-inset-block-start: 65%;
+  --main-menu-flight-deck-radar-blip-two-inset-inline-start: 32%;
+  --main-menu-flight-deck-radar-crosshair-block-size: 1rem;
+  --main-menu-flight-deck-radar-crosshair-inline-size: 1rem;
+  --main-menu-flight-deck-console-heading-padding-block-end: 1rem;
+  --main-menu-flight-deck-console-heading-font-size: clamp(1.1rem, 2.1vw, 1.8rem);
+  --main-menu-flight-deck-console-heading-letter-spacing: 0.14em;
+  --main-menu-flight-deck-console-heading-line-height: 1.05;
+  --main-menu-flight-deck-console-code-font-size: 0.56rem;
+  --main-menu-flight-deck-console-code-letter-spacing: 0.12em;
+  --main-menu-flight-deck-command-grid-grid-template-columns: repeat(2, minmax(0, 1fr));
+  --main-menu-flight-deck-command-primary-box-shadow: 0 0 1.5rem rgb(92 213 255 / 0.13), inset 0 1px 0 rgb(255 255 255 / 0.14);
+  --main-menu-flight-deck-command-arrow-font-size: 1.4rem;
+  --main-menu-flight-deck-instrument-icon-block-size: 1.5rem;
+  --main-menu-flight-deck-instrument-icon-inline-size: 1.5rem;
+  --main-menu-flight-deck-telemetry-padding-block-start: 0.6rem;
+  --main-menu-flight-deck-telemetry-block-size: 0.8rem;
+  --main-menu-flight-deck-telemetry-inline-size: 0.8rem;
+  --main-menu-flight-deck-telemetry-font-size-2: 0.54rem;
+  --main-menu-flight-deck-telemetry-letter-spacing-2: 0.1em;
+  --main-menu-flight-deck-footer-font-size: 0.55rem;
+  --main-menu-flight-deck-footer-letter-spacing: 0.15em;
+  --main-menu-flight-deck-key-hints-gap: 1rem;
+  --main-menu-black-market-header-padding-inline: clamp(0rem, 5vw, 5rem);
+  --main-menu-black-market-eyebrow-letter-spacing: 0.16em;
+  --main-menu-black-market-eyebrow-block-size: 0.85rem;
+  --main-menu-black-market-eyebrow-inline-size: 0.85rem;
+  --main-menu-black-market-title-letter-spacing: 0.08em;
+  --main-menu-black-market-title-line-height: 0.87;
+  --main-menu-black-market-header-status-font-size: 0.55rem;
+  --main-menu-black-market-header-status-gap: 0.55rem;
+  --main-menu-black-market-header-status-letter-spacing: 0.13em;
+  --main-menu-black-market-body-grid-template-columns: minmax(13rem, 0.55fr) minmax(25rem, 1.45fr);
+  --main-menu-black-market-body-padding-inline: clamp(0rem, 5vw, 5rem);
+  --main-menu-black-market-rail-note-font-size: 0.55rem;
+  --main-menu-black-market-rail-note-letter-spacing: 0.16em;
+  --main-menu-black-market-rail-actions-gap: 0.55rem;
+  --main-menu-black-market-rail-action-font-size: 0.62rem;
+  --main-menu-black-market-rail-note-gap: 0.4rem;
+  --main-menu-black-market-rail-note-line-height: 1.4;
+  --main-menu-black-market-contract-box-shadow: 0 0 2.3rem rgb(0 0 0 / 0.35), inset 0 1px 0 rgb(255 245 222 / 0.08);
+  --main-menu-black-market-contract-header-gap: 1rem;
+  --main-menu-black-market-contract-header-padding-block-end: 0.95rem;
+  --main-menu-black-market-contract-header-font-size: clamp(1.7rem, 4vw, 3.5rem);
+  --main-menu-black-market-contract-header-letter-spacing: 0.08em;
+  --main-menu-black-market-contract-header-line-height: 0.95;
+  --main-menu-black-market-threat-stamp-font-size: 0.54rem;
+  --main-menu-black-market-threat-stamp-letter-spacing: 0.15em;
+  --main-menu-black-market-threat-stamp-padding: 0.5rem 0.6rem;
+  --main-menu-black-market-target-panel-grid-template-columns: minmax(10rem, 0.9fr) minmax(13rem, 1.1fr);
+  --main-menu-black-market-target-visual-block-size: 5.5rem;
+  --main-menu-black-market-target-visual-inline-size: 5.5rem;
+  --main-menu-black-market-target-visual-inset-block-end: 0.65rem;
+  --main-menu-black-market-target-visual-font-size: 0.52rem;
+  --main-menu-black-market-target-visual-letter-spacing: 0.18em;
+  --main-menu-black-market-target-scanline-box-shadow: 0 0 0.7rem rgb(240 173 78 / 0.9);
+  --main-menu-black-market-target-data-gap: 0.65rem;
+  --main-menu-black-market-target-data-gap-2: 0.75rem;
+  --main-menu-black-market-target-data-padding-block-end: 0.55rem;
+  --main-menu-black-market-target-data-font-size: 0.55rem;
+  --main-menu-black-market-target-data-letter-spacing: 0.13em;
+  --main-menu-black-market-target-data-font-size-2: 0.65rem;
+  --main-menu-black-market-target-data-letter-spacing-2: 0.08em;
+  --main-menu-black-market-contract-terms-gap: 0.7rem;
+  --main-menu-black-market-contract-terms-padding-block-start: 0.95rem;
+  --main-menu-black-market-contract-terms-max-inline-size: 56rem;
+  --main-menu-black-market-contract-terms-font-size: 0.88rem;
+  --main-menu-black-market-contract-terms-line-height: 1.55;
+  --main-menu-black-market-threat-meter-gap: 0.3rem;
+  --main-menu-black-market-threat-meter-block-size: 0.27rem;
+  --main-menu-black-market-threat-meter-box-shadow: 0 0 0.45rem rgb(240 173 78 / 0.45);
+  --main-menu-black-market-deploy-button-gap: 0.35rem;
+  --main-menu-black-market-deploy-button-font-size: 1.05rem;
+  --main-menu-black-market-footer-font-size: 0.55rem;
+  --main-menu-black-market-footer-gap: 1rem;
+  --main-menu-black-market-footer-letter-spacing: 0.13em;
+  --main-menu-black-market-footer-gap-2: 0.45rem;
+  --main-menu-black-market-footer-block-size: 0.85rem;
+  --main-menu-black-market-footer-inline-size: 0.85rem;
+  --main-menu-black-market-key-hints-gap: 0.9rem;
+  --main-menu-main-menu-derelict-station-padding-inline: clamp(1.25rem, 6vw, 7rem);
+  --main-menu-derelict-station-signal-mark-block-size: 2.7rem;
+  --main-menu-derelict-station-signal-mark-inline-size: 2.7rem;
+  --main-menu-derelict-station-signal-mark-block-size-2: 1.1rem;
+  --main-menu-derelict-station-signal-mark-inline-size-2: 1.1rem;
+  --main-menu-derelict-station-signal-id-gap: 0.25rem;
+  --main-menu-derelict-station-footer-letter-spacing: 0.15em;
+  --main-menu-derelict-station-signal-id-font-size: 0.56rem;
+  --main-menu-derelict-station-signal-id-font-size-2: 0.85rem;
+  --main-menu-derelict-station-signal-id-letter-spacing: 0.13em;
+  --main-menu-derelict-station-header-status-font-size: 0.56rem;
+  --main-menu-derelict-station-header-status-gap: 0.55rem;
+  --main-menu-derelict-station-header-status-letter-spacing: 0.13em;
+  --main-menu-derelict-station-broadcast-window-grid-template-columns: minmax(0, 1fr) minmax(8rem, 0.23fr);
+  --main-menu-derelict-station-broadcast-meta-font-size: 0.55rem;
+  --main-menu-derelict-station-broadcast-label-font-size: 0.62rem;
+  --main-menu-derelict-station-broadcast-copy-max-inline-size: 52rem;
+  --main-menu-derelict-station-broadcast-copy-font-size: clamp(2rem, 5vw, 5.3rem);
+  --main-menu-derelict-station-broadcast-copy-letter-spacing: -0.03em;
+  --main-menu-derelict-station-broadcast-copy-line-height: 0.96;
+  --main-menu-derelict-station-broadcast-copy-max-inline-size-2: 42rem;
+  --main-menu-derelict-station-broadcast-copy-font-size-2: clamp(0.82rem, 1.2vw, 1.05rem);
+  --main-menu-derelict-station-broadcast-copy-line-height-2: 1.55;
+  --main-menu-derelict-station-broadcast-source-font-size: 0.55rem;
+  --main-menu-derelict-station-broadcast-source-gap: 0.55rem;
+  --main-menu-derelict-station-broadcast-source-letter-spacing: 0.13em;
+  --main-menu-derelict-station-broadcast-source-block-size: 0.9rem;
+  --main-menu-derelict-station-broadcast-source-inline-size: 0.9rem;
+  --main-menu-derelict-station-signal-column-padding-inline-start: clamp(1rem, 3vw, 3rem);
+  --main-menu-derelict-station-signal-icon-block-size: 1.6rem;
+  --main-menu-derelict-station-signal-icon-inline-size: 1.6rem;
+  --main-menu-derelict-station-waveform-bar-box-shadow: 0 0 0.45rem rgb(255 119 122 / 0.66);
+  --main-menu-derelict-station-waveform-bar-short-block-size: 0.7rem;
+  --main-menu-derelict-station-waveform-bar-medium-block-size: 1.45rem;
+  --main-menu-derelict-station-waveform-bar-tall-block-size: 2.4rem;
+  --main-menu-derelict-station-waveform-bar-long-block-size: 3.2rem;
+  --main-menu-derelict-station-signal-caption-font-size: 0.55rem;
+  --main-menu-derelict-station-signal-code-font-size: 0.52rem;
+  --main-menu-derelict-station-actions-grid-template-columns: repeat(4, minmax(0, 1fr));
+  --main-menu-derelict-station-footer-font-size: 0.55rem;
+  --main-menu-derelict-station-footer-gap: 0.45rem;
+  --main-menu-derelict-station-footer-block-size: 0.85rem;
+  --main-menu-derelict-station-footer-inline-size: 0.85rem;
+  --main-menu-derelict-station-key-hints-gap: 1rem;
+  --main-menu-shipyard-bay-number-font-size: clamp(2.5rem, 5vw, 4.7rem);
+  --main-menu-shipyard-bay-number-letter-spacing: -0.08em;
+  --main-menu-shipyard-bay-number-line-height: 0.8;
+  --main-menu-shipyard-bay-mark-gap: 0.3rem;
+  --main-menu-shipyard-footer-letter-spacing: 0.14em;
+  --main-menu-shipyard-bay-number-font-size-2: 0.55rem;
+  --main-menu-shipyard-bay-mark-font-size: 0.95rem;
+  --main-menu-shipyard-bay-mark-letter-spacing: 0.17em;
+  --main-menu-shipyard-header-status-font-size: 0.56rem;
+  --main-menu-shipyard-header-status-gap: 0.55rem;
+  --main-menu-shipyard-header-status-letter-spacing: 0.13em;
+  --main-menu-shipyard-body-grid-template-columns: minmax(19rem, 1.2fr) minmax(18rem, 0.95fr) minmax(12rem, 0.64fr);
+  --main-menu-shipyard-dock-panel-box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+  --main-menu-shipyard-launch-heading-gap: 0.65rem;
+  --main-menu-shipyard-eyebrow-font-size: 0.55rem;
+  --main-menu-shipyard-launch-heading-font-size: clamp(2.3rem, 5vw, 5.1rem);
+  --main-menu-shipyard-launch-heading-letter-spacing: 0.02em;
+  --main-menu-shipyard-launch-heading-line-height: 0.87;
+  --main-menu-shipyard-readiness-ring-box-shadow: 0 0 1.25rem rgb(255 60 174 / 0.18), inset 0 0 0 0.45rem rgb(255 60 174 / 0.08);
+  --main-menu-shipyard-readiness-ring-font-size: 2.2rem;
+  --main-menu-shipyard-readiness-ring-letter-spacing: -0.08em;
+  --main-menu-shipyard-readiness-ring-font-size-2: 0.7rem;
+  --main-menu-shipyard-readiness-gap-2: 0.35rem;
+  --main-menu-shipyard-readiness-font-size: 0.55rem;
+  --main-menu-shipyard-readiness-letter-spacing: 0.14em;
+  --main-menu-shipyard-readiness-font-size-2: 0.82rem;
+  --main-menu-shipyard-readiness-letter-spacing-2: 0.12em;
+  --main-menu-shipyard-launch-rule-inline-size: 62%;
+  --main-menu-shipyard-launch-rule-box-shadow: 0 0 0.65rem var(--menu-accent);
+  --main-menu-shipyard-launch-button-gap: 0.35rem;
+  --main-menu-shipyard-panel-heading-font-size: 0.56rem;
+  --main-menu-shipyard-panel-heading-padding-block-end: 0.8rem;
+  --main-menu-shipyard-system-list-gap: 0.75rem;
+  --main-menu-shipyard-system-row-font-size: 0.56rem;
+  --main-menu-shipyard-system-row-gap: 0.55rem;
+  --main-menu-shipyard-system-row-padding-block-end: 0.7rem;
+  --main-menu-shipyard-system-row-block-size: 0.85rem;
+  --main-menu-shipyard-system-row-inline-size: 0.85rem;
+  --main-menu-shipyard-system-row-font-size-2: 0.56rem;
+  --main-menu-shipyard-crew-note-gap: 0.55rem;
+  --main-menu-shipyard-crew-note-font-size: 0.52rem;
+  --main-menu-shipyard-crew-note-line-height: 1.5;
+  --main-menu-shipyard-crew-note-block-size: 0.9rem;
+  --main-menu-shipyard-crew-note-inline-size: 0.9rem;
+  --main-menu-shipyard-dock-icon-block-size: 3.4rem;
+  --main-menu-shipyard-dock-icon-inline-size: 3.4rem;
+  --main-menu-shipyard-dock-icon-block-size-2: 1.4rem;
+  --main-menu-shipyard-dock-icon-inline-size-2: 1.4rem;
+  --main-menu-shipyard-dock-panel-font-size: 0.83rem;
+  --main-menu-shipyard-dock-panel-letter-spacing: 0.1em;
+  --main-menu-shipyard-dock-panel-font-size-2: 0.53rem;
+  --main-menu-shipyard-dock-panel-line-height: 1.5;
+  --main-menu-shipyard-dock-metrics-gap: 0.7rem;
+  --main-menu-shipyard-dock-metrics-gap-2: 0.55rem;
+  --main-menu-shipyard-dock-metrics-padding-block-start: 0.65rem;
+  --main-menu-shipyard-dock-metrics-block-size: 0.8rem;
+  --main-menu-shipyard-dock-metrics-inline-size: 0.8rem;
+  --main-menu-shipyard-dock-metrics-font-size: 0.53rem;
+  --main-menu-shipyard-dock-metrics-letter-spacing: 0.11em;
+  --main-menu-shipyard-dock-metrics-font-size-2: 0.9rem;
+  --main-menu-shipyard-footer-font-size: 0.55rem;
+  --main-menu-main-menu-action-min-block-size: 2.8rem;
+  --main-menu-main-menu-action-font-size: 0.56rem;
+  --main-menu-main-menu-action-padding-block: 0.55rem;
+  --main-menu-main-menu-orbital-elevator-padding-inline: clamp(1.5rem, 6vw, 7.5rem);
+  --main-menu-orbital-elevator-eyebrow-font-size: 0.55rem;
+  --main-menu-orbital-elevator-eyebrow-gap: 0.55rem;
+  --main-menu-orbital-elevator-eyebrow-letter-spacing: 0.14em;
+  --main-menu-orbital-elevator-eyebrow-block-size: 0.9rem;
+  --main-menu-orbital-elevator-eyebrow-inline-size: 0.9rem;
+  --main-menu-orbital-elevator-header-font-size: clamp(2.3rem, 6vw, 6.2rem);
+  --main-menu-orbital-elevator-header-letter-spacing: 0.04em;
+  --main-menu-orbital-elevator-header-line-height: 0.86;
+  --main-menu-orbital-elevator-header-status-font-size: 0.55rem;
+  --main-menu-orbital-elevator-header-status-gap: 0.55rem;
+  --main-menu-orbital-elevator-header-status-letter-spacing: 0.13em;
+  --main-menu-orbital-elevator-body-grid-template-columns: minmax(12rem, 0.55fr) minmax(24rem, 1.45fr);
+  --main-menu-orbital-elevator-clearance-seal-padding: 1rem;
+  --main-menu-orbital-elevator-seal-ring-box-shadow: 0 0 0 0.55rem rgb(9 15 19 / 0.42), 0 0 0 0.6rem rgb(244 250 250 / 0.2);
+  --main-menu-orbital-elevator-seal-ring-inline-size: 130%;
+  --main-menu-orbital-elevator-seal-ring-block-size: 130%;
+  --main-menu-orbital-elevator-seal-ring-block-size-2: 1.9rem;
+  --main-menu-orbital-elevator-seal-ring-inline-size-2: 1.9rem;
+  --main-menu-orbital-elevator-seal-ring-font-size: 3.7rem;
+  --main-menu-orbital-elevator-seal-ring-letter-spacing: -0.12em;
+  --main-menu-orbital-elevator-seal-ring-transform: translateY(0.12rem);
+  --main-menu-orbital-elevator-seal-note-font-size: 0.55rem;
+  --main-menu-orbital-elevator-seal-note-letter-spacing: 0.14em;
+  --main-menu-orbital-elevator-clearance-seal-font-size: 1.1rem;
+  --main-menu-orbital-elevator-clearance-seal-letter-spacing: 0.2em;
+  --main-menu-orbital-elevator-seal-note-max-inline-size: 13rem;
+  --main-menu-orbital-elevator-seal-note-line-height: 1.5;
+  --main-menu-orbital-elevator-dossier-box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.28);
+  --main-menu-orbital-elevator-dossier-heading-padding-block-end: 1rem;
+  --main-menu-orbital-elevator-dossier-heading-font-size: clamp(1.7rem, 4vw, 3.5rem);
+  --main-menu-orbital-elevator-dossier-heading-letter-spacing: 0.04em;
+  --main-menu-orbital-elevator-dossier-heading-line-height: 0.9;
+  --main-menu-orbital-elevator-dossier-heading-block-size: 2.3rem;
+  --main-menu-orbital-elevator-dossier-heading-inline-size: 2.3rem;
+  --main-menu-orbital-elevator-identity-grid-grid-template-columns: repeat(2, minmax(0, 1fr));
+  --main-menu-orbital-elevator-identity-grid-gap: 0.25rem;
+  --main-menu-orbital-elevator-identity-grid-padding-block-end: 0.55rem;
+  --main-menu-orbital-elevator-identity-grid-font-size: 0.52rem;
+  --main-menu-orbital-elevator-identity-grid-letter-spacing: 0.12em;
+  --main-menu-orbital-elevator-identity-grid-font-size-2: 0.65rem;
+  --main-menu-orbital-elevator-identity-grid-letter-spacing-2: 0.07em;
+  --main-menu-orbital-elevator-protocol-gap: 0.7rem;
+  --main-menu-orbital-elevator-protocol-heading-font-size: 0.53rem;
+  --main-menu-orbital-elevator-protocol-heading-letter-spacing: 0.13em;
+  --main-menu-orbital-elevator-protocol-list-gap: 0.5rem;
+  --main-menu-orbital-elevator-protocol-row-font-size: 0.58rem;
+  --main-menu-orbital-elevator-protocol-row-gap: 0.7rem;
+  --main-menu-orbital-elevator-protocol-row-padding-block-start: 0.6rem;
+  --main-menu-orbital-elevator-protocol-row-letter-spacing: 0.1em;
+  --main-menu-orbital-elevator-protocol-row-font-size-2: 0.55rem;
+  --main-menu-orbital-elevator-protocol-row-gap-2: 0.3rem;
+  --main-menu-orbital-elevator-protocol-row-letter-spacing-2: 0.08em;
+  --main-menu-orbital-elevator-protocol-row-block-size: 0.75rem;
+  --main-menu-orbital-elevator-protocol-row-inline-size: 0.75rem;
+  --main-menu-main-menu-action-min-block-size-2: 2.9rem;
+  --main-menu-main-menu-action-font-size-2: 0.55rem;
+  --main-menu-orbital-elevator-footer-font-size: 0.55rem;
+  --main-menu-orbital-elevator-footer-letter-spacing: 0.13em;
+  --main-menu-orbital-elevator-key-hints-gap: 1rem;
+  --main-menu-motion-menu-status-pulse-100-transform: scale(0.9);
+  --main-menu-motion-menu-status-pulse-50-transform: scale(1);
+  --main-menu-motion-flight-deck-radar-sweep-0-transform: rotate(-35deg);
+  --main-menu-motion-flight-deck-radar-sweep-100-transform: rotate(325deg);
+  --main-menu-motion-black-market-scanline-100-transform: translateY(0);
+  --main-menu-motion-black-market-scanline-50-transform: translateY(11rem);
+  --main-menu-motion-derelict-signal-pulse-100-box-shadow: 0 0 0 rgb(255 119 122 / 0);
+  --main-menu-motion-derelict-signal-pulse-100-transform: scale(0.98);
+  --main-menu-motion-derelict-signal-pulse-50-box-shadow: 0 0 1.5rem rgb(255 119 122 / 0.32);
+  --main-menu-motion-derelict-signal-pulse-50-transform: scale(1);
+  --main-menu-motion-derelict-waveform-breathe-0-transform: scaleY(0.66);
+  --main-menu-motion-derelict-waveform-breathe-100-transform: scaleY(1);
+  --main-menu-main-menu-navigation-padding: clamp(1.5rem, 3vw, 2.6rem);
+  --main-menu-flight-deck-body-grid-template-columns-2: minmax(8rem, 0.6fr) minmax(18rem, 1.8fr) minmax(8rem, 0.6fr);
+  --main-menu-shipyard-body-grid-template-columns-2: minmax(17rem, 1.2fr) minmax(15rem, 0.9fr) minmax(10rem, 0.6fr);
+  --main-menu-orbital-elevator-body-gap: 2rem;
+  --main-menu-main-menu-variant-rail-inset-block-start-2: 0.9rem;
+  --main-menu-main-menu-variant-rail-inset-inline-end-2: 0.9rem;
+  --main-menu-flight-deck-body-gap: 1rem;
+  --main-menu-flight-deck-console-min-block-size: 25rem;
+  --main-menu-black-market-body-gap: 1rem;
+  --main-menu-black-market-command-rail-padding: 1rem 0 0;
+  --main-menu-black-market-rail-actions-grid-template-columns: repeat(3, minmax(0, 1fr));
+  --main-menu-derelict-station-broadcast-window-grid-template-columns-2: minmax(0, 1fr) minmax(7rem, 0.24fr);
+  --main-menu-derelict-station-actions-grid-template-columns-2: repeat(2, minmax(0, 1fr));
+  --main-menu-shipyard-dock-panel-min-block-size: 12rem;
+  --main-menu-orbital-elevator-seal-ring-block-size-3: 8rem;
+  --main-menu-orbital-elevator-seal-ring-inline-size-3: 8rem;
+  --main-menu-orbital-elevator-seal-ring-font-size-2: 2.4rem;
+  --main-menu-orbital-elevator-seal-ring-block-size-4: 1.3rem;
+  --main-menu-orbital-elevator-seal-ring-inline-size-4: 1.3rem;
+  --main-menu-main-menu-stage-inset: 0.45rem;
+  --main-menu-main-menu-navigation-gap: 1.25rem;
+  --main-menu-main-menu-navigation-padding-2: 1.35rem;
+  --main-menu-main-menu-variant-rail-inset-block-start-3: 0.7rem;
+  --main-menu-main-menu-variant-rail-inset-inline: 0.7rem;
+  --main-menu-orbital-elevator-header-font-size-2: clamp(2.5rem, 15vw, 4.7rem);
+  --main-menu-orbital-elevator-identity-grid-grid-template-columns-2: 1fr;
+  --main-menu-derelict-station-footer-gap-2: 0.75rem;
+  --main-menu-black-market-body-padding-block-end: 0.4rem;
+  --main-menu-black-market-rail-actions-grid-template-columns-2: 1fr;
+  --main-menu-derelict-station-broadcast-window-gap: 1.4rem;
+  --main-menu-derelict-station-signal-column-padding-block-start: 1rem;
+  --main-menu-derelict-station-signal-icon-block-size-2: 2.8rem;
+  --main-menu-derelict-station-signal-icon-inline-size-2: 2.8rem;
+  --main-menu-derelict-station-signal-icon-block-size-3: 1.1rem;
+  --main-menu-derelict-station-signal-icon-inline-size-3: 1.1rem;
+  --main-menu-shipyard-dock-metrics-padding-block-start-2: 0.5rem;
+  --main-menu-orbital-elevator-dossier-padding: 1rem;
   position: relative;
   display: block;
   block-size: 100%;
@@ -118,7 +459,7 @@
   border: 1px solid rgb(235 246 255 / 0.26);
   border-radius: var(--main-menu-action-radius);
   background-color: rgb(4 10 16 / 0.64);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+  box-shadow: var(--main-menu-main-menu-action-box-shadow);
   color: #f5f8fb;
   font-family: "Geist Variable", sans-serif;
   font-size: var(--main-menu-action-font-size);
@@ -140,16 +481,16 @@
 .main-menu-action:focus-visible {
   border-color: var(--menu-accent);
   background-color: rgb(255 255 255 / 0.1);
-  box-shadow: 0 0 1.4rem rgb(166 236 255 / 0.16), inset 0 1px 0 rgb(255 255 255 / 0.18);
+  box-shadow: var(--main-menu-main-menu-action-box-shadow-2);
 }
 
 .main-menu-action:focus-visible {
-  outline: 2px solid var(--menu-accent);
-  outline-offset: 0.2rem;
+  outline: var(--main-menu-main-menu-action-outline);
+  outline-offset: var(--main-menu-main-menu-action-outline-offset);
 }
 
 .main-menu-action:active {
-  transform: translateY(var(--main-menu-action-press-offset, 0.1rem));
+  transform: translateY(var(--main-menu-action-press-offset));
 }
 
 .main-menu-action svg {
@@ -169,7 +510,7 @@
   font-size: var(--main-menu-action-caption-size);
   font-weight: 700;
   letter-spacing: var(--main-menu-action-caption-letter-spacing);
-  line-height: var(--main-menu-action-caption-line-height, 1.3);
+  line-height: var(--main-menu-action-caption-line-height);
 }
 
 .main-menu-action strong {
@@ -193,16 +534,16 @@
 .menu-status-light__dot {
   display: block;
   block-size: var(--main-menu-status-dot-size);
-  border-radius: 999px;
+  border-radius: var(--main-menu-menu-status-light-dot-border-radius);
   inline-size: var(--main-menu-status-dot-size);
   background-color: var(--menu-accent);
-  box-shadow: 0 0 0.8rem var(--menu-accent);
+  box-shadow: var(--main-menu-menu-status-light-dot-box-shadow);
   animation: menu-status-pulse var(--main-menu-status-pulse-duration) ease-in-out infinite;
 }
 
 .menu-status-light--danger .menu-status-light__dot {
   background-color: #ff5e62;
-  box-shadow: 0 0 0.8rem #ff5e62;
+  box-shadow: var(--main-menu-menu-status-light-dot-box-shadow-2);
 }
 
 .menu-status-light--muted .menu-status-light__dot {
@@ -239,16 +580,16 @@
   background-color: rgb(3 7 11 / 0.82);
   border: 1px solid rgb(255 255 255 / 0.22);
   gap: var(--main-menu-rail-gap);
-  inset-block-start: 1.25rem;
-  inset-inline-end: 1.25rem;
+  inset-block-start: var(--main-menu-main-menu-variant-rail-inset-block-start);
+  inset-inline-end: var(--main-menu-main-menu-variant-rail-inset-inline-end);
   padding: var(--main-menu-rail-padding);
 }
 
 .main-menu-variant-rail__label {
   color: rgb(235 246 252 / 0.55);
-  font-size: 0.52rem;
+  font-size: var(--main-menu-main-menu-variant-rail-label-font-size);
   font-weight: 800;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--main-menu-main-menu-variant-rail-label-letter-spacing);
   white-space: nowrap;
 }
 
@@ -268,7 +609,7 @@
   font-size: var(--main-menu-rail-option-font-size);
   font-weight: 800;
   gap: var(--main-menu-rail-option-gap);
-  letter-spacing: var(--main-menu-rail-option-letter-spacing, 0.1em);
+  letter-spacing: var(--main-menu-rail-option-letter-spacing);
   padding: var(--main-menu-rail-option-padding);
   text-transform: uppercase;
 }
@@ -282,7 +623,7 @@
 }
 
 .main-menu-variant-rail__option:focus-visible {
-  box-shadow: 0 0 0 2px rgb(255 255 255 / 0.5);
+  box-shadow: var(--main-menu-main-menu-variant-rail-option-box-shadow);
 }
 
 .main-menu-variant-rail__option span:first-child {
@@ -368,8 +709,8 @@
 }
 
 .flight-deck__eyebrow svg {
-  block-size: 0.9rem;
-  inline-size: 0.9rem;
+  block-size: var(--main-menu-flight-deck-eyebrow-block-size);
+  inline-size: var(--main-menu-flight-deck-eyebrow-inline-size);
 }
 
 .flight-deck__title {
@@ -380,13 +721,13 @@
   font-weight: 900;
   letter-spacing: var(--main-menu-flight-title-letter-spacing);
   line-height: var(--main-menu-flight-title-line-height);
-  text-shadow: 0 0 2rem rgb(92 213 255 / 0.24);
+  text-shadow: var(--main-menu-flight-deck-title-text-shadow);
 }
 
 .flight-deck__title-accent {
   color: var(--menu-accent);
-  font-size: 0.72em;
-  letter-spacing: 0.16em;
+  font-size: var(--main-menu-flight-deck-title-accent-font-size);
+  letter-spacing: var(--main-menu-flight-deck-title-accent-letter-spacing);
 }
 
 .flight-deck__header-readout {
@@ -398,7 +739,7 @@
   font-weight: 700;
   gap: var(--main-menu-flight-readout-gap);
   letter-spacing: var(--main-menu-flight-readout-letter-spacing);
-  padding-block-start: 0.4rem;
+  padding-block-start: var(--main-menu-flight-deck-header-readout-padding-block-start);
   text-align: end;
 }
 
@@ -406,7 +747,7 @@
   display: grid;
   flex: 1;
   gap: var(--main-menu-flight-column-gap);
-  grid-template-columns: minmax(10rem, 0.7fr) minmax(20rem, 1.6fr) minmax(10rem, 0.7fr);
+  grid-template-columns: var(--main-menu-flight-deck-body-grid-template-columns);
   min-block-size: 0;
 }
 
@@ -414,7 +755,7 @@
 .flight-deck__console {
   border: 1px solid var(--flight-deck-line);
   background-color: rgb(4 16 25 / 0.67);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  box-shadow: var(--main-menu-flight-deck-console-box-shadow);
 }
 
 .flight-deck__instrument {
@@ -441,54 +782,54 @@
 
 .flight-deck__airframe {
   color: #f6fdff;
-  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-size: var(--main-menu-flight-deck-airframe-font-size);
   font-weight: 800;
-  letter-spacing: 0.09em;
-  line-height: 0.9;
+  letter-spacing: var(--main-menu-flight-deck-airframe-letter-spacing);
+  line-height: var(--main-menu-flight-deck-airframe-line-height);
 }
 
 .flight-deck__instrument > strong:not(.flight-deck__airframe) {
   color: #f6fdff;
-  font-size: 1.25rem;
-  letter-spacing: 0.14em;
+  font-size: var(--main-menu-flight-deck-airframe-font-size-2);
+  letter-spacing: var(--main-menu-flight-deck-airframe-letter-spacing-2);
 }
 
 .flight-deck__instrument-note {
   color: rgb(218 241 249 / 0.48);
-  font-size: 0.55rem;
+  font-size: var(--main-menu-flight-deck-instrument-note-font-size);
   font-weight: 700;
-  letter-spacing: 0.12em;
-  line-height: 1.5;
+  letter-spacing: var(--main-menu-flight-deck-instrument-note-letter-spacing);
+  line-height: var(--main-menu-flight-deck-instrument-note-line-height);
 }
 
 .flight-deck__readout-list {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  padding-block: 0.85rem;
+  gap: var(--main-menu-flight-deck-readout-list-gap);
+  padding-block: var(--main-menu-flight-deck-readout-list-padding-block);
 }
 
 .flight-deck__readout-list div,
 .flight-deck__telemetry div {
   display: flex;
   align-items: baseline;
-  gap: 0.55rem;
+  gap: var(--main-menu-flight-deck-telemetry-gap);
   justify-content: space-between;
 }
 
 .flight-deck__readout-list div {
   border-block-start: 1px solid rgb(185 231 248 / 0.13);
   color: rgb(221 244 252 / 0.55);
-  font-size: 0.56rem;
-  letter-spacing: 0.1em;
-  padding-block-start: 0.55rem;
+  font-size: var(--main-menu-flight-deck-readout-list-font-size);
+  letter-spacing: var(--main-menu-flight-deck-readout-list-letter-spacing);
+  padding-block-start: var(--main-menu-flight-deck-readout-list-padding-block-start);
 }
 
 .flight-deck__readout-list strong,
 .flight-deck__telemetry strong {
   color: #effcff;
-  font-size: 0.58rem;
-  letter-spacing: 0.08em;
+  font-size: var(--main-menu-flight-deck-telemetry-font-size);
+  letter-spacing: var(--main-menu-flight-deck-telemetry-letter-spacing);
 }
 
 .flight-deck__radar {
@@ -527,11 +868,11 @@
 }
 
 .flight-deck__radar-ring--outer {
-  inset: 18%;
+  inset: var(--main-menu-flight-deck-radar-ring-outer-inset);
 }
 
 .flight-deck__radar-ring--inner {
-  inset: 38%;
+  inset: var(--main-menu-flight-deck-radar-ring-inner-inset);
 }
 
 .flight-deck__radar-sweep {
@@ -542,33 +883,33 @@
   inline-size: 50%;
   transform-origin: left center;
   background-color: var(--menu-accent);
-  box-shadow: 0 0 0.7rem var(--menu-accent);
+  box-shadow: var(--main-menu-flight-deck-radar-sweep-box-shadow);
   animation: flight-deck-radar-sweep var(--main-menu-flight-radar-duration) linear infinite;
 }
 
 .flight-deck__radar-blip {
   position: absolute;
-  block-size: 0.34rem;
+  block-size: var(--main-menu-flight-deck-radar-blip-block-size);
   border-radius: 50%;
-  inline-size: 0.34rem;
+  inline-size: var(--main-menu-flight-deck-radar-blip-inline-size);
   background-color: #f6fdff;
-  box-shadow: 0 0 0.65rem var(--menu-accent);
+  box-shadow: var(--main-menu-flight-deck-radar-blip-box-shadow);
 }
 
 .flight-deck__radar-blip--one {
-  inset-block-start: 28%;
-  inset-inline-start: 64%;
+  inset-block-start: var(--main-menu-flight-deck-radar-blip-one-inset-block-start);
+  inset-inline-start: var(--main-menu-flight-deck-radar-blip-one-inset-inline-start);
 }
 
 .flight-deck__radar-blip--two {
-  inset-block-start: 65%;
-  inset-inline-start: 32%;
+  inset-block-start: var(--main-menu-flight-deck-radar-blip-two-inset-block-start);
+  inset-inline-start: var(--main-menu-flight-deck-radar-blip-two-inset-inline-start);
 }
 
 .flight-deck__radar-crosshair {
   position: absolute;
-  block-size: 1rem;
-  inline-size: 1rem;
+  block-size: var(--main-menu-flight-deck-radar-crosshair-block-size);
+  inline-size: var(--main-menu-flight-deck-radar-crosshair-inline-size);
   color: var(--menu-accent);
 }
 
@@ -587,29 +928,29 @@
   justify-content: space-between;
   gap: var(--main-menu-flight-heading-gap);
   border-block-end: 1px solid var(--flight-deck-line);
-  padding-block-end: 1rem;
+  padding-block-end: var(--main-menu-flight-deck-console-heading-padding-block-end);
 }
 
 .flight-deck__console-heading h2 {
   color: #f2fcff;
-  font-size: clamp(1.1rem, 2.1vw, 1.8rem);
+  font-size: var(--main-menu-flight-deck-console-heading-font-size);
   font-weight: 800;
-  letter-spacing: 0.14em;
-  line-height: 1.05;
+  letter-spacing: var(--main-menu-flight-deck-console-heading-letter-spacing);
+  line-height: var(--main-menu-flight-deck-console-heading-line-height);
   text-transform: uppercase;
 }
 
 .flight-deck__console-code {
   color: rgb(218 241 249 / 0.44);
-  font-size: 0.56rem;
-  letter-spacing: 0.12em;
+  font-size: var(--main-menu-flight-deck-console-code-font-size);
+  letter-spacing: var(--main-menu-flight-deck-console-code-letter-spacing);
   white-space: nowrap;
 }
 
 .flight-deck__command-grid {
   display: grid;
   gap: var(--main-menu-flight-command-gap);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: var(--main-menu-flight-deck-command-grid-grid-template-columns);
 }
 
 .flight-deck__command {
@@ -630,7 +971,7 @@
 .flight-deck__command--primary {
   border-color: var(--menu-accent);
   background-color: rgb(109 199 232 / 0.17);
-  box-shadow: 0 0 1.5rem rgb(92 213 255 / 0.13), inset 0 1px 0 rgb(255 255 255 / 0.14);
+  box-shadow: var(--main-menu-flight-deck-command-primary-box-shadow);
 }
 
 .flight-deck__command--primary svg {
@@ -640,7 +981,7 @@
 .flight-deck__command-arrow {
   align-self: flex-end;
   color: var(--menu-accent);
-  font-size: 1.4rem;
+  font-size: var(--main-menu-flight-deck-command-arrow-font-size);
   line-height: 1;
 }
 
@@ -665,8 +1006,8 @@
 }
 
 .flight-deck__instrument-icon svg {
-  block-size: 1.5rem;
-  inline-size: 1.5rem;
+  block-size: var(--main-menu-flight-deck-instrument-icon-block-size);
+  inline-size: var(--main-menu-flight-deck-instrument-icon-inline-size);
 }
 
 .flight-deck__telemetry {
@@ -678,33 +1019,33 @@
 
 .flight-deck__telemetry div {
   border-block-start: 1px solid rgb(185 231 248 / 0.13);
-  padding-block-start: 0.6rem;
+  padding-block-start: var(--main-menu-flight-deck-telemetry-padding-block-start);
 }
 
 .flight-deck__telemetry svg {
-  block-size: 0.8rem;
+  block-size: var(--main-menu-flight-deck-telemetry-block-size);
   color: var(--menu-accent);
-  inline-size: 0.8rem;
+  inline-size: var(--main-menu-flight-deck-telemetry-inline-size);
 }
 
 .flight-deck__telemetry span {
   color: rgb(221 244 252 / 0.55);
   flex: 1;
-  font-size: 0.54rem;
-  letter-spacing: 0.1em;
+  font-size: var(--main-menu-flight-deck-telemetry-font-size-2);
+  letter-spacing: var(--main-menu-flight-deck-telemetry-letter-spacing-2);
 }
 
 .flight-deck__footer {
   align-items: center;
   color: rgb(215 239 248 / 0.46);
-  font-size: 0.55rem;
+  font-size: var(--main-menu-flight-deck-footer-font-size);
   font-weight: 700;
   justify-content: space-between;
-  letter-spacing: 0.15em;
+  letter-spacing: var(--main-menu-flight-deck-footer-letter-spacing);
 }
 
 .flight-deck__key-hints {
-  gap: 1rem;
+  gap: var(--main-menu-flight-deck-key-hints-gap);
 }
 
 /* Black-market Bounty Terminal */
@@ -742,7 +1083,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--main-menu-black-header-gap);
-  padding-inline: clamp(0rem, 5vw, 5rem);
+  padding-inline: var(--main-menu-black-market-header-padding-inline);
 }
 
 .black-market__eyebrow {
@@ -752,13 +1093,13 @@
   font-size: var(--main-menu-black-eyebrow-size);
   font-weight: 800;
   gap: var(--main-menu-black-eyebrow-gap);
-  letter-spacing: 0.16em;
+  letter-spacing: var(--main-menu-black-market-eyebrow-letter-spacing);
 }
 
 .black-market__eyebrow svg {
-  block-size: 0.85rem;
+  block-size: var(--main-menu-black-market-eyebrow-block-size);
   color: var(--menu-accent);
-  inline-size: 0.85rem;
+  inline-size: var(--main-menu-black-market-eyebrow-inline-size);
 }
 
 .black-market__title {
@@ -766,8 +1107,8 @@
   font-family: var(--menu-font-terminal);
   font-size: var(--main-menu-black-title-size);
   font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 0.87;
+  letter-spacing: var(--main-menu-black-market-title-letter-spacing);
+  line-height: var(--main-menu-black-market-title-line-height);
   text-transform: uppercase;
 }
 
@@ -779,9 +1120,9 @@
   align-items: flex-end;
   color: rgb(197 224 208 / 0.54);
   flex-direction: column;
-  font-size: 0.55rem;
-  gap: 0.55rem;
-  letter-spacing: 0.13em;
+  font-size: var(--main-menu-black-market-header-status-font-size);
+  gap: var(--main-menu-black-market-header-status-gap);
+  letter-spacing: var(--main-menu-black-market-header-status-letter-spacing);
   text-align: end;
 }
 
@@ -789,9 +1130,9 @@
   display: grid;
   flex: 1;
   gap: var(--main-menu-black-body-gap);
-  grid-template-columns: minmax(13rem, 0.55fr) minmax(25rem, 1.45fr);
+  grid-template-columns: var(--main-menu-black-market-body-grid-template-columns);
   min-block-size: 0;
-  padding-inline: clamp(0rem, 5vw, 5rem);
+  padding-inline: var(--main-menu-black-market-body-padding-inline);
 }
 
 .black-market__command-rail {
@@ -809,21 +1150,21 @@
 .black-market__term-heading,
 .black-market__rail-note {
   color: rgb(192 225 202 / 0.55);
-  font-size: 0.55rem;
+  font-size: var(--main-menu-black-market-rail-note-font-size);
   font-weight: 800;
-  letter-spacing: 0.16em;
+  letter-spacing: var(--main-menu-black-market-rail-note-letter-spacing);
 }
 
 .black-market__rail-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: var(--main-menu-black-market-rail-actions-gap);
 }
 
 .black-market__rail-action {
   border-color: rgb(185 221 190 / 0.23);
   background-color: rgb(3 13 11 / 0.72);
-  font-size: 0.62rem;
+  font-size: var(--main-menu-black-market-rail-action-font-size);
 }
 
 .black-market__rail-action--continue {
@@ -837,8 +1178,8 @@
 
 .black-market__rail-note {
   flex-direction: column;
-  gap: 0.4rem;
-  line-height: 1.4;
+  gap: var(--main-menu-black-market-rail-note-gap);
+  line-height: var(--main-menu-black-market-rail-note-line-height);
 }
 
 .black-market__contract {
@@ -849,40 +1190,40 @@
   align-self: center;
   border: 1px solid rgb(240 173 78 / 0.5);
   background-color: rgb(8 19 17 / 0.83);
-  box-shadow: 0 0 2.3rem rgb(0 0 0 / 0.35), inset 0 1px 0 rgb(255 245 222 / 0.08);
+  box-shadow: var(--main-menu-black-market-contract-box-shadow);
   padding: var(--main-menu-black-contract-padding);
 }
 
 .black-market__contract-header {
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--main-menu-black-market-contract-header-gap);
   border-block-end: 1px solid rgb(240 173 78 / 0.25);
-  padding-block-end: 0.95rem;
+  padding-block-end: var(--main-menu-black-market-contract-header-padding-block-end);
 }
 
 .black-market__contract-header h2 {
   color: #ffe4ba;
-  font-size: clamp(1.7rem, 4vw, 3.5rem);
+  font-size: var(--main-menu-black-market-contract-header-font-size);
   font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 0.95;
+  letter-spacing: var(--main-menu-black-market-contract-header-letter-spacing);
+  line-height: var(--main-menu-black-market-contract-header-line-height);
 }
 
 .black-market__threat-stamp {
   border: 1px solid rgb(240 173 78 / 0.65);
   color: var(--menu-accent);
-  font-size: 0.54rem;
+  font-size: var(--main-menu-black-market-threat-stamp-font-size);
   font-weight: 800;
-  letter-spacing: 0.15em;
-  padding: 0.5rem 0.6rem;
+  letter-spacing: var(--main-menu-black-market-threat-stamp-letter-spacing);
+  padding: var(--main-menu-black-market-threat-stamp-padding);
   white-space: nowrap;
 }
 
 .black-market__target-panel {
   display: grid;
   gap: var(--main-menu-black-target-gap);
-  grid-template-columns: minmax(10rem, 0.9fr) minmax(13rem, 1.1fr);
+  grid-template-columns: var(--main-menu-black-market-target-panel-grid-template-columns);
 }
 
 .black-market__target-visual {
@@ -897,17 +1238,17 @@
 }
 
 .black-market__target-visual svg {
-  block-size: 5.5rem;
-  inline-size: 5.5rem;
+  block-size: var(--main-menu-black-market-target-visual-block-size);
+  inline-size: var(--main-menu-black-market-target-visual-inline-size);
   stroke-width: 1;
 }
 
 .black-market__target-visual span {
   position: absolute;
-  inset-block-end: 0.65rem;
+  inset-block-end: var(--main-menu-black-market-target-visual-inset-block-end);
   color: rgb(202 228 207 / 0.48);
-  font-size: 0.52rem;
-  letter-spacing: 0.18em;
+  font-size: var(--main-menu-black-market-target-visual-font-size);
+  letter-spacing: var(--main-menu-black-market-target-visual-letter-spacing);
 }
 
 .black-market__target-scanline {
@@ -916,14 +1257,14 @@
   inset-block-start: 0;
   block-size: 1px;
   background-color: rgb(240 173 78 / 0.65);
-  box-shadow: 0 0 0.7rem rgb(240 173 78 / 0.9);
+  box-shadow: var(--main-menu-black-market-target-scanline-box-shadow);
   animation: black-market-scanline var(--main-menu-black-scanline-duration) ease-in-out infinite;
 }
 
 .black-market__target-data {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: var(--main-menu-black-market-target-data-gap);
   justify-content: center;
 }
 
@@ -931,31 +1272,31 @@
   display: flex;
   align-items: baseline;
   border-block-end: 1px solid rgb(185 221 190 / 0.16);
-  gap: 0.75rem;
+  gap: var(--main-menu-black-market-target-data-gap-2);
   justify-content: space-between;
-  padding-block-end: 0.55rem;
+  padding-block-end: var(--main-menu-black-market-target-data-padding-block-end);
 }
 
 .black-market__target-data span {
   color: rgb(190 225 199 / 0.46);
-  font-size: 0.55rem;
-  letter-spacing: 0.13em;
+  font-size: var(--main-menu-black-market-target-data-font-size);
+  letter-spacing: var(--main-menu-black-market-target-data-letter-spacing);
 }
 
 .black-market__target-data strong {
   color: #e8f1e8;
-  font-size: 0.65rem;
+  font-size: var(--main-menu-black-market-target-data-font-size-2);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--main-menu-black-market-target-data-letter-spacing-2);
   text-align: end;
 }
 
 .black-market__contract-terms {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: var(--main-menu-black-market-contract-terms-gap);
   border-block-start: 1px solid rgb(185 221 190 / 0.16);
-  padding-block-start: 0.95rem;
+  padding-block-start: var(--main-menu-black-market-contract-terms-padding-block-start);
 }
 
 .black-market__term-heading {
@@ -963,27 +1304,27 @@
 }
 
 .black-market__contract-terms p {
-  max-inline-size: 56rem;
+  max-inline-size: var(--main-menu-black-market-contract-terms-max-inline-size);
   color: rgb(218 236 222 / 0.7);
   font-family: "Geist Variable", sans-serif;
-  font-size: 0.88rem;
-  line-height: 1.55;
+  font-size: var(--main-menu-black-market-contract-terms-font-size);
+  line-height: var(--main-menu-black-market-contract-terms-line-height);
 }
 
 .black-market__threat-meter {
   display: flex;
-  gap: 0.3rem;
+  gap: var(--main-menu-black-market-threat-meter-gap);
 }
 
 .black-market__threat-meter span {
-  block-size: 0.27rem;
+  block-size: var(--main-menu-black-market-threat-meter-block-size);
   flex: 1;
   background-color: rgb(185 221 190 / 0.16);
 }
 
 .black-market__threat-meter span:nth-child(-n + 5) {
   background-color: var(--menu-accent);
-  box-shadow: 0 0 0.45rem rgb(240 173 78 / 0.45);
+  box-shadow: var(--main-menu-black-market-threat-meter-box-shadow);
 }
 
 .black-market__deploy-button {
@@ -1005,7 +1346,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: var(--main-menu-black-market-deploy-button-gap);
   text-align: start;
 }
 
@@ -1014,33 +1355,33 @@
 }
 
 .black-market__deploy-button strong {
-  font-size: 1.05rem;
+  font-size: var(--main-menu-black-market-deploy-button-font-size);
 }
 
 .black-market__footer {
   align-items: center;
   color: rgb(199 224 205 / 0.46);
-  font-size: 0.55rem;
+  font-size: var(--main-menu-black-market-footer-font-size);
   font-weight: 700;
-  gap: 1rem;
+  gap: var(--main-menu-black-market-footer-gap);
   justify-content: space-between;
-  letter-spacing: 0.13em;
+  letter-spacing: var(--main-menu-black-market-footer-letter-spacing);
 }
 
 .black-market__footer > span:first-child {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--main-menu-black-market-footer-gap-2);
 }
 
 .black-market__footer svg {
-  block-size: 0.85rem;
+  block-size: var(--main-menu-black-market-footer-block-size);
   color: var(--menu-accent);
-  inline-size: 0.85rem;
+  inline-size: var(--main-menu-black-market-footer-inline-size);
 }
 
 .black-market__key-hints {
-  gap: 0.9rem;
+  gap: var(--main-menu-black-market-key-hints-gap);
 }
 
 /* Derelict Station Distress Broadcast */
@@ -1072,7 +1413,7 @@
   --main-menu-derelict-action-padding: 0.95rem;
   --main-menu-derelict-action-copy-gap: 0.45rem;
   color: #edf2f3;
-  padding-inline: clamp(1.25rem, 6vw, 7rem);
+  padding-inline: var(--main-menu-main-menu-derelict-station-padding-inline);
 }
 
 .derelict-station__header,
@@ -1100,22 +1441,22 @@
 .derelict-station__signal-mark {
   display: grid;
   place-items: center;
-  block-size: 2.7rem;
-  inline-size: 2.7rem;
+  block-size: var(--main-menu-derelict-station-signal-mark-block-size);
+  inline-size: var(--main-menu-derelict-station-signal-mark-inline-size);
   border: 1px solid rgb(255 94 98 / 0.65);
   border-radius: 50%;
   color: #ff7d7f;
 }
 
 .derelict-station__signal-mark svg {
-  block-size: 1.1rem;
-  inline-size: 1.1rem;
+  block-size: var(--main-menu-derelict-station-signal-mark-block-size-2);
+  inline-size: var(--main-menu-derelict-station-signal-mark-inline-size-2);
 }
 
 .derelict-station__signal-id div {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--main-menu-derelict-station-signal-id-gap);
 }
 
 .derelict-station__signal-id span,
@@ -1125,20 +1466,20 @@
 .derelict-station__signal-code,
 .derelict-station__footer {
   font-family: ui-monospace, "Cascadia Code", monospace;
-  letter-spacing: 0.15em;
+  letter-spacing: var(--main-menu-derelict-station-footer-letter-spacing);
   text-transform: uppercase;
 }
 
 .derelict-station__signal-id span {
   color: rgb(232 241 243 / 0.58);
-  font-size: 0.56rem;
+  font-size: var(--main-menu-derelict-station-signal-id-font-size);
 }
 
 .derelict-station__signal-id strong {
   color: #fff4f2;
-  font-size: 0.85rem;
+  font-size: var(--main-menu-derelict-station-signal-id-font-size-2);
   font-weight: 750;
-  letter-spacing: 0.13em;
+  letter-spacing: var(--main-menu-derelict-station-signal-id-letter-spacing);
 }
 
 .derelict-station__header-status {
@@ -1146,9 +1487,9 @@
   color: rgb(218 232 235 / 0.45);
   flex-direction: column;
   font-family: ui-monospace, "Cascadia Code", monospace;
-  font-size: 0.56rem;
-  gap: 0.55rem;
-  letter-spacing: 0.13em;
+  font-size: var(--main-menu-derelict-station-header-status-font-size);
+  gap: var(--main-menu-derelict-station-header-status-gap);
+  letter-spacing: var(--main-menu-derelict-station-header-status-letter-spacing);
   text-align: end;
 }
 
@@ -1174,7 +1515,7 @@
   position: relative;
   display: grid;
   gap: var(--main-menu-derelict-window-gap);
-  grid-template-columns: minmax(0, 1fr) minmax(8rem, 0.23fr);
+  grid-template-columns: var(--main-menu-derelict-station-broadcast-window-grid-template-columns);
   min-block-size: var(--main-menu-derelict-window-min-height);
   border-block: 1px solid rgb(231 239 240 / 0.24);
   background-color: rgb(4 8 12 / 0.63);
@@ -1190,48 +1531,48 @@
 
 .derelict-station__broadcast-meta {
   color: rgb(220 233 236 / 0.48);
-  font-size: 0.55rem;
+  font-size: var(--main-menu-derelict-station-broadcast-meta-font-size);
   font-weight: 700;
   justify-content: space-between;
 }
 
 .derelict-station__broadcast-label {
   color: #ff777a;
-  font-size: 0.62rem;
+  font-size: var(--main-menu-derelict-station-broadcast-label-font-size);
   font-weight: 800;
 }
 
 .derelict-station__broadcast-copy blockquote {
-  max-inline-size: 52rem;
+  max-inline-size: var(--main-menu-derelict-station-broadcast-copy-max-inline-size);
   color: #f9f2ec;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 5vw, 5.3rem);
+  font-size: var(--main-menu-derelict-station-broadcast-copy-font-size);
   font-style: italic;
-  letter-spacing: -0.03em;
-  line-height: 0.96;
+  letter-spacing: var(--main-menu-derelict-station-broadcast-copy-letter-spacing);
+  line-height: var(--main-menu-derelict-station-broadcast-copy-line-height);
 }
 
 .derelict-station__broadcast-copy p {
-  max-inline-size: 42rem;
+  max-inline-size: var(--main-menu-derelict-station-broadcast-copy-max-inline-size-2);
   color: rgb(226 235 237 / 0.66);
-  font-size: clamp(0.82rem, 1.2vw, 1.05rem);
-  line-height: 1.55;
+  font-size: var(--main-menu-derelict-station-broadcast-copy-font-size-2);
+  line-height: var(--main-menu-derelict-station-broadcast-copy-line-height-2);
 }
 
 .derelict-station__broadcast-source {
   align-items: center;
   color: rgb(229 240 242 / 0.5);
   font-family: ui-monospace, "Cascadia Code", monospace;
-  font-size: 0.55rem;
+  font-size: var(--main-menu-derelict-station-broadcast-source-font-size);
   font-weight: 700;
-  gap: 0.55rem;
-  letter-spacing: 0.13em;
+  gap: var(--main-menu-derelict-station-broadcast-source-gap);
+  letter-spacing: var(--main-menu-derelict-station-broadcast-source-letter-spacing);
 }
 
 .derelict-station__broadcast-source svg {
-  block-size: 0.9rem;
+  block-size: var(--main-menu-derelict-station-broadcast-source-block-size);
   color: #ff777a;
-  inline-size: 0.9rem;
+  inline-size: var(--main-menu-derelict-station-broadcast-source-inline-size);
 }
 
 .derelict-station__signal-column {
@@ -1241,7 +1582,7 @@
   gap: var(--main-menu-derelict-signal-gap);
   justify-content: center;
   border-inline-start: 1px solid rgb(231 239 240 / 0.17);
-  padding-inline-start: clamp(1rem, 3vw, 3rem);
+  padding-inline-start: var(--main-menu-derelict-station-signal-column-padding-inline-start);
 }
 
 .derelict-station__signal-icon {
@@ -1256,8 +1597,8 @@
 }
 
 .derelict-station__signal-icon svg {
-  block-size: 1.6rem;
-  inline-size: 1.6rem;
+  block-size: var(--main-menu-derelict-station-signal-icon-block-size);
+  inline-size: var(--main-menu-derelict-station-signal-icon-inline-size);
 }
 
 .derelict-station__waveform {
@@ -1271,24 +1612,24 @@
   display: block;
   inline-size: var(--main-menu-derelict-waveform-bar-width);
   background-color: #ff777a;
-  box-shadow: 0 0 0.45rem rgb(255 119 122 / 0.66);
+  box-shadow: var(--main-menu-derelict-station-waveform-bar-box-shadow);
   animation: derelict-waveform-breathe var(--main-menu-derelict-waveform-duration) ease-in-out infinite alternate;
 }
 
 .derelict-station__waveform-bar--short {
-  block-size: 0.7rem;
+  block-size: var(--main-menu-derelict-station-waveform-bar-short-block-size);
 }
 
 .derelict-station__waveform-bar--medium {
-  block-size: 1.45rem;
+  block-size: var(--main-menu-derelict-station-waveform-bar-medium-block-size);
 }
 
 .derelict-station__waveform-bar--tall {
-  block-size: 2.4rem;
+  block-size: var(--main-menu-derelict-station-waveform-bar-tall-block-size);
 }
 
 .derelict-station__waveform-bar--long {
-  block-size: 3.2rem;
+  block-size: var(--main-menu-derelict-station-waveform-bar-long-block-size);
 }
 
 .derelict-station__waveform-bar:nth-child(2) {
@@ -1321,19 +1662,19 @@
 
 .derelict-station__signal-caption {
   color: #ff777a;
-  font-size: 0.55rem;
+  font-size: var(--main-menu-derelict-station-signal-caption-font-size);
   font-weight: 800;
 }
 
 .derelict-station__signal-code {
   color: rgb(219 233 236 / 0.4);
-  font-size: 0.52rem;
+  font-size: var(--main-menu-derelict-station-signal-code-font-size);
 }
 
 .derelict-station__actions {
   display: grid;
   gap: var(--main-menu-derelict-action-gap);
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: var(--main-menu-derelict-station-actions-grid-template-columns);
 }
 
 .derelict-station__action {
@@ -1347,7 +1688,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--main-menu-derelict-action-copy-gap, 0.45rem);
+  gap: var(--main-menu-derelict-action-copy-gap);
   text-align: start;
 }
 
@@ -1364,7 +1705,7 @@
 .derelict-station__footer {
   align-items: center;
   color: rgb(218 233 236 / 0.44);
-  font-size: 0.55rem;
+  font-size: var(--main-menu-derelict-station-footer-font-size);
   font-weight: 700;
   justify-content: space-between;
 }
@@ -1372,17 +1713,17 @@
 .derelict-station__footer > span:first-child {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--main-menu-derelict-station-footer-gap);
 }
 
 .derelict-station__footer svg {
-  block-size: 0.85rem;
+  block-size: var(--main-menu-derelict-station-footer-block-size);
   color: #ff777a;
-  inline-size: 0.85rem;
+  inline-size: var(--main-menu-derelict-station-footer-inline-size);
 }
 
 .derelict-station__key-hints {
-  gap: 1rem;
+  gap: var(--main-menu-derelict-station-key-hints-gap);
 }
 
 /* Neon Shipyard Launch Bay */
@@ -1429,16 +1770,16 @@
 
 .shipyard__bay-number {
   color: var(--menu-accent);
-  font-size: clamp(2.5rem, 5vw, 4.7rem);
+  font-size: var(--main-menu-shipyard-bay-number-font-size);
   font-weight: 300;
-  letter-spacing: -0.08em;
-  line-height: 0.8;
+  letter-spacing: var(--main-menu-shipyard-bay-number-letter-spacing);
+  line-height: var(--main-menu-shipyard-bay-number-line-height);
 }
 
 .shipyard__bay-mark div {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: var(--main-menu-shipyard-bay-mark-gap);
 }
 
 .shipyard__bay-mark span:not(.shipyard__bay-number),
@@ -1448,20 +1789,20 @@
 .shipyard__dock-panel > span,
 .shipyard__footer {
   font-family: ui-monospace, "Cascadia Code", monospace;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--main-menu-shipyard-footer-letter-spacing);
   text-transform: uppercase;
 }
 
 .shipyard__bay-mark span:not(.shipyard__bay-number) {
   color: rgb(226 241 252 / 0.52);
-  font-size: 0.55rem;
+  font-size: var(--main-menu-shipyard-bay-number-font-size-2);
 }
 
 .shipyard__bay-mark strong {
   color: #f5fbff;
-  font-size: 0.95rem;
+  font-size: var(--main-menu-shipyard-bay-mark-font-size);
   font-weight: 800;
-  letter-spacing: 0.17em;
+  letter-spacing: var(--main-menu-shipyard-bay-mark-letter-spacing);
 }
 
 .shipyard__header-status {
@@ -1469,9 +1810,9 @@
   color: rgb(220 240 249 / 0.48);
   flex-direction: column;
   font-family: ui-monospace, "Cascadia Code", monospace;
-  font-size: 0.56rem;
-  gap: 0.55rem;
-  letter-spacing: 0.13em;
+  font-size: var(--main-menu-shipyard-header-status-font-size);
+  gap: var(--main-menu-shipyard-header-status-gap);
+  letter-spacing: var(--main-menu-shipyard-header-status-letter-spacing);
   text-align: end;
 }
 
@@ -1479,7 +1820,7 @@
   display: grid;
   flex: 1;
   gap: var(--main-menu-shipyard-body-gap);
-  grid-template-columns: minmax(19rem, 1.2fr) minmax(18rem, 0.95fr) minmax(12rem, 0.64fr);
+  grid-template-columns: var(--main-menu-shipyard-body-grid-template-columns);
   min-block-size: 0;
 }
 
@@ -1488,7 +1829,7 @@
 .shipyard__dock-panel {
   border: 1px solid rgb(206 231 255 / 0.25);
   background-color: rgb(3 10 20 / 0.66);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+  box-shadow: var(--main-menu-shipyard-dock-panel-box-shadow);
 }
 
 .shipyard__launch-panel {
@@ -1502,21 +1843,21 @@
 .shipyard__launch-heading {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: var(--main-menu-shipyard-launch-heading-gap);
 }
 
 .shipyard__eyebrow {
   color: var(--menu-accent);
-  font-size: 0.55rem;
+  font-size: var(--main-menu-shipyard-eyebrow-font-size);
   font-weight: 800;
 }
 
 .shipyard__launch-heading h1 {
   color: #f7fbff;
-  font-size: clamp(2.3rem, 5vw, 5.1rem);
+  font-size: var(--main-menu-shipyard-launch-heading-font-size);
   font-weight: 350;
-  letter-spacing: 0.02em;
-  line-height: 0.87;
+  letter-spacing: var(--main-menu-shipyard-launch-heading-letter-spacing);
+  line-height: var(--main-menu-shipyard-launch-heading-line-height);
   text-transform: uppercase;
 }
 
@@ -1533,38 +1874,38 @@
   inline-size: var(--main-menu-shipyard-readiness-ring-size);
   border: 1px solid var(--menu-accent);
   border-radius: 50%;
-  box-shadow: 0 0 1.25rem rgb(255 60 174 / 0.18), inset 0 0 0 0.45rem rgb(255 60 174 / 0.08);
+  box-shadow: var(--main-menu-shipyard-readiness-ring-box-shadow);
   color: #fce5f6;
 }
 
 .shipyard__readiness-ring span {
-  font-size: 2.2rem;
+  font-size: var(--main-menu-shipyard-readiness-ring-font-size);
   font-weight: 300;
-  letter-spacing: -0.08em;
+  letter-spacing: var(--main-menu-shipyard-readiness-ring-letter-spacing);
 }
 
 .shipyard__readiness-ring small {
-  font-size: 0.7rem;
+  font-size: var(--main-menu-shipyard-readiness-ring-font-size-2);
   font-weight: 800;
 }
 
 .shipyard__readiness > div:last-child {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: var(--main-menu-shipyard-readiness-gap-2);
 }
 
 .shipyard__readiness > div:last-child span {
   color: rgb(221 238 251 / 0.5);
   font-family: ui-monospace, "Cascadia Code", monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.14em;
+  font-size: var(--main-menu-shipyard-readiness-font-size);
+  letter-spacing: var(--main-menu-shipyard-readiness-letter-spacing);
 }
 
 .shipyard__readiness > div:last-child strong {
   color: #fce5f6;
-  font-size: 0.82rem;
-  letter-spacing: 0.12em;
+  font-size: var(--main-menu-shipyard-readiness-font-size-2);
+  letter-spacing: var(--main-menu-shipyard-readiness-letter-spacing-2);
 }
 
 .shipyard__launch-rule {
@@ -1575,9 +1916,9 @@
 .shipyard__launch-rule span {
   display: block;
   block-size: 1px;
-  inline-size: 62%;
+  inline-size: var(--main-menu-shipyard-launch-rule-inline-size);
   background-color: var(--menu-accent);
-  box-shadow: 0 0 0.65rem var(--menu-accent);
+  box-shadow: var(--main-menu-shipyard-launch-rule-box-shadow);
 }
 
 .shipyard__launch-button {
@@ -1591,7 +1932,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: var(--main-menu-shipyard-launch-button-gap);
   text-align: start;
 }
 
@@ -1626,10 +1967,10 @@
   align-items: baseline;
   border-block-end: 1px solid rgb(206 231 255 / 0.2);
   color: rgb(226 241 252 / 0.58);
-  font-size: 0.56rem;
+  font-size: var(--main-menu-shipyard-panel-heading-font-size);
   font-weight: 800;
   justify-content: space-between;
-  padding-block-end: 0.8rem;
+  padding-block-end: var(--main-menu-shipyard-panel-heading-padding-block-end);
 }
 
 .shipyard__panel-heading span:last-child {
@@ -1639,22 +1980,22 @@
 .shipyard__system-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--main-menu-shipyard-system-list-gap);
 }
 
 .shipyard__system-row {
   align-items: center;
   border-block-end: 1px solid rgb(206 231 255 / 0.14);
   color: rgb(227 241 252 / 0.55);
-  font-size: 0.56rem;
-  gap: 0.55rem;
-  padding-block-end: 0.7rem;
+  font-size: var(--main-menu-shipyard-system-row-font-size);
+  gap: var(--main-menu-shipyard-system-row-gap);
+  padding-block-end: var(--main-menu-shipyard-system-row-padding-block-end);
 }
 
 .shipyard__system-row svg {
-  block-size: 0.85rem;
+  block-size: var(--main-menu-shipyard-system-row-block-size);
   color: var(--menu-accent);
-  inline-size: 0.85rem;
+  inline-size: var(--main-menu-shipyard-system-row-inline-size);
 }
 
 .shipyard__system-row span {
@@ -1663,7 +2004,7 @@
 
 .shipyard__system-row strong {
   color: #f1fcff;
-  font-size: 0.56rem;
+  font-size: var(--main-menu-shipyard-system-row-font-size-2);
   font-weight: 800;
 }
 
@@ -1673,17 +2014,17 @@
 
 .shipyard__crew-note {
   align-items: center;
-  gap: 0.55rem;
+  gap: var(--main-menu-shipyard-crew-note-gap);
   color: rgb(226 241 252 / 0.44);
-  font-size: 0.52rem;
-  line-height: 1.5;
+  font-size: var(--main-menu-shipyard-crew-note-font-size);
+  line-height: var(--main-menu-shipyard-crew-note-line-height);
 }
 
 .shipyard__crew-note svg {
-  block-size: 0.9rem;
+  block-size: var(--main-menu-shipyard-crew-note-block-size);
   color: var(--menu-accent);
   flex: none;
-  inline-size: 0.9rem;
+  inline-size: var(--main-menu-shipyard-crew-note-inline-size);
 }
 
 .shipyard__dock-panel {
@@ -1694,67 +2035,67 @@
   display: grid;
   place-items: center;
   align-self: flex-start;
-  block-size: 3.4rem;
-  inline-size: 3.4rem;
+  block-size: var(--main-menu-shipyard-dock-icon-block-size);
+  inline-size: var(--main-menu-shipyard-dock-icon-inline-size);
   border: 1px solid rgb(255 60 174 / 0.7);
   border-radius: 50%;
   color: var(--menu-accent);
 }
 
 .shipyard__dock-icon svg {
-  block-size: 1.4rem;
-  inline-size: 1.4rem;
+  block-size: var(--main-menu-shipyard-dock-icon-block-size-2);
+  inline-size: var(--main-menu-shipyard-dock-icon-inline-size-2);
 }
 
 .shipyard__dock-panel > strong {
   color: #f5fbff;
-  font-size: 0.83rem;
-  letter-spacing: 0.1em;
+  font-size: var(--main-menu-shipyard-dock-panel-font-size);
+  letter-spacing: var(--main-menu-shipyard-dock-panel-letter-spacing);
 }
 
 .shipyard__dock-panel > span {
   color: rgb(226 241 252 / 0.5);
-  font-size: 0.53rem;
-  line-height: 1.5;
+  font-size: var(--main-menu-shipyard-dock-panel-font-size-2);
+  line-height: var(--main-menu-shipyard-dock-panel-line-height);
 }
 
 .shipyard__dock-metrics {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: var(--main-menu-shipyard-dock-metrics-gap);
 }
 
 .shipyard__dock-metrics div {
   align-items: center;
   border-block-start: 1px solid rgb(206 231 255 / 0.15);
-  gap: 0.55rem;
-  padding-block-start: 0.65rem;
+  gap: var(--main-menu-shipyard-dock-metrics-gap-2);
+  padding-block-start: var(--main-menu-shipyard-dock-metrics-padding-block-start);
 }
 
 .shipyard__dock-metrics svg {
-  block-size: 0.8rem;
+  block-size: var(--main-menu-shipyard-dock-metrics-block-size);
   color: var(--menu-accent);
-  inline-size: 0.8rem;
+  inline-size: var(--main-menu-shipyard-dock-metrics-inline-size);
 }
 
 .shipyard__dock-metrics span {
   color: rgb(226 241 252 / 0.5);
   flex: 1;
   font-family: ui-monospace, "Cascadia Code", monospace;
-  font-size: 0.53rem;
-  letter-spacing: 0.11em;
+  font-size: var(--main-menu-shipyard-dock-metrics-font-size);
+  letter-spacing: var(--main-menu-shipyard-dock-metrics-letter-spacing);
 }
 
 .shipyard__dock-metrics strong {
   color: #f5fbff;
-  font-size: 0.9rem;
+  font-size: var(--main-menu-shipyard-dock-metrics-font-size-2);
   font-weight: 400;
 }
 
 .shipyard__footer {
   align-items: center;
   color: rgb(220 239 251 / 0.44);
-  font-size: 0.55rem;
+  font-size: var(--main-menu-shipyard-footer-font-size);
   font-weight: 700;
   justify-content: space-between;
 }
@@ -1765,9 +2106,9 @@
 }
 
 .shipyard__footer .main-menu-action {
-  min-block-size: 2.8rem;
-  font-size: 0.56rem;
-  padding-block: 0.55rem;
+  min-block-size: var(--main-menu-main-menu-action-min-block-size);
+  font-size: var(--main-menu-main-menu-action-font-size);
+  padding-block: var(--main-menu-main-menu-action-padding-block);
 }
 
 /* Orbital Elevator Clearance */
@@ -1783,7 +2124,7 @@
   --main-menu-elevator-identity-gap: 0.8rem 1.2rem;
   --main-menu-elevator-action-gap: 0.55rem;
   color: #f5f7f8;
-  padding-inline: clamp(1.5rem, 6vw, 7.5rem);
+  padding-inline: var(--main-menu-main-menu-orbital-elevator-padding-inline);
 }
 
 .orbital-elevator__header,
@@ -1809,25 +2150,25 @@
   align-items: center;
   color: rgb(246 250 250 / 0.55);
   font-family: ui-monospace, "Cascadia Code", monospace;
-  font-size: 0.55rem;
+  font-size: var(--main-menu-orbital-elevator-eyebrow-font-size);
   font-weight: 750;
-  gap: 0.55rem;
-  letter-spacing: 0.14em;
+  gap: var(--main-menu-orbital-elevator-eyebrow-gap);
+  letter-spacing: var(--main-menu-orbital-elevator-eyebrow-letter-spacing);
   text-transform: uppercase;
 }
 
 .orbital-elevator__eyebrow svg {
-  block-size: 0.9rem;
+  block-size: var(--main-menu-orbital-elevator-eyebrow-block-size);
   color: var(--menu-accent);
-  inline-size: 0.9rem;
+  inline-size: var(--main-menu-orbital-elevator-eyebrow-inline-size);
 }
 
 .orbital-elevator__header h1 {
   color: #fbfdfd;
-  font-size: clamp(2.3rem, 6vw, 6.2rem);
+  font-size: var(--main-menu-orbital-elevator-header-font-size);
   font-weight: 300;
-  letter-spacing: 0.04em;
-  line-height: 0.86;
+  letter-spacing: var(--main-menu-orbital-elevator-header-letter-spacing);
+  line-height: var(--main-menu-orbital-elevator-header-line-height);
   text-transform: uppercase;
 }
 
@@ -1836,9 +2177,9 @@
   color: rgb(241 248 248 / 0.54);
   flex-direction: column;
   font-family: ui-monospace, "Cascadia Code", monospace;
-  font-size: 0.55rem;
-  gap: 0.55rem;
-  letter-spacing: 0.13em;
+  font-size: var(--main-menu-orbital-elevator-header-status-font-size);
+  gap: var(--main-menu-orbital-elevator-header-status-gap);
+  letter-spacing: var(--main-menu-orbital-elevator-header-status-letter-spacing);
   text-align: end;
 }
 
@@ -1846,7 +2187,7 @@
   display: grid;
   flex: 1;
   gap: var(--main-menu-elevator-body-gap);
-  grid-template-columns: minmax(12rem, 0.55fr) minmax(24rem, 1.45fr);
+  grid-template-columns: var(--main-menu-orbital-elevator-body-grid-template-columns);
   min-block-size: 0;
   align-items: center;
 }
@@ -1858,7 +2199,7 @@
   gap: var(--main-menu-elevator-seal-gap);
   justify-content: center;
   min-block-size: var(--main-menu-elevator-seal-min-height);
-  padding: 1rem;
+  padding: var(--main-menu-orbital-elevator-clearance-seal-padding);
   text-align: center;
 }
 
@@ -1870,7 +2211,7 @@
   inline-size: var(--main-menu-elevator-seal-size);
   border: 1px solid rgb(244 250 250 / 0.55);
   border-radius: 50%;
-  box-shadow: 0 0 0 0.55rem rgb(9 15 19 / 0.42), 0 0 0 0.6rem rgb(244 250 250 / 0.2);
+  box-shadow: var(--main-menu-orbital-elevator-seal-ring-box-shadow);
   color: #f7fbfb;
 }
 
@@ -1883,47 +2224,47 @@
 
 .orbital-elevator__seal-ring::before {
   block-size: 1px;
-  inline-size: 130%;
+  inline-size: var(--main-menu-orbital-elevator-seal-ring-inline-size);
 }
 
 .orbital-elevator__seal-ring::after {
-  block-size: 130%;
+  block-size: var(--main-menu-orbital-elevator-seal-ring-block-size);
   inline-size: 1px;
 }
 
 .orbital-elevator__seal-ring svg {
   position: absolute;
-  block-size: 1.9rem;
+  block-size: var(--main-menu-orbital-elevator-seal-ring-block-size-2);
   color: var(--menu-accent);
-  inline-size: 1.9rem;
+  inline-size: var(--main-menu-orbital-elevator-seal-ring-inline-size-2);
 }
 
 .orbital-elevator__seal-ring span {
-  font-size: 3.7rem;
+  font-size: var(--main-menu-orbital-elevator-seal-ring-font-size);
   font-weight: 250;
-  letter-spacing: -0.12em;
-  transform: translateY(0.12rem);
+  letter-spacing: var(--main-menu-orbital-elevator-seal-ring-letter-spacing);
+  transform: var(--main-menu-orbital-elevator-seal-ring-transform);
 }
 
 .orbital-elevator__seal-label,
 .orbital-elevator__seal-note {
   color: rgb(243 249 249 / 0.55);
   font-family: ui-monospace, "Cascadia Code", monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.14em;
+  font-size: var(--main-menu-orbital-elevator-seal-note-font-size);
+  letter-spacing: var(--main-menu-orbital-elevator-seal-note-letter-spacing);
   text-transform: uppercase;
 }
 
 .orbital-elevator__clearance-seal strong {
   color: var(--menu-accent);
-  font-size: 1.1rem;
+  font-size: var(--main-menu-orbital-elevator-clearance-seal-font-size);
   font-weight: 750;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--main-menu-orbital-elevator-clearance-seal-letter-spacing);
 }
 
 .orbital-elevator__seal-note {
-  max-inline-size: 13rem;
-  line-height: 1.5;
+  max-inline-size: var(--main-menu-orbital-elevator-seal-note-max-inline-size);
+  line-height: var(--main-menu-orbital-elevator-seal-note-line-height);
 }
 
 .orbital-elevator__dossier {
@@ -1933,7 +2274,7 @@
   min-block-size: 0;
   border: 1px solid rgb(15 24 29 / 0.55);
   background-color: rgb(246 246 240 / 0.94);
-  box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.28);
+  box-shadow: var(--main-menu-orbital-elevator-dossier-box-shadow);
   color: #141d21;
   padding: var(--main-menu-elevator-dossier-padding);
 }
@@ -1942,7 +2283,7 @@
   align-items: flex-start;
   border-block-end: 1px solid rgb(15 24 29 / 0.2);
   justify-content: space-between;
-  padding-block-end: 1rem;
+  padding-block-end: var(--main-menu-orbital-elevator-dossier-heading-padding-block-end);
 }
 
 .orbital-elevator__dossier .orbital-elevator__eyebrow {
@@ -1950,30 +2291,30 @@
 }
 
 .orbital-elevator__dossier-heading h2 {
-  font-size: clamp(1.7rem, 4vw, 3.5rem);
+  font-size: var(--main-menu-orbital-elevator-dossier-heading-font-size);
   font-weight: 350;
-  letter-spacing: 0.04em;
-  line-height: 0.9;
+  letter-spacing: var(--main-menu-orbital-elevator-dossier-heading-letter-spacing);
+  line-height: var(--main-menu-orbital-elevator-dossier-heading-line-height);
 }
 
 .orbital-elevator__dossier-heading > svg {
-  block-size: 2.3rem;
+  block-size: var(--main-menu-orbital-elevator-dossier-heading-block-size);
   color: var(--menu-accent);
-  inline-size: 2.3rem;
+  inline-size: var(--main-menu-orbital-elevator-dossier-heading-inline-size);
 }
 
 .orbital-elevator__identity-grid {
   display: grid;
   gap: var(--main-menu-elevator-identity-gap);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: var(--main-menu-orbital-elevator-identity-grid-grid-template-columns);
 }
 
 .orbital-elevator__identity-grid div {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--main-menu-orbital-elevator-identity-grid-gap);
   border-block-end: 1px solid rgb(15 24 29 / 0.16);
-  padding-block-end: 0.55rem;
+  padding-block-end: var(--main-menu-orbital-elevator-identity-grid-padding-block-end);
 }
 
 .orbital-elevator__identity-grid span,
@@ -1986,30 +2327,30 @@
 
 .orbital-elevator__identity-grid span {
   color: rgb(20 29 33 / 0.52);
-  font-size: 0.52rem;
+  font-size: var(--main-menu-orbital-elevator-identity-grid-font-size);
   font-weight: 750;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--main-menu-orbital-elevator-identity-grid-letter-spacing);
 }
 
 .orbital-elevator__identity-grid strong {
-  font-size: 0.65rem;
+  font-size: var(--main-menu-orbital-elevator-identity-grid-font-size-2);
   font-weight: 800;
-  letter-spacing: 0.07em;
+  letter-spacing: var(--main-menu-orbital-elevator-identity-grid-letter-spacing-2);
 }
 
 .orbital-elevator__protocol {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: var(--main-menu-orbital-elevator-protocol-gap);
 }
 
 .orbital-elevator__protocol-heading {
   align-items: baseline;
   color: rgb(20 29 33 / 0.54);
-  font-size: 0.53rem;
+  font-size: var(--main-menu-orbital-elevator-protocol-heading-font-size);
   font-weight: 750;
   justify-content: space-between;
-  letter-spacing: 0.13em;
+  letter-spacing: var(--main-menu-orbital-elevator-protocol-heading-letter-spacing);
 }
 
 .orbital-elevator__protocol-heading span:last-child {
@@ -2019,16 +2360,16 @@
 .orbital-elevator__protocol-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--main-menu-orbital-elevator-protocol-list-gap);
 }
 
 .orbital-elevator__protocol-row {
   align-items: center;
   border-block-start: 1px solid rgb(15 24 29 / 0.16);
   color: rgb(20 29 33 / 0.65);
-  font-size: 0.58rem;
-  gap: 0.7rem;
-  padding-block-start: 0.6rem;
+  font-size: var(--main-menu-orbital-elevator-protocol-row-font-size);
+  gap: var(--main-menu-orbital-elevator-protocol-row-gap);
+  padding-block-start: var(--main-menu-orbital-elevator-protocol-row-padding-block-start);
 }
 
 .orbital-elevator__protocol-index {
@@ -2038,17 +2379,17 @@
 
 .orbital-elevator__protocol-row > span:nth-child(2) {
   flex: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--main-menu-orbital-elevator-protocol-row-letter-spacing);
 }
 
 .orbital-elevator__protocol-row strong {
   display: inline-flex;
   align-items: center;
   color: #17684a;
-  font-size: 0.55rem;
+  font-size: var(--main-menu-orbital-elevator-protocol-row-font-size-2);
   font-weight: 800;
-  gap: 0.3rem;
-  letter-spacing: 0.08em;
+  gap: var(--main-menu-orbital-elevator-protocol-row-gap-2);
+  letter-spacing: var(--main-menu-orbital-elevator-protocol-row-letter-spacing-2);
   text-align: end;
 }
 
@@ -2057,8 +2398,8 @@
 }
 
 .orbital-elevator__protocol-row strong svg {
-  block-size: 0.75rem;
-  inline-size: 0.75rem;
+  block-size: var(--main-menu-orbital-elevator-protocol-row-block-size);
+  inline-size: var(--main-menu-orbital-elevator-protocol-row-inline-size);
 }
 
 .orbital-elevator__actions {
@@ -2101,45 +2442,45 @@
 .orbital-elevator__secondary-actions .main-menu-action {
   flex: 1;
   justify-content: center;
-  min-block-size: 2.9rem;
-  font-size: 0.55rem;
+  min-block-size: var(--main-menu-main-menu-action-min-block-size-2);
+  font-size: var(--main-menu-main-menu-action-font-size-2);
 }
 
 .orbital-elevator__footer {
   align-items: center;
   color: rgb(244 250 250 / 0.5);
   font-family: ui-monospace, "Cascadia Code", monospace;
-  font-size: 0.55rem;
+  font-size: var(--main-menu-orbital-elevator-footer-font-size);
   font-weight: 700;
   justify-content: space-between;
-  letter-spacing: 0.13em;
+  letter-spacing: var(--main-menu-orbital-elevator-footer-letter-spacing);
   text-transform: uppercase;
 }
 
 .orbital-elevator__key-hints {
-  gap: 1rem;
+  gap: var(--main-menu-orbital-elevator-key-hints-gap);
 }
 
 @keyframes menu-status-pulse {
   0%,
   100% {
     opacity: 0.55;
-    transform: scale(0.9);
+    transform: var(--main-menu-motion-menu-status-pulse-100-transform);
   }
 
   50% {
     opacity: 1;
-    transform: scale(1);
+    transform: var(--main-menu-motion-menu-status-pulse-50-transform);
   }
 }
 
 @keyframes flight-deck-radar-sweep {
   0% {
-    transform: rotate(-35deg);
+    transform: var(--main-menu-motion-flight-deck-radar-sweep-0-transform);
   }
 
   100% {
-    transform: rotate(325deg);
+    transform: var(--main-menu-motion-flight-deck-radar-sweep-100-transform);
   }
 }
 
@@ -2147,47 +2488,47 @@
   0%,
   100% {
     opacity: 0.2;
-    transform: translateY(0);
+    transform: var(--main-menu-motion-black-market-scanline-100-transform);
   }
 
   50% {
     opacity: 0.85;
-    transform: translateY(11rem);
+    transform: var(--main-menu-motion-black-market-scanline-50-transform);
   }
 }
 
 @keyframes derelict-signal-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 rgb(255 119 122 / 0);
-    transform: scale(0.98);
+    box-shadow: var(--main-menu-motion-derelict-signal-pulse-100-box-shadow);
+    transform: var(--main-menu-motion-derelict-signal-pulse-100-transform);
   }
 
   50% {
-    box-shadow: 0 0 1.5rem rgb(255 119 122 / 0.32);
-    transform: scale(1);
+    box-shadow: var(--main-menu-motion-derelict-signal-pulse-50-box-shadow);
+    transform: var(--main-menu-motion-derelict-signal-pulse-50-transform);
   }
 }
 
 @keyframes derelict-waveform-breathe {
   0% {
     opacity: 0.42;
-    transform: scaleY(0.66);
+    transform: var(--main-menu-motion-derelict-waveform-breathe-0-transform);
   }
 
   100% {
     opacity: 1;
-    transform: scaleY(1);
+    transform: var(--main-menu-motion-derelict-waveform-breathe-100-transform);
   }
 }
 
 @media (max-width: 72rem) {
   .main-menu-navigation {
-    padding: clamp(1.5rem, 3vw, 2.6rem);
+    padding: var(--main-menu-main-menu-navigation-padding);
   }
 
   .flight-deck__body {
-    grid-template-columns: minmax(8rem, 0.6fr) minmax(18rem, 1.8fr) minmax(8rem, 0.6fr);
+    grid-template-columns: var(--main-menu-flight-deck-body-grid-template-columns-2);
   }
 
   .black-market__header,
@@ -2196,18 +2537,18 @@
   }
 
   .shipyard__body {
-    grid-template-columns: minmax(17rem, 1.2fr) minmax(15rem, 0.9fr) minmax(10rem, 0.6fr);
+    grid-template-columns: var(--main-menu-shipyard-body-grid-template-columns-2);
   }
 
   .orbital-elevator__body {
-    gap: 2rem;
+    gap: var(--main-menu-orbital-elevator-body-gap);
   }
 }
 
 @media (max-width: 58rem) {
   .main-menu-variant-rail {
-    inset-block-start: 0.9rem;
-    inset-inline-end: 0.9rem;
+    inset-block-start: var(--main-menu-main-menu-variant-rail-inset-block-start-2);
+    inset-inline-end: var(--main-menu-main-menu-variant-rail-inset-inline-end-2);
   }
 
   .main-menu-variant-rail__label {
@@ -2240,7 +2581,7 @@
   }
 
   .flight-deck__body {
-    gap: 1rem;
+    gap: var(--main-menu-flight-deck-body-gap);
   }
 
   .flight-deck__instrument--left,
@@ -2249,22 +2590,22 @@
   }
 
   .flight-deck__console {
-    min-block-size: 25rem;
+    min-block-size: var(--main-menu-flight-deck-console-min-block-size);
   }
 
   .black-market__body {
-    gap: 1rem;
+    gap: var(--main-menu-black-market-body-gap);
   }
 
   .black-market__command-rail {
     border-block-start: 1px solid rgb(178 227 184 / 0.25);
     border-inline-start: 0;
-    padding: 1rem 0 0;
+    padding: var(--main-menu-black-market-command-rail-padding);
   }
 
   .black-market__rail-actions {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: var(--main-menu-black-market-rail-actions-grid-template-columns);
   }
 
   .black-market__rail-note {
@@ -2272,16 +2613,16 @@
   }
 
   .derelict-station__broadcast-window {
-    grid-template-columns: minmax(0, 1fr) minmax(7rem, 0.24fr);
+    grid-template-columns: var(--main-menu-derelict-station-broadcast-window-grid-template-columns-2);
   }
 
   .derelict-station__actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: var(--main-menu-derelict-station-actions-grid-template-columns-2);
   }
 
   .shipyard__systems-panel,
   .shipyard__dock-panel {
-    min-block-size: 12rem;
+    min-block-size: var(--main-menu-shipyard-dock-panel-min-block-size);
   }
 
   .orbital-elevator__body {
@@ -2296,18 +2637,18 @@
   }
 
   .orbital-elevator__seal-ring {
-    block-size: 8rem;
+    block-size: var(--main-menu-orbital-elevator-seal-ring-block-size-3);
     flex: none;
-    inline-size: 8rem;
+    inline-size: var(--main-menu-orbital-elevator-seal-ring-inline-size-3);
   }
 
   .orbital-elevator__seal-ring span {
-    font-size: 2.4rem;
+    font-size: var(--main-menu-orbital-elevator-seal-ring-font-size-2);
   }
 
   .orbital-elevator__seal-ring svg {
-    block-size: 1.3rem;
-    inline-size: 1.3rem;
+    block-size: var(--main-menu-orbital-elevator-seal-ring-block-size-4);
+    inline-size: var(--main-menu-orbital-elevator-seal-ring-inline-size-4);
   }
 
   .orbital-elevator__clearance-seal > span,
@@ -2318,17 +2659,17 @@
 
 @media (max-width: 40rem) {
   .main-menu-stage::after {
-    inset: 0.45rem;
+    inset: var(--main-menu-main-menu-stage-inset);
   }
 
   .main-menu-navigation {
-    gap: 1.25rem;
-    padding: 1.35rem;
+    gap: var(--main-menu-main-menu-navigation-gap);
+    padding: var(--main-menu-main-menu-navigation-padding-2);
   }
 
   .main-menu-variant-rail {
-    inset-block-start: 0.7rem;
-    inset-inline: 0.7rem;
+    inset-block-start: var(--main-menu-main-menu-variant-rail-inset-block-start-3);
+    inset-inline: var(--main-menu-main-menu-variant-rail-inset-inline);
     justify-content: center;
   }
 
@@ -2340,7 +2681,7 @@
   .black-market__title,
   .shipyard__launch-heading h1,
   .orbital-elevator__header h1 {
-    font-size: clamp(2.5rem, 15vw, 4.7rem);
+    font-size: var(--main-menu-orbital-elevator-header-font-size-2);
   }
 
   .flight-deck__console-heading,
@@ -2356,7 +2697,7 @@
   .black-market__target-panel,
   .derelict-station__actions,
   .orbital-elevator__identity-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: var(--main-menu-orbital-elevator-identity-grid-grid-template-columns-2);
   }
 
   .flight-deck__secondary-actions,
@@ -2373,21 +2714,21 @@
   .derelict-station__footer {
     align-items: flex-start;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--main-menu-derelict-station-footer-gap-2);
   }
 
   .black-market__body {
-    padding-block-end: 0.4rem;
+    padding-block-end: var(--main-menu-black-market-body-padding-block-end);
   }
 
   .black-market__rail-actions {
-    grid-template-columns: 1fr;
+    grid-template-columns: var(--main-menu-black-market-rail-actions-grid-template-columns-2);
   }
 
   .derelict-station__broadcast-window {
     display: flex;
     flex-direction: column;
-    gap: 1.4rem;
+    gap: var(--main-menu-derelict-station-broadcast-window-gap);
     min-block-size: 0;
   }
 
@@ -2396,18 +2737,18 @@
     flex-direction: row;
     border-block-start: 1px solid rgb(231 239 240 / 0.17);
     border-inline-start: 0;
-    padding-block-start: 1rem;
+    padding-block-start: var(--main-menu-derelict-station-signal-column-padding-block-start);
     padding-inline-start: 0;
   }
 
   .derelict-station__signal-icon {
-    block-size: 2.8rem;
-    inline-size: 2.8rem;
+    block-size: var(--main-menu-derelict-station-signal-icon-block-size-2);
+    inline-size: var(--main-menu-derelict-station-signal-icon-inline-size-2);
   }
 
   .derelict-station__signal-icon svg {
-    block-size: 1.1rem;
-    inline-size: 1.1rem;
+    block-size: var(--main-menu-derelict-station-signal-icon-block-size-3);
+    inline-size: var(--main-menu-derelict-station-signal-icon-inline-size-3);
   }
 
   .shipyard__readiness {
@@ -2416,7 +2757,7 @@
   }
 
   .shipyard__dock-metrics {
-    padding-block-start: 0.5rem;
+    padding-block-start: var(--main-menu-shipyard-dock-metrics-padding-block-start-2);
   }
 
   .orbital-elevator__clearance-seal {
@@ -2429,7 +2770,7 @@
   }
 
   .orbital-elevator__dossier {
-    padding: 1rem;
+    padding: var(--main-menu-orbital-elevator-dossier-padding);
   }
 }
 
