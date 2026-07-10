@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import {
   getMainMenuVariant,
-  shouldShowMainMenuVariantRail,
   type MainMenuVariant
 } from "@/game/config/main-menu-config";
 import {
@@ -16,7 +15,7 @@ import {
   type ContinueTarget
 } from "@/game/save/continue-target-service";
 import { quitToDesktop, startStage, continueActiveRun } from "./screen-actions";
-import { MainMenuVariantRail } from "./main-menu/MainMenuPrimitives";
+import { MainMenuVariantNav } from "./main-menu/MainMenuPrimitives";
 import { BlackMarketBountyMenu } from "./main-menu/BlackMarketBountyMenu";
 import { DerelictStationMenu } from "./main-menu/DerelictStationMenu";
 import { NeonShipyardMenu } from "./main-menu/NeonShipyardMenu";
@@ -101,9 +100,7 @@ export const MainMenuScreen = () => {
   return (
     <div className="main-menu-host">
       <ActiveMenu actions={actions} />
-      {shouldShowMainMenuVariantRail() && (
-        <MainMenuVariantRail onSelect={setVariant} selectedVariant={variant} />
-      )}
+      <MainMenuVariantNav onSelect={setVariant} selectedVariant={variant} />
       <span className="sr-only">{GAME_TITLE} main menu</span>
     </div>
   );

@@ -68,19 +68,19 @@ export const MainMenuActionButton = ({
   </Button>
 );
 
-export const MainMenuVariantRail = ({
+export const MainMenuVariantNav = ({
   onSelect,
   selectedVariant
 }: {
   onSelect: (variant: MainMenuVariant) => void;
   selectedVariant: MainMenuVariant;
 }) => (
-  <nav aria-label="Main menu design preview" className="main-menu-variant-rail">
-    <span className="main-menu-variant-rail__label">DESIGN PREVIEW</span>
+  <nav aria-label="Switch main menu variation" className="main-menu-variant-rail">
+    <span className="main-menu-variant-rail__label">MENU VARIANTS</span>
     <div className="main-menu-variant-rail__options">
       {MAIN_MENU_VARIANT_OPTIONS.map((option) => (
         <button
-          aria-label={`Preview ${option.label}`}
+          aria-label={`Switch to ${option.label}`}
           aria-pressed={selectedVariant === option.id}
           className={cn(
             "main-menu-variant-rail__option",

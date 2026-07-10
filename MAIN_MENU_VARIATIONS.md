@@ -18,10 +18,9 @@ Use the query string in a local Electron URL to select one menu:
 ?menuVariant=orbital-elevator
 ```
 
-In development, the `DESIGN PREVIEW` rail is visible automatically. The rail
-can also be forced in a production build with `?menuGallery=1`. A named build
-switch is supported through `VITE_MAIN_MENU_VARIANT` and is validated against
-the same typed variant list.
+The compact `MENU VARIANTS` switcher is always visible in the top-right corner
+of the main menu. A named build switch is also supported through
+`VITE_MAIN_MENU_VARIANT` and is validated against the same typed variant list.
 
 ## The five directions
 
@@ -36,7 +35,7 @@ the same typed variant list.
 ## Key files
 
 - `src/renderer/src/game/config/main-menu-config.ts` owns the typed variants,
-  background URLs, query selection, and gallery visibility.
+  background URLs, and query selection.
 - `src/renderer/src/components/game/screens/MainMenuScreen.tsx` owns save
   resolution, shared gameplay actions, and variant routing.
 - `src/renderer/src/components/game/screens/main-menu/` contains the five

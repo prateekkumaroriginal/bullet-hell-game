@@ -76,11 +76,8 @@ export const MAIN_MENU_VARIANT_OPTIONS = [
 export const MAIN_MENU_DEFAULT_VARIANT = MAIN_MENU_VARIANTS.FLIGHT_DECK;
 
 export const MAIN_MENU_QUERY_KEYS = {
-  VARIANT: "menuVariant",
-  GALLERY: "menuGallery"
+  VARIANT: "menuVariant"
 } as const;
-
-export const MAIN_MENU_GALLERY_QUERY_VALUE = "1";
 
 export function isMainMenuVariant(
   value: string | null | undefined
@@ -119,20 +116,4 @@ export function getMainMenuVariant(): MainMenuVariant {
   }
 
   return MAIN_MENU_DEFAULT_VARIANT;
-}
-
-export function shouldShowMainMenuVariantRail(): boolean {
-  if (import.meta.env.DEV) {
-    return true;
-  }
-
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  return (
-    new URLSearchParams(window.location.search).get(
-      MAIN_MENU_QUERY_KEYS.GALLERY
-    ) === MAIN_MENU_GALLERY_QUERY_VALUE
-  );
 }
