@@ -204,6 +204,8 @@
   --main-menu-command-radar-min-height: 286px;
   --main-menu-command-radar-border-radius: 999px;
   --main-menu-command-radar-ring-border-radius: 999px;
+  --main-menu-command-radar-ring-outer-inset: 10%;
+  --main-menu-command-radar-ring-inner-inset: 29%;
   --main-menu-command-radar-sweep-width: 46%;
   --main-menu-command-radar-sweep-transform: rotate(-32deg);
   --main-menu-command-radar-blip-width: 7px;
@@ -281,6 +283,7 @@
   --main-menu-smuggler-cover-footnote-font-size: 10px;
   --main-menu-smuggler-ledger-gap: 15px;
   --main-menu-smuggler-ledger-padding: 20px;
+  --main-menu-smuggler-ledger-clip-offset: 16px;
   --main-menu-smuggler-ledger-header-gap: 16px;
   --main-menu-smuggler-ledger-header-gap-2: 5px;
   --main-menu-smuggler-ledger-header-font-size: 9px;
@@ -385,6 +388,7 @@
   --main-menu-squad-action-small-letter-spacing: 0.14em;
   --main-menu-squad-hologram-min-height: 482px;
   --main-menu-squad-hologram-padding: 15px;
+  --main-menu-squad-hologram-frame-inset: 12px;
   --main-menu-squad-hologram-right: 22px;
   --main-menu-squad-hologram-bottom: 22px;
   --main-menu-squad-hologram-left: 22px;
@@ -429,6 +433,7 @@
   --main-menu-rogue-terminal-screen-min-height-2: 16px;
   --main-menu-rogue-caret-width: 8px;
   --main-menu-rogue-caret-height: 15px;
+  --main-menu-rogue-caret-vertical-align: -3px;
   --main-menu-rogue-caret-animation: rogue-caret var(--main-menu-rogue-caret-duration) steps(2, end) infinite;
   --main-menu-rogue-command-list-gap: 7px;
   --main-menu-rogue-command-list-padding: 15px;
@@ -475,6 +480,7 @@
   --main-menu-squad-roster-card-grid-template-columns-2: 22px 25px minmax(0, 1fr);
   --main-menu-rogue-command-grid-template-columns-2: 22px minmax(0, 1fr) 14px;
   --main-menu-backdrop-animation-duration: 0.01ms;
+  --main-menu-reduced-motion-transition-duration: 0.01ms;
 }
 
 .main-menu-backdrop {
@@ -1385,11 +1391,11 @@
 }
 
 .command-radar-ring--outer {
-  inset: 10%;
+  inset: var(--main-menu-command-radar-ring-outer-inset);
 }
 
 .command-radar-ring--inner {
-  inset: 29%;
+  inset: var(--main-menu-command-radar-ring-inner-inset);
   border-color: rgb(229 184 82 / 0.48);
 }
 
@@ -1758,7 +1764,7 @@
   background-color: rgb(12 13 12 / 0.91);
   box-shadow: 10px 10px 0 rgb(211 145 74 / 0.14), inset 0 0 32px rgb(211 145 74 / 0.06);
   padding: var(--main-menu-smuggler-ledger-padding);
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--main-menu-smuggler-ledger-clip-offset)), calc(100% - var(--main-menu-smuggler-ledger-clip-offset)) 100%, 0 100%);
 }
 
 .smuggler-ledger-header {
@@ -2294,7 +2300,7 @@
 }
 
 .squad-hologram::before {
-  inset: 12px;
+  inset: var(--main-menu-squad-hologram-frame-inset);
   border: 1px solid rgb(128 231 255 / 0.18);
 }
 
@@ -2536,7 +2542,7 @@
   width: var(--main-menu-rogue-caret-width);
   height: var(--main-menu-rogue-caret-height);
   background-color: #67f2be;
-  vertical-align: -3px;
+  vertical-align: var(--main-menu-rogue-caret-vertical-align);
   animation: var(--main-menu-rogue-caret-animation);
 }
 
@@ -2923,6 +2929,6 @@
     animation-duration: var(--main-menu-backdrop-animation-duration) !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: var(--main-menu-reduced-motion-transition-duration) !important;
   }
 }

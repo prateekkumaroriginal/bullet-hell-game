@@ -81,3 +81,9 @@ Follow-up token audit and verification:
 - The targeted stylesheet audit reports `0` remaining non-tokenized declarations; PostCSS parsing passes.
 - `pnpm typecheck` passes after the token pass.
 - `pnpm build` passes after the token pass and emits the five menu plates and scoped CSS.
+
+Final cleanup verification:
+
+- `pnpm-lock.yaml` was restored to the exact `HEAD` content and is unmodified.
+- Radar ring insets, clip-path offsets, hologram inset, caret alignment, and reduced-motion transition duration are all named `--main-menu-*` tokens.
+- `pnpm typecheck` and `pnpm build` pass after the cleanup.
