@@ -74,3 +74,10 @@ pnpm build
 The build completed the Electron main, preload, and renderer bundles. The renderer transformed 1,967 modules and emitted all five menu plates plus `main-menu.css`. No dev server was started. Visual QA was limited to implementation inspection and the production build because the task explicitly prohibits launching a dev server.
 
 The menu controls are native buttons with visible `:focus-visible` states, mouse hover states, Enter/Space activation, and Arrow/WASD navigation within each menu action list. `prefers-reduced-motion: reduce` collapses the decorative animations and transitions.
+
+Follow-up token audit and verification:
+
+- 450 non-structural layout, type, position, and motion declarations are centralized as named `--main-menu-*` tokens.
+- The targeted stylesheet audit reports `0` remaining non-tokenized declarations; PostCSS parsing passes.
+- `pnpm typecheck` passes after the token pass.
+- `pnpm build` passes after the token pass and emits the five menu plates and scoped CSS.
