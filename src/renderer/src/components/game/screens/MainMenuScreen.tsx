@@ -1,27 +1,47 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import {
+  getMainMenuVariant,
+  shouldShowMainMenuVariantRail,
+  type MainMenuVariant
+} from "@/game/config/main-menu-config";
 import {
   GAME_TITLE,
-  SAVE_ERROR_DIALOG,
+  SAVE_ERROR_DIALOG
 } from "@/game/config/screen-ui-config";
 import { GAME_SESSION_PHASES } from "@/game/state/game-session-state";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
 import {
   clearCorruptedActiveRunSave,
   resolveContinueTarget,
-  type ContinueTarget,
+  type ContinueTarget
 } from "@/game/save/continue-target-service";
-import {
-  ScreenButton,
-  ScreenCenter,
-  ScreenMenuGrid,
-  ScreenTitle,
-} from "./ScreenPrimitives";
-import { continueActiveRun, quitToDesktop, startStage } from "./screen-actions";
+import { quitToDesktop, startStage, continueActiveRun } from "./screen-actions";
+import { MainMenuVariantRail } from "./main-menu/MainMenuPrimitives";
+import { BlackMarketBountyMenu } from "./main-menu/BlackMarketBountyMenu";
+import { DerelictStationMenu } from "./main-menu/DerelictStationMenu";
+import { NeonShipyardMenu } from "./main-menu/NeonShipyardMenu";
+import { OrbitalElevatorMenu } from "./main-menu/OrbitalElevatorMenu";
+import { StarshipFlightDeckMenu } from "./main-menu/StarshipFlightDeckMenu";
+import type { MainMenuActions } from "./main-menu/main-menu-types";
+import "@/styles/main-menu.css";
+
+type MainMenuVariantComponent = (props: {
+  actions: MainMenuActions;
+}) => ReactNode;
+
+const MAIN_MENU_VARIANT_COMPONENTS = {
+  "flight-deck": StarshipFlightDeckMenu,
+  "black-market": BlackMarketBountyMenu,
+  "derelict-station": DerelictStationMenu,
+  shipyard: NeonShipyardMenu,
+  "orbital-elevator": OrbitalElevatorMenu
+} satisfies Record<MainMenuVariant, MainMenuVariantComponent>;
 
 export const MainMenuScreen = () => {
   const [continueTarget, setContinueTarget] = useState<ContinueTarget | null>(null);
+  const [variant, setVariant] = useState<MainMenuVariant>(() => getMainMenuVariant());
   const setGameSessionPhase = useGameUiStore(
-    (state) => state.setGameSessionPhase,
+    (state) => state.setGameSessionPhase
   );
 
   useEffect(() => {
@@ -65,36 +85,26 @@ export const MainMenuScreen = () => {
     setContinueTarget(null);
   };
 
-  const canContinue = continueTarget !== null;
+  const actions: MainMenuActions = {
+    canContinue: continueTarget !== null,
+    onContinue: handleContinue,
+    onPlay: () => {
+      setGameSessionPhase(GAME_SESSION_PHASES.STAGE_SELECT);
+    },
+    onArchive: () => {
+      setGameSessionPhase(GAME_SESSION_PHASES.ARCHIVE);
+    },
+    onQuit: quitToDesktop
+  };
+  const ActiveMenu = MAIN_MENU_VARIANT_COMPONENTS[variant];
 
   return (
-    <ScreenCenter>
-      <div className="flex flex-col items-center gap-10">
-        <ScreenTitle variant="main">{GAME_TITLE}</ScreenTitle>
-        <ScreenMenuGrid variant="main">
-          {canContinue && (
-            <ScreenButton autoFocus onClick={handleContinue}>
-              CONTINUE
-            </ScreenButton>
-          )}
-          <ScreenButton
-            autoFocus={!canContinue}
-            onClick={() => {
-              setGameSessionPhase(GAME_SESSION_PHASES.STAGE_SELECT);
-            }}
-          >
-            PLAY
-          </ScreenButton>
-          <ScreenButton
-            onClick={() => {
-              setGameSessionPhase(GAME_SESSION_PHASES.ARCHIVE);
-            }}
-          >
-            ARCHIVE
-          </ScreenButton>
-          <ScreenButton onClick={quitToDesktop}>QUIT</ScreenButton>
-        </ScreenMenuGrid>
-      </div>
-    </ScreenCenter>
+    <div className="main-menu-host">
+      <ActiveMenu actions={actions} />
+      {shouldShowMainMenuVariantRail() && (
+        <MainMenuVariantRail onSelect={setVariant} selectedVariant={variant} />
+      )}
+      <span className="sr-only">{GAME_TITLE} main menu</span>
+    </div>
   );
 };
