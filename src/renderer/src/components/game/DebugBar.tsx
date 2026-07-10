@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Bug, ChevronDown, Crosshair, MessageSquareMore } from "lucide-react";
+import {
+  Bug,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Crosshair,
+  MessageSquareMore,
+  Palette,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -16,6 +24,11 @@ import {
   setDebugHitboxOverlayVisible
 } from "@/game/debug/debug-hitbox-events";
 import { POPUP_IDS } from "@/game/config/popup-config";
+import {
+  MAIN_MENU_VARIANT_OPTIONS,
+  MAIN_MENU_VARIANT_STEP,
+  type MainMenuVariant,
+} from "@/game/config/screen-ui-config";
 import { GAME_SESSION_PHASES } from "@/game/state/game-session-state";
 import { showPopup } from "@/game/state/popup-ui-service";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
@@ -40,6 +53,10 @@ const INITIAL_DEBUG_STATS: DebugStatsChangedPayload = {
 
 export const DebugBar = () => {
   const gamePhase = useGameUiStore((state) => state.gameSession.phase);
+  const mainMenuVariant = useGameUiStore((state) => state.mainMenuVariant);
+  const setMainMenuVariant = useGameUiStore(
+    (state) => state.setMainMenuVariant,
+  );
   const [isStatsVisible, setIsStatsVisible] = useState(
     debugBarUiState.isStatsVisible
   );
@@ -50,6 +67,21 @@ export const DebugBar = () => {
   const [openCategoryNames, setOpenCategoryNames] = useState<ReadonlySet<string>>(
     () => new Set(debugBarUiState.openCategoryNames)
   );
+
+  const mainMenuVariantIndex = MAIN_MENU_VARIANT_OPTIONS.findIndex(
+    (option) => option.id === mainMenuVariant,
+  );
+
+  const setVariantByOffset = (offset: number) => {
+    const nextIndex =
+      (mainMenuVariantIndex + offset + MAIN_MENU_VARIANT_OPTIONS.length) %
+      MAIN_MENU_VARIANT_OPTIONS.length;
+    const nextVariant = MAIN_MENU_VARIANT_OPTIONS[nextIndex]?.id;
+
+    if (nextVariant) {
+      setMainMenuVariant(nextVariant);
+    }
+  };
 
   useEffect(() => onDebugStatsChanged(setDebugStats), []);
 
@@ -80,6 +112,60 @@ export const DebugBar = () => {
         <div
           className={`pointer-events-auto flex max-h-[calc(100vh-4.5rem)] ${DEBUG_PANEL_WIDTH_CLASS} flex-col gap-1 overflow-y-auto border border-slate-400/25 bg-zinc-950/82 p-2 shadow-[0_0_22px_rgba(0,0,0,0.52)] backdrop-blur-sm`}
         >
+          {gamePhase === GAME_SESSION_PHASES.IDLE ? (
+            <div className="flex flex-col gap-2 border border-white/10 bg-white/[0.045] p-2">
+              <div className="flex items-center gap-2 px-1 text-cyan-100">
+                <Palette className="size-3.5 shrink-0" />
+                <span className="font-mono text-[0.7rem] uppercase tracking-[0.12em] max-md:text-[0.65rem]">
+                  Main menu variations
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Button
+                  aria-label="Previous main menu variation"
+                  className="size-8 rounded-none border-white/10 bg-white/[0.045] p-0 text-cyan-100 hover:bg-cyan-300/10"
+                  onClick={() => {
+                    setVariantByOffset(-MAIN_MENU_VARIANT_STEP);
+                  }}
+                  size="icon"
+                  type="button"
+                  variant="outline"
+                >
+                  <ChevronLeft className="size-3.5" />
+                </Button>
+                <select
+                  aria-label="Main menu variation"
+                  className="h-8 min-w-0 flex-1 appearance-none rounded-none border border-white/10 bg-zinc-950/65 px-2 font-mono text-[0.68rem] uppercase tracking-[0.08em] text-cyan-50 outline-none focus:border-cyan-200/70"
+                  onChange={(event) => {
+                    setMainMenuVariant(event.target.value as MainMenuVariant);
+                  }}
+                  value={mainMenuVariant}
+                >
+                  {MAIN_MENU_VARIANT_OPTIONS.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.index} / {option.name}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  aria-label="Next main menu variation"
+                  className="size-8 rounded-none border-white/10 bg-white/[0.045] p-0 text-cyan-100 hover:bg-cyan-300/10"
+                  onClick={() => {
+                    setVariantByOffset(MAIN_MENU_VARIANT_STEP);
+                  }}
+                  size="icon"
+                  type="button"
+                  variant="outline"
+                >
+                  <ChevronRight className="size-3.5" />
+                </Button>
+              </div>
+              <span className="px-1 font-mono text-[0.62rem] text-zinc-400">
+                {MAIN_MENU_VARIANT_OPTIONS[mainMenuVariantIndex]?.summary}
+              </span>
+            </div>
+          ) : null}
+
           <div className="flex items-center justify-between gap-3 border border-white/10 bg-white/[0.045] px-3 py-2">
             <label
               className="flex min-w-0 flex-1 items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-cyan-100 max-md:text-[0.65rem]"

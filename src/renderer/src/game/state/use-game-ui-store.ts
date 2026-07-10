@@ -34,6 +34,10 @@ import {
   type WaveAnnouncementChangedPayload,
   type WaveChangedPayload,
 } from "../events/gameplay-events";
+import {
+  DEFAULT_MAIN_MENU_VARIANT,
+  type MainMenuVariant,
+} from "../config/screen-ui-config";
 
 export type PlayerHealthState = PlayerHealthChangedPayload;
 export type PlayerProgressionState = PlayerProgressionChangedPayload;
@@ -48,6 +52,7 @@ export type PopupUiState = {
 
 export type GameUiState = {
   gameSession: GameSessionState;
+  mainMenuVariant: MainMenuVariant;
   stageProgress: StageProgressState;
   playerHealth: PlayerHealthState;
   playerProgression: PlayerProgressionState;
@@ -58,6 +63,7 @@ export type GameUiState = {
   popups: PopupUiState;
   setGameSession: (gameSession: GameSessionState) => void;
   setGameSessionPhase: (phase: GameSessionPhase) => void;
+  setMainMenuVariant: (mainMenuVariant: MainMenuVariant) => void;
   setCurrentWave: (currentWave: number) => void;
   setCompletedStageIds: (completedStageIds: readonly StageId[]) => void;
   markStageComplete: (stageId: StageId) => void;
@@ -109,6 +115,7 @@ const INITIAL_POPUP_STATE: PopupUiState = {
 
 export const useGameUiStore = create<GameUiState>((set) => ({
   gameSession: INITIAL_GAME_SESSION_STATE,
+  mainMenuVariant: DEFAULT_MAIN_MENU_VARIANT,
   stageProgress: INITIAL_STAGE_PROGRESS_STATE,
   playerHealth: INITIAL_PLAYER_HEALTH,
   playerProgression: INITIAL_PLAYER_PROGRESSION,
@@ -127,6 +134,9 @@ export const useGameUiStore = create<GameUiState>((set) => ({
         phase,
       },
     }));
+  },
+  setMainMenuVariant: (mainMenuVariant) => {
+    set({ mainMenuVariant });
   },
   setCurrentWave: (currentWave) => {
     set((state) => ({
