@@ -1,10 +1,10 @@
 # Main-menu variation guide
 
-The game has exactly five main-menu compositions. They all use the existing gameplay actions for continue, stage selection, archive access, and quitting, but they intentionally differ in information hierarchy, control geometry, typography, and motion language.
+The game has exactly five main-menu compositions. They all use the existing gameplay actions for continue, stage selection, archive access, and quitting, but they intentionally differ in spatial grammar and control geometry. The visible content contract is strict: game title, background art, actual action buttons, and numbered variation-switch buttons only.
 
 ## Preview selection
 
-In a development build, use the `DESIGN LAB` selector in the upper-right corner of the main menu. It reloads the current page with the typed `menu` query parameter.
+Use the numbered `01`–`05` switch buttons in the lower-right corner of the main menu. They update the typed `menu` query parameter with `history.replaceState`, so switching is URL-synced without a page reload.
 
 The same resolver can be driven locally without the selector:
 
@@ -29,11 +29,11 @@ Valid ids are defined in `src/renderer/src/game/config/main-menu-config.ts`. The
 
 | Id | Variation | Design premise | Primary affordance |
 | --- | --- | --- | --- |
-| `retro` | Retro CRT Arcade Attract Mode | An action cabinet caught in a high-energy demo loop | Numbered arcade deck with large italic action labels |
-| `command` | Militarized Command Map | A tactical operations room that turns the menu into a sortie order | Stacked coded orders beside mission intel and radar telemetry |
-| `smuggler` | Smuggler's Cargo Manifest | A compact contraband ledger where every action feels one scan away | Right-hand manifest ledger with inventory rows and a docking countdown |
-| `squad` | Holographic Squad Roster | A character-forward briefing room for a one-ship strike team | Pilot roster cards plus a large deploy/reconnect briefing control |
-| `rogue` | Rogue AI Breach Terminal | A controlled security intrusion with a legible terminal shell | Monospaced command list with executable-looking protocols |
+| `retro` | Retro CRT Arcade Attract Mode | An action cabinet caught in a high-energy demo loop | Central circular PLAY control flanked by arcade buttons and a cartridge-like CONTINUE rail |
+| `command` | Militarized Command Map | A tactical operations room that turns the menu into a sortie order | Four action nodes plotted into a rotated 3×3 tactical cluster |
+| `smuggler` | Smuggler's Cargo Manifest | A compact contraband ledger where every action feels one scan away | Loose, angled cargo tags that spill across the action field |
+| `squad` | Holographic Squad Roster | A character-forward briefing room for a one-ship strike team | Formation grid with ARCHIVE at the rear, PLAY at the nose, and side controls as wing nodes |
+| `rogue` | Rogue AI Breach Terminal | A controlled security intrusion with a legible terminal shell | Two-row breach console with long CONTINUE/ARCHIVE rails and a central command pair |
 
 ## Implementation map
 
@@ -75,6 +75,8 @@ The build completed the Electron main, preload, and renderer bundles. The render
 
 The menu controls are native buttons with visible `:focus-visible` states, mouse hover states, Enter/Space activation, and Arrow/WASD navigation within each menu action list. `prefers-reduced-motion: reduce` collapses the decorative animations and transitions.
 
+The minimal-content audit finds one visible heading (`VOID STRIKE`), the four actual action buttons when applicable, and the five numbered variation buttons. No stage names, descriptions, status readouts, badges, or decorative text are rendered.
+
 Follow-up token audit and verification:
 
 - 450 non-structural layout, type, position, and motion declarations are centralized as named `--main-menu-*` tokens.
@@ -87,3 +89,9 @@ Final cleanup verification:
 - `pnpm-lock.yaml` was restored to the exact `HEAD` content and is unmodified.
 - Radar ring insets, clip-path offsets, hologram inset, caret alignment, and reduced-motion transition duration are all named `--main-menu-*` tokens.
 - `pnpm typecheck` and `pnpm build` pass after the cleanup.
+
+Interaction redesign verification:
+
+- `pnpm typecheck` passes after the five spatial grammar layouts were rebuilt.
+- `pnpm build` passes after the rebuild and emits the renderer bundle and all five background plates.
+- No development server was launched.

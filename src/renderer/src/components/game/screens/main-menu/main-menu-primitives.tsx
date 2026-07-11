@@ -78,12 +78,14 @@ export const MenuControl = ({
 
 export const MinimalMainMenu = ({
   actions,
-  ariaLabel
+  ariaLabel,
+  className
 }: {
   actions: MainMenuActions;
   ariaLabel: string;
+  className?: string;
 }) => (
-  <MenuFrame ariaLabel={ariaLabel} className="minimal-main-menu">
+  <MenuFrame ariaLabel={ariaLabel} className={cn("minimal-main-menu", className)}>
     <h1 className="minimal-main-menu__title">{GAME_TITLE}</h1>
     <nav aria-label="Main menu actions" className="minimal-main-menu__actions">
       {actions.continueTarget ? (

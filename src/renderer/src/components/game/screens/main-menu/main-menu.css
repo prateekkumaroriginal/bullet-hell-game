@@ -1,13 +1,22 @@
 .main-menu-backdrop {
-  --main-menu-content-max-inline-size: 30rem;
-  --main-menu-content-padding: 2rem;
-  --main-menu-action-min-block-size: 3.25rem;
-  --main-menu-action-font-size: 0.86rem;
-  --main-menu-title-font-size: clamp(3rem, 10vw, 7rem);
+  --main-menu-content-inline-max-size: 36rem;
+  --main-menu-content-padding-inline: 2rem;
+  --main-menu-frame-padding-block: 5rem;
+  --main-menu-frame-gap: 2rem;
+  --main-menu-title-font-size: clamp(3.5rem, 10vw, 8rem);
   --main-menu-title-letter-spacing: 0.18em;
-  --main-menu-overlay-opacity: 0.5;
-  --main-menu-control-gap: 0.7rem;
+  --main-menu-title-line-height: 0.82;
+  --main-menu-action-min-block-size: 3.75rem;
+  --main-menu-action-padding-inline: 1.35rem;
+  --main-menu-action-font-size: 0.78rem;
+  --main-menu-action-letter-spacing: 0.22em;
   --main-menu-switch-size: 2.25rem;
+  --main-menu-switch-gap: 0.45rem;
+  --main-menu-switch-edge: 1.25rem;
+  --main-menu-overlay-opacity: 0.52;
+  --main-menu-focus-width: 2px;
+  --main-menu-focus-offset: 0.3rem;
+  --main-menu-transition-fast: 160ms;
   background: #05070b;
   isolation: isolate;
   min-block-size: 100dvh;
@@ -35,12 +44,14 @@
 }
 
 .main-menu-backdrop-shadow {
-  background: linear-gradient(180deg, rgb(0 0 0 / 0.18), rgb(0 0 0 / 0.72));
+  box-shadow: inset 0 0 10rem rgb(0 0 0 / 0.72);
   z-index: -1;
 }
 
 .main-menu-backdrop-content {
+  display: grid;
   min-block-size: 100dvh;
+  place-items: center;
   position: relative;
 }
 
@@ -48,11 +59,12 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  inline-size: min(var(--main-menu-content-max-inline-size), calc(100vw - var(--main-menu-content-padding) * 2));
+  gap: var(--main-menu-frame-gap);
+  inline-size: min(var(--main-menu-content-inline-max-size), calc(100vw - var(--main-menu-content-padding-inline) * 2));
   justify-content: center;
-  margin-inline: auto;
   min-block-size: 100dvh;
+  padding-block: var(--main-menu-frame-padding-block);
+  position: relative;
 }
 
 .minimal-main-menu__title {
@@ -60,50 +72,72 @@
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: var(--main-menu-title-font-size);
   letter-spacing: var(--main-menu-title-letter-spacing);
-  line-height: 0.86;
-  margin: 0;
+  line-height: var(--main-menu-title-line-height);
   text-align: center;
   text-shadow: 0 0 2rem rgb(255 255 255 / 0.6);
+  z-index: 1;
 }
 
 .minimal-main-menu__actions {
   display: flex;
-  flex-direction: column;
-  gap: var(--main-menu-control-gap);
-  inline-size: 100%;
+  position: relative;
+  width: 100%;
+  z-index: 1;
 }
 
 .main-menu-control {
+  align-items: center;
+  appearance: none;
   background: rgb(0 0 0 / 0.68);
   border: 1px solid rgb(255 255 255 / 0.72);
   color: #fff;
+  cursor: pointer;
+  display: inline-flex;
   font: inherit;
   font-size: var(--main-menu-action-font-size);
   font-weight: 800;
-  letter-spacing: 0.16em;
+  justify-content: center;
+  letter-spacing: var(--main-menu-action-letter-spacing);
   min-block-size: var(--main-menu-action-min-block-size);
-  padding-inline: 1.25rem;
+  min-inline-size: 0;
+  padding-inline: var(--main-menu-action-padding-inline);
   text-transform: uppercase;
-  transition: background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
+  transition: background-color var(--main-menu-transition-fast) ease, box-shadow var(--main-menu-transition-fast) ease, color var(--main-menu-transition-fast) ease, transform var(--main-menu-transition-fast) ease;
+}
+
+.main-menu-control:hover {
+  background: rgb(255 255 255 / 0.14);
+}
+
+.main-menu-control:focus-visible,
+.menu-variation-switcher__button:focus-visible {
+  outline: var(--main-menu-focus-width) solid #fff;
+  outline-offset: var(--main-menu-focus-offset);
 }
 
 .menu-variation-switcher {
-  bottom: 1.25rem;
+  bottom: var(--main-menu-switch-edge);
   display: flex;
-  gap: 0.45rem;
+  gap: var(--main-menu-switch-gap);
   position: absolute;
-  right: 1.25rem;
+  right: var(--main-menu-switch-edge);
+  z-index: 4;
 }
 
 .menu-variation-switcher__button {
+  align-items: center;
   background: rgb(0 0 0 / 0.58);
   border: 1px solid rgb(255 255 255 / 0.46);
   color: #fff;
+  cursor: pointer;
+  display: inline-flex;
   font: inherit;
   font-size: 0.62rem;
   font-weight: 800;
   inline-size: var(--main-menu-switch-size);
+  justify-content: center;
   min-block-size: var(--main-menu-switch-size);
+  padding: 0;
 }
 
 .menu-variation-switcher__button:hover,
@@ -113,20 +147,69 @@
   color: #05070b;
 }
 
+/* RETRO: a cabinet control deck with a center fire button and flanking buttons. */
+
 .main-menu-backdrop[data-variant="retro"] .main-menu-frame {
-  align-items: flex-start;
+  --main-menu-retro-deck-gap: 1rem;
+  --main-menu-retro-play-size: 12rem;
+  --main-menu-retro-side-size: 6.5rem;
+  --main-menu-retro-continue-block-size: 4rem;
+  --main-menu-retro-tilt: -3deg;
+  gap: 3.5rem;
+  justify-content: space-between;
+  padding-block: 6rem 5rem;
 }
 
 .main-menu-backdrop[data-variant="retro"] .minimal-main-menu__title {
   font-family: "Courier New", monospace;
-  text-align: start;
-  text-shadow: 0.25rem 0.25rem 0 #ff4da6;
+  font-size: clamp(3.5rem, 12vw, 9rem);
+  letter-spacing: 0.08em;
+  text-shadow: 0.4rem 0.4rem 0 #ff4da6;
 }
 
-.main-menu-backdrop[data-variant="retro"] .main-menu-control {
-  border-width: 3px;
-  font-family: "Courier New", monospace;
-  text-align: start;
+.main-menu-backdrop[data-variant="retro"] .minimal-main-menu__actions {
+  align-items: center;
+  display: grid;
+  grid-template-areas: "archive play quit" "continue continue continue";
+  grid-template-columns: 1fr 1.6fr 1fr;
+  gap: var(--main-menu-retro-deck-gap);
+  transform: rotate(var(--main-menu-retro-tilt));
+}
+
+.main-menu-backdrop[data-variant="retro"] [data-menu-action="play"] {
+  aspect-ratio: 1;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  font-size: 1rem;
+  grid-area: play;
+  min-block-size: var(--main-menu-retro-play-size);
+  padding-inline: 0;
+  text-shadow: 0.15rem 0.15rem 0 #ff4da6;
+}
+
+.main-menu-backdrop[data-variant="retro"] [data-menu-action="archive"],
+.main-menu-backdrop[data-variant="retro"] [data-menu-action="quit"] {
+  aspect-ratio: 1;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  min-block-size: var(--main-menu-retro-side-size);
+  padding-inline: 0.5rem;
+}
+
+.main-menu-backdrop[data-variant="retro"] [data-menu-action="archive"] {
+  grid-area: archive;
+  transform: rotate(-12deg);
+}
+
+.main-menu-backdrop[data-variant="retro"] [data-menu-action="quit"] {
+  grid-area: quit;
+  transform: rotate(12deg);
+}
+
+.main-menu-backdrop[data-variant="retro"] [data-menu-action="continue"] {
+  border: 2px solid #ff4da6;
+  grid-area: continue;
+  min-block-size: var(--main-menu-retro-continue-block-size);
 }
 
 .main-menu-backdrop[data-variant="retro"] .main-menu-control:hover,
@@ -134,22 +217,78 @@
   background: #fef5b3;
   box-shadow: 0.35rem 0.35rem 0 #ff4da6;
   color: #180617;
-  transform: translate(-0.2rem, -0.2rem);
+  transform: translateY(-0.25rem);
 }
 
+/* COMMAND: four nodes plotted into a tactical map rather than a list. */
+
 .main-menu-backdrop[data-variant="command"] .main-menu-frame {
-  align-items: flex-end;
+  --main-menu-command-map-size: min(100%, 35rem);
+  --main-menu-command-map-gap: 0.8rem;
+  --main-menu-command-node-size: 6.75rem;
+  --main-menu-command-tilt: -7deg;
+  align-items: flex-start;
+  gap: 3rem;
+  justify-content: center;
+  padding-block: 5rem;
 }
 
 .main-menu-backdrop[data-variant="command"] .minimal-main-menu__title {
+  align-self: flex-start;
   font-family: "Arial Black", Impact, sans-serif;
-  text-align: end;
+  font-size: clamp(3rem, 8vw, 6rem);
+  letter-spacing: 0.1em;
+  text-align: start;
+}
+
+.main-menu-backdrop[data-variant="command"] .minimal-main-menu__actions {
+  aspect-ratio: 1.2;
+  display: grid;
+  grid-template-areas: "archive . continue" ". play ." ". . quit";
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: var(--main-menu-command-map-gap);
+  inline-size: var(--main-menu-command-map-size);
+  transform: rotate(var(--main-menu-command-tilt));
+}
+
+.main-menu-backdrop[data-variant="command"] .minimal-main-menu__actions::before,
+.main-menu-backdrop[data-variant="command"] .minimal-main-menu__actions::after {
+  border: 1px solid rgb(184 236 255 / 0.5);
+  content: "";
+  inset: 16%;
+  pointer-events: none;
+  position: absolute;
+}
+
+.main-menu-backdrop[data-variant="command"] .minimal-main-menu__actions::after {
+  border-radius: 50%;
+  inset: 30%;
 }
 
 .main-menu-backdrop[data-variant="command"] .main-menu-control {
-  clip-path: polygon(0 0, 94% 0, 100% 22%, 100% 100%, 6% 100%, 0 78%);
+  clip-path: polygon(0 0, 88% 0, 100% 18%, 100% 100%, 12% 100%, 0 82%);
   font-family: "Arial Narrow", sans-serif;
-  text-align: end;
+  min-block-size: var(--main-menu-command-node-size);
+  position: relative;
+  z-index: 1;
+}
+
+.main-menu-backdrop[data-variant="command"] [data-menu-action="archive"] {
+  grid-area: archive;
+}
+
+.main-menu-backdrop[data-variant="command"] [data-menu-action="continue"] {
+  grid-area: continue;
+}
+
+.main-menu-backdrop[data-variant="command"] [data-menu-action="play"] {
+  border-radius: 50%;
+  grid-area: play;
+}
+
+.main-menu-backdrop[data-variant="command"] [data-menu-action="quit"] {
+  grid-area: quit;
 }
 
 .main-menu-backdrop[data-variant="command"] .main-menu-control:hover,
@@ -157,54 +296,125 @@
   background: #b8ecff;
   box-shadow: inset 0 0 0 2px #071018, 0 0 1.5rem #9de5ff;
   color: #071018;
-  transform: translateX(-0.45rem);
+  transform: scale(1.08);
 }
 
+/* SMUGGLER: loose cargo tags spill across the lower half of the screen. */
+
 .main-menu-backdrop[data-variant="smuggler"] .main-menu-frame {
+  --main-menu-smuggler-tag-gap: 0.75rem;
+  --main-menu-smuggler-tag-cut: 1rem;
+  --main-menu-smuggler-continue-block-size: 4rem;
   align-items: flex-start;
-  transform: translateY(7vh);
+  gap: 3rem;
+  justify-content: space-between;
+  padding-block: 5rem 6rem;
+  transform: translateY(5vh);
 }
 
 .main-menu-backdrop[data-variant="smuggler"] .minimal-main-menu__title {
   font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(3.8rem, 11vw, 8rem);
+  font-style: italic;
+  letter-spacing: -0.08em;
   text-align: start;
+}
+
+.main-menu-backdrop[data-variant="smuggler"] .minimal-main-menu__actions {
+  align-content: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--main-menu-smuggler-tag-gap);
+  justify-content: space-between;
+  min-block-size: 14rem;
 }
 
 .main-menu-backdrop[data-variant="smuggler"] .main-menu-control {
-  border-radius: 0 1.2rem 0 1.2rem;
+  clip-path: polygon(0 0, calc(100% - var(--main-menu-smuggler-tag-cut)) 0, 100% 50%, calc(100% - var(--main-menu-smuggler-tag-cut)) 100%, 0 100%, var(--main-menu-smuggler-tag-cut) 50%);
+  flex: 1 1 42%;
   font-family: Georgia, "Times New Roman", serif;
-  text-align: start;
+  font-size: 0.86rem;
+  min-block-size: 4.5rem;
 }
 
-.main-menu-backdrop[data-variant="smuggler"] .main-menu-control:nth-child(odd) {
-  transform: rotate(-0.55deg);
+.main-menu-backdrop[data-variant="smuggler"] [data-menu-action="continue"] {
+  flex-basis: 100%;
+  min-block-size: var(--main-menu-smuggler-continue-block-size);
+  transform: rotate(-1deg);
 }
 
-.main-menu-backdrop[data-variant="smuggler"] .main-menu-control:nth-child(even) {
-  transform: rotate(0.55deg);
+.main-menu-backdrop[data-variant="smuggler"] [data-menu-action="play"] {
+  transform: rotate(1.5deg);
+}
+
+.main-menu-backdrop[data-variant="smuggler"] [data-menu-action="archive"] {
+  transform: rotate(-2deg);
+}
+
+.main-menu-backdrop[data-variant="smuggler"] [data-menu-action="quit"] {
+  transform: rotate(2deg);
 }
 
 .main-menu-backdrop[data-variant="smuggler"] .main-menu-control:hover,
 .main-menu-backdrop[data-variant="smuggler"] .main-menu-control:focus-visible {
   background: #f5c96d;
   color: #221304;
-  transform: translateX(0.4rem) rotate(0deg);
+  transform: translateY(-0.35rem) rotate(0deg);
+}
+
+/* SQUAD: a three-point formation with the deployment control at its nose. */
+
+.main-menu-backdrop[data-variant="squad"] .main-menu-frame {
+  --main-menu-squad-formation-gap: 1rem;
+  --main-menu-squad-node-size: 7rem;
+  --main-menu-squad-deploy-size: 10rem;
+  gap: 3.5rem;
+  justify-content: center;
+  padding-block: 5rem;
 }
 
 .main-menu-backdrop[data-variant="squad"] .minimal-main-menu__title {
-  letter-spacing: 0.28em;
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  letter-spacing: 0.24em;
 }
 
 .main-menu-backdrop[data-variant="squad"] .minimal-main-menu__actions {
+  align-items: center;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas: "archive archive archive" "continue play quit";
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--main-menu-squad-formation-gap);
+  inline-size: min(100%, 32rem);
 }
 
 .main-menu-backdrop[data-variant="squad"] .main-menu-control {
-  background: rgb(5 19 25 / 0.7);
-  border-radius: 999px;
+  border-radius: 50%;
   font-family: "Trebuchet MS", sans-serif;
-  font-size: 0.72rem;
+  min-block-size: var(--main-menu-squad-node-size);
+  padding-inline: 0.5rem;
+}
+
+.main-menu-backdrop[data-variant="squad"] [data-menu-action="archive"] {
+  grid-area: archive;
+  justify-self: center;
+  min-block-size: 4.25rem;
+  min-inline-size: 12rem;
+}
+
+.main-menu-backdrop[data-variant="squad"] [data-menu-action="continue"] {
+  grid-area: continue;
+}
+
+.main-menu-backdrop[data-variant="squad"] [data-menu-action="play"] {
+  background: rgb(5 19 25 / 0.82);
+  box-shadow: 0 0 2rem rgb(109 234 255 / 0.3);
+  grid-area: play;
+  min-block-size: var(--main-menu-squad-deploy-size);
+}
+
+.main-menu-backdrop[data-variant="squad"] [data-menu-action="quit"] {
+  grid-area: quit;
 }
 
 .main-menu-backdrop[data-variant="squad"] .main-menu-control:hover,
@@ -212,27 +422,60 @@
   background: #b9f9ff;
   box-shadow: 0 0 1.5rem #6deaff;
   color: #041417;
-  transform: translateY(-0.35rem) scale(1.03);
+  transform: translateY(-0.35rem) scale(1.05);
 }
 
+/* ROGUE: a breach console uses a two-row command matrix with long rails. */
+
 .main-menu-backdrop[data-variant="rogue"] .main-menu-frame {
+  --main-menu-rogue-console-gap: 0.75rem;
+  --main-menu-rogue-rail-size: 8rem;
+  --main-menu-rogue-command-size: 4.25rem;
   align-items: flex-end;
+  gap: 3rem;
+  justify-content: center;
+  padding-block: 5rem;
 }
 
 .main-menu-backdrop[data-variant="rogue"] .minimal-main-menu__title {
   font-family: "Courier New", monospace;
+  font-size: clamp(3rem, 8vw, 6rem);
   letter-spacing: 0.1em;
   text-align: end;
 }
 
 .main-menu-backdrop[data-variant="rogue"] .minimal-main-menu__actions {
-  inline-size: min(22rem, 100%);
+  display: grid;
+  grid-template-areas: "continue play play archive" "continue quit quit archive";
+  grid-template-columns: 1.2fr repeat(2, 1fr) 1.2fr;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: var(--main-menu-rogue-console-gap);
+  inline-size: min(100%, 34rem);
 }
 
 .main-menu-backdrop[data-variant="rogue"] .main-menu-control {
-  border-inline-start-width: 0.35rem;
+  border-inline-start: 0.35rem solid #67f2be;
   font-family: "Courier New", monospace;
+  min-block-size: var(--main-menu-rogue-command-size);
   text-align: end;
+}
+
+.main-menu-backdrop[data-variant="rogue"] [data-menu-action="continue"] {
+  grid-area: continue;
+  min-block-size: var(--main-menu-rogue-rail-size);
+}
+
+.main-menu-backdrop[data-variant="rogue"] [data-menu-action="play"] {
+  grid-area: play;
+}
+
+.main-menu-backdrop[data-variant="rogue"] [data-menu-action="archive"] {
+  grid-area: archive;
+  min-block-size: var(--main-menu-rogue-rail-size);
+}
+
+.main-menu-backdrop[data-variant="rogue"] [data-menu-action="quit"] {
+  grid-area: quit;
 }
 
 .main-menu-backdrop[data-variant="rogue"] .main-menu-control:hover,
@@ -245,15 +488,71 @@
 
 @media (max-width: 40rem) {
   .main-menu-backdrop {
-    --main-menu-content-padding: 1.25rem;
+    --main-menu-content-padding-inline: 1.25rem;
+  }
+
+  .main-menu-frame {
+    min-block-size: 100dvh;
+  }
+
+  .main-menu-backdrop[data-variant="retro"] .main-menu-frame,
+  .main-menu-backdrop[data-variant="command"] .main-menu-frame,
+  .main-menu-backdrop[data-variant="smuggler"] .main-menu-frame,
+  .main-menu-backdrop[data-variant="squad"] .main-menu-frame,
+  .main-menu-backdrop[data-variant="rogue"] .main-menu-frame {
+    gap: 2.5rem;
+    padding-block: 4rem 5rem;
   }
 
   .main-menu-backdrop[data-variant="smuggler"] .main-menu-frame {
     transform: none;
   }
 
+  .main-menu-backdrop[data-variant="retro"] [data-menu-action="play"] {
+    min-block-size: 9rem;
+  }
+
+  .main-menu-backdrop[data-variant="retro"] [data-menu-action="archive"],
+  .main-menu-backdrop[data-variant="retro"] [data-menu-action="quit"] {
+    min-block-size: 5rem;
+  }
+
+  .main-menu-backdrop[data-variant="command"] .minimal-main-menu__actions {
+    aspect-ratio: 1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .main-menu-backdrop[data-variant="command"] .main-menu-control {
+    font-size: 0.62rem;
+    min-block-size: 4.5rem;
+  }
+
+  .main-menu-backdrop[data-variant="smuggler"] .minimal-main-menu__actions {
+    min-block-size: 12rem;
+  }
+
   .main-menu-backdrop[data-variant="squad"] .minimal-main-menu__actions {
-    display: flex;
+    grid-template-areas: "archive archive" "continue play" "quit quit";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .main-menu-backdrop[data-variant="squad"] [data-menu-action="archive"] {
+    min-inline-size: 0;
+  }
+
+  .main-menu-backdrop[data-variant="rogue"] .minimal-main-menu__actions {
+    grid-template-areas: "continue play" "archive quit";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .main-menu-backdrop[data-variant="rogue"] .main-menu-control {
+    min-block-size: 4rem;
+  }
+
+  .main-menu-backdrop[data-variant="rogue"] [data-menu-action="continue"],
+  .main-menu-backdrop[data-variant="rogue"] [data-menu-action="archive"] {
+    min-block-size: 4rem;
   }
 
   .menu-variation-switcher {
