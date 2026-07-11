@@ -3,10 +3,7 @@ import {
   getMainMenuVariant,
   type MainMenuVariant
 } from "@/game/config/main-menu-config";
-import {
-  GAME_TITLE,
-  SAVE_ERROR_DIALOG
-} from "@/game/config/screen-ui-config";
+import { SAVE_ERROR_DIALOG } from "@/game/config/screen-ui-config";
 import { GAME_SESSION_PHASES } from "@/game/state/game-session-state";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
 import {
@@ -15,7 +12,6 @@ import {
   type ContinueTarget
 } from "@/game/save/continue-target-service";
 import { quitToDesktop, startStage, continueActiveRun } from "./screen-actions";
-import { MainMenuVariantNav } from "./main-menu/MainMenuPrimitives";
 import { BlackMarketBountyMenu } from "./main-menu/BlackMarketBountyMenu";
 import { DerelictStationMenu } from "./main-menu/DerelictStationMenu";
 import { NeonShipyardMenu } from "./main-menu/NeonShipyardMenu";
@@ -38,7 +34,7 @@ const MAIN_MENU_VARIANT_COMPONENTS = {
 
 export const MainMenuScreen = () => {
   const [continueTarget, setContinueTarget] = useState<ContinueTarget | null>(null);
-  const [variant, setVariant] = useState<MainMenuVariant>(() => getMainMenuVariant());
+  const [variant] = useState<MainMenuVariant>(() => getMainMenuVariant());
   const setGameSessionPhase = useGameUiStore(
     (state) => state.setGameSessionPhase
   );
@@ -100,8 +96,6 @@ export const MainMenuScreen = () => {
   return (
     <div className="main-menu-host">
       <ActiveMenu actions={actions} />
-      <MainMenuVariantNav onSelect={setVariant} selectedVariant={variant} />
-      <span className="sr-only">{GAME_TITLE} main menu</span>
     </div>
   );
 };

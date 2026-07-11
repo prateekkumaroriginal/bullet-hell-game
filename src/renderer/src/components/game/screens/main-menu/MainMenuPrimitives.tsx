@@ -2,11 +2,12 @@ import type { ComponentProps, CSSProperties, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
   getMainMenuVariantOption,
-  MAIN_MENU_VARIANT_OPTIONS,
   type MainMenuVariant
 } from "@/game/config/main-menu-config";
+import { GAME_TITLE } from "@/game/config/screen-ui-config";
 import { cn } from "@/lib/utils";
 import { ScreenNavigationRegion } from "../ScreenPrimitives";
+import type { MainMenuActions } from "./main-menu-types";
 
 export const MainMenuStage = ({
   children,
@@ -68,59 +69,35 @@ export const MainMenuActionButton = ({
   </Button>
 );
 
-export const MainMenuVariantNav = ({
-  onSelect,
-  selectedVariant
+export const MinimalMainMenu = ({
+  actions,
+  variant
 }: {
-  onSelect: (variant: MainMenuVariant) => void;
-  selectedVariant: MainMenuVariant;
+  actions: MainMenuActions;
+  variant: MainMenuVariant;
 }) => (
-  <nav aria-label="Switch main menu variation" className="main-menu-variant-rail">
-    <span className="main-menu-variant-rail__label">MENU VARIANTS</span>
-    <div className="main-menu-variant-rail__options">
-      {MAIN_MENU_VARIANT_OPTIONS.map((option) => (
-        <button
-          aria-label={`Switch to ${option.label}`}
-          aria-pressed={selectedVariant === option.id}
-          className={cn(
-            "main-menu-variant-rail__option",
-            selectedVariant === option.id &&
-              "main-menu-variant-rail__option--selected"
-          )}
-          key={option.id}
-          onClick={() => onSelect(option.id)}
-          type="button"
+  <MainMenuStage variant={variant}>
+    <MainMenuNavigation className="minimal-main-menu" label="Main menu">
+      <h1 className="minimal-main-menu__title">{GAME_TITLE}</h1>
+      <div className="minimal-main-menu__actions">
+        {actions.canContinue ? (
+          <MainMenuActionButton autoFocus onClick={actions.onContinue}>
+            Continue
+          </MainMenuActionButton>
+        ) : null}
+        <MainMenuActionButton
+          autoFocus={!actions.canContinue}
+          onClick={actions.onPlay}
         >
-          <span>{option.displayNumber}</span>
-          <span>{option.shortLabel}</span>
-        </button>
-      ))}
-    </div>
-  </nav>
-);
-
-export const MenuStatusLight = ({
-  label,
-  tone = "accent"
-}: {
-  label: string;
-  tone?: "accent" | "danger" | "muted";
-}) => (
-  <span className={cn("menu-status-light", `menu-status-light--${tone}`)}>
-    <span aria-hidden="true" className="menu-status-light__dot" />
-    <span>{label}</span>
-  </span>
-);
-
-export const MenuKeyHint = ({
-  children,
-  label
-}: {
-  children: ReactNode;
-  label: string;
-}) => (
-  <span className="menu-key-hint">
-    <kbd>{children}</kbd>
-    <span>{label}</span>
-  </span>
+          Play
+        </MainMenuActionButton>
+        <MainMenuActionButton onClick={actions.onArchive}>
+          Archive
+        </MainMenuActionButton>
+        <MainMenuActionButton onClick={actions.onQuit}>
+          Quit
+        </MainMenuActionButton>
+      </div>
+    </MainMenuNavigation>
+  </MainMenuStage>
 );
