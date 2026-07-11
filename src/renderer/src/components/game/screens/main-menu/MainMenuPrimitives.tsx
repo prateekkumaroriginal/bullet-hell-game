@@ -2,6 +2,7 @@ import type { ComponentProps, CSSProperties, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
   getMainMenuVariantOption,
+  MAIN_MENU_VARIANT_OPTIONS,
   type MainMenuVariant
 } from "@/game/config/main-menu-config";
 import { GAME_TITLE } from "@/game/config/screen-ui-config";
@@ -69,13 +70,19 @@ export const MainMenuActionButton = ({
   </Button>
 );
 
+export type MinimalMainMenuProps = {
+  actions: MainMenuActions;
+  onSelectVariation: (variant: MainMenuVariant) => void;
+  selectedVariant: MainMenuVariant;
+  variant: MainMenuVariant;
+};
+
 export const MinimalMainMenu = ({
   actions,
+  onSelectVariation,
+  selectedVariant,
   variant
-}: {
-  actions: MainMenuActions;
-  variant: MainMenuVariant;
-}) => (
+}: MinimalMainMenuProps) => (
   <MainMenuStage variant={variant}>
     <MainMenuNavigation className="minimal-main-menu" label="Main menu">
       <h1 className="minimal-main-menu__title">{GAME_TITLE}</h1>
@@ -98,6 +105,23 @@ export const MinimalMainMenu = ({
           Quit
         </MainMenuActionButton>
       </div>
+      <nav aria-label="Menu variations" className="main-menu-variation-buttons">
+        {MAIN_MENU_VARIANT_OPTIONS.map((option) => (
+          <button
+            aria-label={`Show menu variation ${option.displayNumber}`}
+            aria-pressed={selectedVariant === option.id}
+            className={cn(
+              "main-menu-variation-button",
+              selectedVariant === option.id && "main-menu-variation-button--selected"
+            )}
+            key={option.id}
+            onClick={() => onSelectVariation(option.id)}
+            type="button"
+          >
+            {option.displayNumber}
+          </button>
+        ))}
+      </nav>
     </MainMenuNavigation>
   </MainMenuStage>
 );

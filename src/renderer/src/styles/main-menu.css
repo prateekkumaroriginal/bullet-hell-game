@@ -1,15 +1,15 @@
 .main-menu-stage {
-  --main-menu-content-max-inline-size: 30rem;
+  --main-menu-content-max-inline-size: 31rem;
   --main-menu-content-padding: 2rem;
   --main-menu-action-min-block-size: 3.25rem;
-  --main-menu-action-padding-inline: 1.25rem;
-  --main-menu-action-font-size: 0.85rem;
+  --main-menu-action-font-size: 0.86rem;
   --main-menu-title-font-size: clamp(3rem, 10vw, 7rem);
   --main-menu-title-letter-spacing: 0.18em;
-  --main-menu-overlay-opacity: 0.52;
+  --main-menu-overlay-opacity: 0.5;
+  --main-menu-control-gap: 0.7rem;
+  --main-menu-switch-size: 2.25rem;
   align-items: center;
-  background-image: var(--background-image);
-  background-position: var(--background-position);
+  background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -36,7 +36,7 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   inline-size: min(var(--main-menu-content-max-inline-size), calc(100vw - var(--main-menu-content-padding) * 2));
 }
 
@@ -45,7 +45,7 @@
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: var(--main-menu-title-font-size);
   letter-spacing: var(--main-menu-title-letter-spacing);
-  line-height: 0.9;
+  line-height: 0.86;
   margin: 0;
   text-align: center;
   text-shadow: 0 0 2rem var(--menu-accent);
@@ -54,7 +54,7 @@
 .minimal-main-menu__actions {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--main-menu-control-gap);
   inline-size: 100%;
 }
 
@@ -67,22 +67,163 @@
   font-weight: 800;
   letter-spacing: 0.16em;
   min-block-size: var(--main-menu-action-min-block-size);
-  padding-inline: var(--main-menu-action-padding-inline);
+  padding-inline: 1.25rem;
   text-transform: uppercase;
   transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
-.main-menu-action:hover,
-.main-menu-action:focus-visible {
+.main-menu-variation-buttons {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.main-menu-variation-button {
+  background: rgb(0 0 0 / 0.56);
+  border: 1px solid rgb(255 255 255 / 0.42);
+  color: #fff;
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 800;
+  inline-size: var(--main-menu-switch-size);
+  min-block-size: var(--main-menu-switch-size);
+}
+
+.main-menu-variation-button:hover,
+.main-menu-variation-button:focus-visible,
+.main-menu-variation-button--selected {
   background: var(--menu-accent);
-  box-shadow: 0 0 1.5rem var(--menu-accent);
+  border-color: var(--menu-accent-bright, #fff);
   color: #061014;
-  transform: translateY(-2px);
+}
+
+.main-menu-stage[data-variant="flight-deck"] .main-menu-navigation {
+  align-items: flex-start;
+}
+
+.main-menu-stage[data-variant="flight-deck"] .minimal-main-menu__title,
+.main-menu-stage[data-variant="flight-deck"] .main-menu-variation-buttons {
+  align-self: flex-start;
+}
+
+.main-menu-stage[data-variant="flight-deck"] .main-menu-action {
+  border-inline-start-width: 0.35rem;
+  text-align: start;
+}
+
+.main-menu-stage[data-variant="flight-deck"] .main-menu-action:hover,
+.main-menu-stage[data-variant="flight-deck"] .main-menu-action:focus-visible {
+  box-shadow: inset 0 0 0 1px #fff, 0 0 1.5rem var(--menu-accent);
+  transform: translateX(0.5rem);
+}
+
+.main-menu-stage[data-variant="black-market"] .main-menu-navigation {
+  align-items: flex-end;
+}
+
+.main-menu-stage[data-variant="black-market"] .minimal-main-menu__title,
+.main-menu-stage[data-variant="black-market"] .main-menu-variation-buttons {
+  align-self: flex-end;
+}
+
+.main-menu-stage[data-variant="black-market"] .main-menu-action {
+  clip-path: polygon(0 0, 94% 0, 100% 18%, 100% 100%, 6% 100%, 0 82%);
+  font-family: "Courier New", monospace;
+  text-align: end;
+}
+
+.main-menu-stage[data-variant="black-market"] .main-menu-action:hover,
+.main-menu-stage[data-variant="black-market"] .main-menu-action:focus-visible {
+  background: var(--menu-accent);
+  color: #241507;
+  transform: translateX(-0.5rem);
+}
+
+.main-menu-stage[data-variant="derelict-station"] .main-menu-navigation {
+  align-items: flex-start;
+  transform: translateY(8vh);
+}
+
+.main-menu-stage[data-variant="derelict-station"] .minimal-main-menu__title,
+.main-menu-stage[data-variant="derelict-station"] .main-menu-variation-buttons {
+  align-self: flex-start;
+}
+
+.main-menu-stage[data-variant="derelict-station"] .main-menu-action {
+  border-color: #fff;
+  clip-path: polygon(0 0, 100% 0, 96% 54%, 100% 100%, 0 100%, 4% 46%);
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.1em;
+}
+
+.main-menu-stage[data-variant="derelict-station"] .main-menu-action:hover,
+.main-menu-stage[data-variant="derelict-station"] .main-menu-action:focus-visible {
+  background: #fff;
+  color: #271012;
+  transform: rotate(-0.6deg) translateX(0.3rem);
+}
+
+.main-menu-stage[data-variant="shipyard"] .minimal-main-menu__title {
+  letter-spacing: 0.26em;
+}
+
+.main-menu-stage[data-variant="shipyard"] .minimal-main-menu__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.main-menu-stage[data-variant="shipyard"] .main-menu-action {
+  background: rgb(18 0 20 / 0.72);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.24);
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 0.72rem;
+}
+
+.main-menu-stage[data-variant="shipyard"] .main-menu-action:hover,
+.main-menu-stage[data-variant="shipyard"] .main-menu-action:focus-visible {
+  background: var(--menu-accent);
+  box-shadow: 0 0 1.6rem var(--menu-accent);
+  transform: translateY(-0.35rem) scale(1.02);
+}
+
+.main-menu-stage[data-variant="orbital-elevator"] .main-menu-navigation {
+  align-items: flex-end;
+}
+
+.main-menu-stage[data-variant="orbital-elevator"] .minimal-main-menu__title,
+.main-menu-stage[data-variant="orbital-elevator"] .main-menu-variation-buttons {
+  align-self: flex-end;
+}
+
+.main-menu-stage[data-variant="orbital-elevator"] .minimal-main-menu__actions {
+  inline-size: min(22rem, 100%);
+}
+
+.main-menu-stage[data-variant="orbital-elevator"] .main-menu-action {
+  border-radius: 999px;
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.22em;
+}
+
+.main-menu-stage[data-variant="orbital-elevator"] .main-menu-action:hover,
+.main-menu-stage[data-variant="orbital-elevator"] .main-menu-action:focus-visible {
+  background: #fff;
+  box-shadow: 0 0 2rem #fff;
+  color: #431216;
+  transform: translateY(-0.25rem);
 }
 
 @media (max-width: 40rem) {
   .main-menu-stage {
     --main-menu-content-padding: 1.25rem;
+  }
+
+  .main-menu-stage[data-variant="derelict-station"] .main-menu-navigation {
+    transform: none;
+  }
+
+  .main-menu-stage[data-variant="shipyard"] .minimal-main-menu__actions {
+    display: flex;
   }
 }
 

@@ -1,6 +1,7 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import {
   getMainMenuVariant,
+  MAIN_MENU_QUERY_KEYS,
   type MainMenuVariant
 } from "@/game/config/main-menu-config";
 import { SAVE_ERROR_DIALOG } from "@/game/config/screen-ui-config";
@@ -17,12 +18,11 @@ import { DerelictStationMenu } from "./main-menu/DerelictStationMenu";
 import { NeonShipyardMenu } from "./main-menu/NeonShipyardMenu";
 import { OrbitalElevatorMenu } from "./main-menu/OrbitalElevatorMenu";
 import { StarshipFlightDeckMenu } from "./main-menu/StarshipFlightDeckMenu";
+import type { MinimalMainMenuProps } from "./main-menu/MainMenuPrimitives";
 import type { MainMenuActions } from "./main-menu/main-menu-types";
 import "@/styles/main-menu.css";
 
-type MainMenuVariantComponent = (props: {
-  actions: MainMenuActions;
-}) => ReactNode;
+type MainMenuVariantComponent = (props: Omit<MinimalMainMenuProps, "variant">) => ReactNode;
 
 const MAIN_MENU_VARIANT_COMPONENTS = {
   "flight-deck": StarshipFlightDeckMenu,
@@ -34,7 +34,7 @@ const MAIN_MENU_VARIANT_COMPONENTS = {
 
 export const MainMenuScreen = () => {
   const [continueTarget, setContinueTarget] = useState<ContinueTarget | null>(null);
-  const [variant] = useState<MainMenuVariant>(() => getMainMenuVariant());
+  const [variant, setVariant] = useState<MainMenuVariant>(() => getMainMenuVariant());
   const setGameSessionPhase = useGameUiStore(
     (state) => state.setGameSessionPhase
   );
@@ -92,10 +92,21 @@ export const MainMenuScreen = () => {
     onQuit: quitToDesktop
   };
   const ActiveMenu = MAIN_MENU_VARIANT_COMPONENTS[variant];
+  const selectVariation = useCallback((nextVariant: MainMenuVariant) => {
+    setVariant(nextVariant);
+
+    const nextLocation = new URL(window.location.href);
+    nextLocation.searchParams.set(MAIN_MENU_QUERY_KEYS.VARIANT, nextVariant);
+    window.history.replaceState(null, "", nextLocation);
+  }, []);
 
   return (
     <div className="main-menu-host">
-      <ActiveMenu actions={actions} />
+      <ActiveMenu
+        actions={actions}
+        onSelectVariation={selectVariation}
+        selectedVariant={variant}
+      />
     </div>
   );
 };
