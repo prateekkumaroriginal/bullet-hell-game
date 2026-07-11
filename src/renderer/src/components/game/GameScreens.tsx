@@ -106,13 +106,14 @@ export const GameScreens = () => {
   }
 
   const ActiveScreen = SCREEN_COMPONENTS[activeScreen];
+  const shouldShowGenericBackdrop = activeScreen !== OVERLAY_SCREENS.MAIN;
 
   return (
     <div
       className="absolute inset-0 overflow-hidden text-zinc-100"
       style={{ zIndex: SCREEN_BACKDROP.Z_INDEX }}
     >
-      <ScreenBackdrop />
+      {shouldShowGenericBackdrop ? <ScreenBackdrop /> : null}
       <ActiveScreen />
     </div>
   );
