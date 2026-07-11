@@ -1,7 +1,9 @@
 .menu-variation {
   --menu-content-max-inline-size: 30rem;
   --menu-content-padding: 2rem;
-  --menu-overlay-opacity: 0.56;
+  --menu-overlay-opacity: 0.5;
+  --menu-control-gap: 0.7rem;
+  --menu-switch-size: 2.25rem;
   background: #05070b;
   isolation: isolate;
   min-block-size: 100dvh;
@@ -25,7 +27,7 @@
 .menu-variation__veil {
   background: linear-gradient(
     180deg,
-    rgb(0 0 0 / calc(var(--menu-overlay-opacity) - 0.18)),
+    rgb(0 0 0 / calc(var(--menu-overlay-opacity) - 0.16)),
     rgb(0 0 0 / var(--menu-overlay-opacity))
   );
   z-index: -1;
@@ -36,13 +38,18 @@
 }
 
 .menu-variation__stack {
-  gap: 2rem;
+  gap: 1.5rem;
   inline-size: min(var(--menu-content-max-inline-size), calc(100vw - var(--menu-content-padding) * 2));
 }
 
 .menu-variation__title {
   color: #fff;
+  margin: 0;
   text-shadow: 0 0 2rem var(--menu-accent-bright);
+}
+
+.menu-variation__actions {
+  gap: var(--menu-control-gap);
 }
 
 .menu-variation__actions button {
@@ -52,17 +59,185 @@
   color: #fff;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  transition: background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
 }
 
-.menu-variation__actions button:hover,
-.menu-variation__actions button:focus-visible {
+.menu-variation__switcher {
+  bottom: 1.25rem;
+  display: flex;
+  gap: 0.45rem;
+  position: absolute;
+  right: 1.25rem;
+}
+
+.menu-variation__switch-button {
+  background: rgb(0 0 0 / 0.58);
+  border: 1px solid rgb(255 255 255 / 0.48);
+  color: #fff;
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 800;
+  inline-size: var(--menu-switch-size);
+  min-block-size: var(--menu-switch-size);
+}
+
+.menu-variation__switch-button:hover,
+.menu-variation__switch-button:focus-visible,
+.menu-variation__switch-button--selected {
   background: var(--menu-accent);
-  box-shadow: 0 0 1.5rem var(--menu-accent);
+  border-color: var(--menu-accent-bright);
   color: #061014;
+}
+
+.menu-variation[data-variation="spaceport"] .menu-variation__content {
+  place-items: end start;
+}
+
+.menu-variation[data-variation="spaceport"] .menu-variation__stack {
+  align-items: flex-start;
+}
+
+.menu-variation[data-variation="spaceport"] .menu-variation__title {
+  font-family: "Arial Narrow", "Trebuchet MS", sans-serif;
+  text-align: start;
+}
+
+.menu-variation[data-variation="spaceport"] .menu-variation__actions button {
+  border-inline-start-width: 0.35rem;
+  text-align: start;
+}
+
+.menu-variation[data-variation="spaceport"] .menu-variation__actions button:hover,
+.menu-variation[data-variation="spaceport"] .menu-variation__actions button:focus-visible {
+  background: var(--menu-accent);
+  box-shadow: inset 0 0 0 1px #fff, 0 0 1.5rem var(--menu-accent);
+  color: #200619;
+  transform: translateX(0.45rem);
+}
+
+.menu-variation[data-variation="salvage"] .menu-variation__content {
+  place-items: end;
+}
+
+.menu-variation[data-variation="salvage"] .menu-variation__stack {
+  align-items: flex-end;
+}
+
+.menu-variation[data-variation="salvage"] .menu-variation__title {
+  font-family: "Courier New", monospace;
+  text-align: end;
+  text-shadow: 0.25rem 0.25rem 0 #8ebde0;
+}
+
+.menu-variation[data-variation="salvage"] .menu-variation__actions button {
+  border-width: 3px;
+  font-family: "Courier New", monospace;
+  text-align: end;
+}
+
+.menu-variation[data-variation="salvage"] .menu-variation__actions button:hover,
+.menu-variation[data-variation="salvage"] .menu-variation__actions button:focus-visible {
+  background: #ffd275;
+  box-shadow: 0.35rem 0.35rem 0 #8ebde0;
+  color: #211304;
+  transform: translate(-0.2rem, -0.2rem);
+}
+
+.menu-variation[data-variation="anomaly"] .menu-variation__title {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.12em;
+}
+
+.menu-variation[data-variation="anomaly"] .menu-variation__actions {
+  inline-size: min(21rem, 100%);
+}
+
+.menu-variation[data-variation="anomaly"] .menu-variation__actions button {
+  border-radius: 999px;
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.1em;
+}
+
+.menu-variation[data-variation="anomaly"] .menu-variation__actions button:hover,
+.menu-variation[data-variation="anomaly"] .menu-variation__actions button:focus-visible {
+  background: #f0fdff;
+  box-shadow: 0 0 1.75rem #b9f5ff;
+  color: #071519;
+  transform: scale(1.035);
+}
+
+.menu-variation[data-variation="warfront"] .menu-variation__content {
+  place-items: end start;
+}
+
+.menu-variation[data-variation="warfront"] .menu-variation__stack {
+  align-items: flex-start;
+}
+
+.menu-variation[data-variation="warfront"] .menu-variation__title {
+  font-family: "Arial Black", Impact, sans-serif;
+  text-align: start;
+}
+
+.menu-variation[data-variation="warfront"] .menu-variation__actions button {
+  clip-path: polygon(0 0, 94% 0, 100% 22%, 100% 100%, 6% 100%, 0 78%);
+  font-family: "Arial Narrow", sans-serif;
+  text-align: start;
+}
+
+.menu-variation[data-variation="warfront"] .menu-variation__actions button:hover,
+.menu-variation[data-variation="warfront"] .menu-variation__actions button:focus-visible {
+  background: #fff4e7;
+  box-shadow: inset 0 0 0 2px #1a0d0d, 0 0 1.5rem #ff3e4f;
+  color: #1a0d0d;
+  transform: translateX(0.45rem);
+}
+
+.menu-variation[data-variation="temple"] .menu-variation__content {
+  place-items: start center;
+}
+
+.menu-variation[data-variation="temple"] .menu-variation__stack {
+  padding-block-start: 10vh;
+}
+
+.menu-variation[data-variation="temple"] .menu-variation__title {
+  font-family: "Palatino Linotype", Palatino, Georgia, serif;
+  letter-spacing: 0.22em;
+}
+
+.menu-variation[data-variation="temple"] .menu-variation__actions button {
+  background: rgb(19 16 42 / 0.56);
+  border-radius: 999px;
+  font-family: "Palatino Linotype", Palatino, Georgia, serif;
+  letter-spacing: 0.2em;
+}
+
+.menu-variation[data-variation="temple"] .menu-variation__actions button:hover,
+.menu-variation[data-variation="temple"] .menu-variation__actions button:focus-visible {
+  background: #fff9f0;
+  box-shadow: 0 0 2rem #d6c4ff;
+  color: #171127;
+  transform: translateY(-0.3rem);
 }
 
 @media (max-width: 40rem) {
   .menu-variation {
     --menu-content-padding: 1.25rem;
+  }
+
+  .menu-variation[data-variation="temple"] .menu-variation__stack {
+    padding-block-start: 0;
+  }
+
+  .menu-variation__switcher {
+    bottom: 0.75rem;
+    right: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-variation__actions button {
+    transition: none;
   }
 }

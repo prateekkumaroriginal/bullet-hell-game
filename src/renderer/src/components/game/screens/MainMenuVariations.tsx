@@ -2,6 +2,7 @@ import { type CSSProperties } from "react";
 import { GAME_TITLE } from "@/game/config/screen-ui-config";
 import {
   getMenuVariationDefinition,
+  MENU_VARIATION_DEFINITIONS,
   type MenuVariationId
 } from "@/game/config/menu-variation-config";
 import { ScreenButton, ScreenCenter, ScreenMenuGrid, ScreenTitle } from "./ScreenPrimitives";
@@ -19,12 +20,41 @@ export type MainMenuActionHandlers = {
 type MainMenuVariationProps = {
   canContinue: boolean;
   handlers: MainMenuActionHandlers;
+  onSelectVariation: (variationId: MenuVariationId) => void;
   variationId: MenuVariationId;
 };
+
+const MenuVariationSwitcher = ({
+  variationId,
+  onSelectVariation
+}: {
+  variationId: MenuVariationId;
+  onSelectVariation: (variationId: MenuVariationId) => void;
+}) => (
+  <nav aria-label="Menu variations" className="menu-variation__switcher">
+    {MENU_VARIATION_DEFINITIONS.map((definition) => (
+      <button
+        aria-label={`Show menu variation ${definition.index}`}
+        aria-pressed={variationId === definition.id}
+        className={
+          variationId === definition.id
+            ? "menu-variation__switch-button menu-variation__switch-button--selected"
+            : "menu-variation__switch-button"
+        }
+        key={definition.id}
+        onClick={() => onSelectVariation(definition.id)}
+        type="button"
+      >
+        {definition.index}
+      </button>
+    ))}
+  </nav>
+);
 
 export const MainMenuVariation = ({
   canContinue,
   handlers,
+  onSelectVariation,
   variationId
 }: MainMenuVariationProps) => {
   const definition = getMenuVariationDefinition(variationId);
@@ -60,6 +90,10 @@ export const MainMenuVariation = ({
           <ScreenButton onClick={handlers.onQuit}>Quit</ScreenButton>
         </ScreenMenuGrid>
       </ScreenCenter>
+      <MenuVariationSwitcher
+        onSelectVariation={onSelectVariation}
+        variationId={variationId}
+      />
     </main>
   );
 };

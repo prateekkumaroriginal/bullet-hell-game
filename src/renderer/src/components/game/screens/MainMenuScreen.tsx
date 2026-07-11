@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SAVE_ERROR_DIALOG } from "@/game/config/screen-ui-config";
 import {
   DEFAULT_MENU_VARIATION_ID,
   getMenuVariationIdFromSearch,
+  MENU_VARIATION_QUERY_PARAM,
   type MenuVariationId
 } from "@/game/config/menu-variation-config";
 import { GAME_SESSION_PHASES } from "@/game/state/game-session-state";
@@ -17,7 +18,7 @@ import { MainMenuVariation } from "./MainMenuVariations";
 
 export const MainMenuScreen = () => {
   const [continueTarget, setContinueTarget] = useState<ContinueTarget | null>(null);
-  const [variationId] = useState<MenuVariationId>(() => {
+  const [variationId, setVariationId] = useState<MenuVariationId>(() => {
     if (typeof window === "undefined") {
       return DEFAULT_MENU_VARIATION_ID;
     }
@@ -70,6 +71,13 @@ export const MainMenuScreen = () => {
   };
 
   const canContinue = continueTarget !== null;
+  const selectVariation = useCallback((nextVariationId: MenuVariationId) => {
+    setVariationId(nextVariationId);
+
+    const nextLocation = new URL(window.location.href);
+    nextLocation.searchParams.set(MENU_VARIATION_QUERY_PARAM, nextVariationId);
+    window.history.replaceState(null, "", nextLocation);
+  }, []);
 
   return (
     <MainMenuVariation
@@ -84,6 +92,7 @@ export const MainMenuScreen = () => {
         },
         onQuit: quitToDesktop
       }}
+      onSelectVariation={selectVariation}
       variationId={variationId}
     />
   );
