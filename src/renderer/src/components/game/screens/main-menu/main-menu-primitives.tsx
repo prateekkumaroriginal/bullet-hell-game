@@ -1,18 +1,15 @@
 import {
   type ButtonHTMLAttributes,
-  type ChangeEvent,
   type KeyboardEvent,
   type ReactNode
 } from "react";
 import { cn } from "@/lib/utils";
 import {
-  MAIN_MENU_VARIANT_IDS,
   MAIN_MENU_VARIATION_DEFINITIONS,
   type MainMenuVariantId
 } from "@/game/config/main-menu-config";
-import { getStageDefinition } from "@/game/config/stage-config";
-import type { ContinueTarget } from "@/game/save/continue-target-service";
-import type { MainMenuActionId } from "./main-menu-types";
+import { GAME_TITLE } from "@/game/config/screen-ui-config";
+import type { MainMenuActionId, MainMenuActions } from "./main-menu-types";
 
 type MenuBackdropProps = {
   variant: MainMenuVariantId;
@@ -78,80 +75,37 @@ export const MenuControl = ({
   </button>
 );
 
-type MenuPreviewPickerProps = {
-  activeVariant: MainMenuVariantId;
-};
-
-export const MenuPreviewPicker = ({
-  activeVariant
-}: MenuPreviewPickerProps) => {
-  if (!import.meta.env.DEV) {
-    return null;
-  }
-
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const nextUrl = new URL(window.location.href);
-    nextUrl.searchParams.set("menu", event.currentTarget.value);
-    window.location.assign(nextUrl.href);
-  };
-
-  return (
-    <label className="menu-preview-picker">
-      <span className="menu-preview-picker-label">DESIGN LAB</span>
-      <select
-        aria-label="Choose main menu variation preview"
-        onChange={handleChange}
-        value={activeVariant}
+export const MinimalMainMenu = ({
+  actions,
+  ariaLabel
+}: {
+  actions: MainMenuActions;
+  ariaLabel: string;
+}) => (
+  <MenuFrame ariaLabel={ariaLabel} className="minimal-main-menu">
+    <h1 className="minimal-main-menu__title">{GAME_TITLE}</h1>
+    <nav aria-label="Main menu actions" className="minimal-main-menu__actions">
+      {actions.continueTarget ? (
+        <MenuControl actionId="continue" autoFocus onClick={actions.onContinue}>
+          Continue
+        </MenuControl>
+      ) : null}
+      <MenuControl
+        actionId="play"
+        autoFocus={!actions.continueTarget}
+        onClick={actions.onPlay}
       >
-        {MAIN_MENU_VARIANT_IDS.map((variantId) => {
-          const definition = MAIN_MENU_VARIATION_DEFINITIONS[variantId];
-
-          return (
-            <option key={variantId} value={variantId}>
-              {definition.shortName}
-            </option>
-          );
-        })}
-      </select>
-    </label>
-  );
-};
-
-export type ContinueStatus = {
-  eyebrow: string;
-  title: string;
-  detail: string;
-};
-
-export function getContinueStatus(
-  continueTarget: ContinueTarget | null
-): ContinueStatus {
-  if (!continueTarget) {
-    return {
-      eyebrow: "NO SAVE DETECTED",
-      title: "READY FOR A NEW RUN",
-      detail: "Select play to choose a sector"
-    };
-  }
-
-  if (continueTarget.kind === "activeRun") {
-    const stage = getStageDefinition(continueTarget.save.selectedStageId);
-
-    return {
-      eyebrow: "ACTIVE RUN",
-      title: stage.name.toUpperCase(),
-      detail: `WAVE ${continueTarget.save.currentWave} / PILOT LEVEL ${continueTarget.save.playerProgression.level}`
-    };
-  }
-
-  const nextStage = getStageDefinition(continueTarget.selectedStageId);
-
-  return {
-    eyebrow: "NEXT SECTOR",
-    title: nextStage.name.toUpperCase(),
-    detail: "Cleared route / sortie available"
-  };
-}
+        Play
+      </MenuControl>
+      <MenuControl actionId="archive" onClick={actions.onArchive}>
+        Archive
+      </MenuControl>
+      <MenuControl actionId="quit" onClick={actions.onQuit}>
+        Quit
+      </MenuControl>
+    </nav>
+  </MenuFrame>
+);
 
 function handleMenuNavigationKeyDown(
   event: KeyboardEvent<HTMLElement>

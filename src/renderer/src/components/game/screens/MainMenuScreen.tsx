@@ -13,10 +13,7 @@ import {
   type ContinueTarget
 } from "@/game/save/continue-target-service";
 import { MainMenuVariant } from "./MainMenuVariants";
-import {
-  MenuBackdrop,
-  MenuPreviewPicker
-} from "./main-menu/main-menu-primitives";
+import { MenuBackdrop } from "./main-menu/main-menu-primitives";
 import type { MainMenuActions } from "./main-menu/main-menu-types";
 import {
   continueActiveRun as emitContinueActiveRun,
@@ -95,7 +92,6 @@ export const MainMenuScreen = () => {
 
   return (
     <MenuBackdrop variant={menuVariant}>
-      <MenuPreviewPicker activeVariant={menuVariant} />
       <MainMenuVariant actions={actions} variant={menuVariant} />
     </MenuBackdrop>
   );
