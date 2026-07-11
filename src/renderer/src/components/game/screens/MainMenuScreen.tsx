@@ -18,11 +18,10 @@ import { DerelictStationMenu } from "./main-menu/DerelictStationMenu";
 import { NeonShipyardMenu } from "./main-menu/NeonShipyardMenu";
 import { OrbitalElevatorMenu } from "./main-menu/OrbitalElevatorMenu";
 import { StarshipFlightDeckMenu } from "./main-menu/StarshipFlightDeckMenu";
-import type { MinimalMainMenuProps } from "./main-menu/MainMenuPrimitives";
-import type { MainMenuActions } from "./main-menu/main-menu-types";
+import type { MainMenuActions, MainMenuVariantProps } from "./main-menu/main-menu-types";
 import "@/styles/main-menu.css";
 
-type MainMenuVariantComponent = (props: Omit<MinimalMainMenuProps, "variant">) => ReactNode;
+type MainMenuVariantComponent = (props: MainMenuVariantProps) => ReactNode;
 
 const MAIN_MENU_VARIANT_COMPONENTS = {
   "flight-deck": StarshipFlightDeckMenu,

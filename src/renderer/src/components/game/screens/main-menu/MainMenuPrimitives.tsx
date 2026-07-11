@@ -8,7 +8,6 @@ import {
 import { GAME_TITLE } from "@/game/config/screen-ui-config";
 import { cn } from "@/lib/utils";
 import { ScreenNavigationRegion } from "../ScreenPrimitives";
-import type { MainMenuActions } from "./main-menu-types";
 
 export const MainMenuStage = ({
   children,
@@ -49,6 +48,10 @@ export const MainMenuNavigation = ({
   </ScreenNavigationRegion>
 );
 
+export const MainMenuTitle = () => (
+  <h1 className="main-menu-title">{GAME_TITLE}</h1>
+);
+
 export const MainMenuActionButton = ({
   children,
   className,
@@ -70,58 +73,28 @@ export const MainMenuActionButton = ({
   </Button>
 );
 
-export type MinimalMainMenuProps = {
-  actions: MainMenuActions;
+export const MainMenuVariationButtons = ({
+  onSelectVariation,
+  selectedVariant
+}: {
   onSelectVariation: (variant: MainMenuVariant) => void;
   selectedVariant: MainMenuVariant;
-  variant: MainMenuVariant;
-};
-
-export const MinimalMainMenu = ({
-  actions,
-  onSelectVariation,
-  selectedVariant,
-  variant
-}: MinimalMainMenuProps) => (
-  <MainMenuStage variant={variant}>
-    <MainMenuNavigation className="minimal-main-menu" label="Main menu">
-      <h1 className="minimal-main-menu__title">{GAME_TITLE}</h1>
-      <div className="minimal-main-menu__actions">
-        {actions.canContinue ? (
-          <MainMenuActionButton autoFocus onClick={actions.onContinue}>
-            Continue
-          </MainMenuActionButton>
-        ) : null}
-        <MainMenuActionButton
-          autoFocus={!actions.canContinue}
-          onClick={actions.onPlay}
-        >
-          Play
-        </MainMenuActionButton>
-        <MainMenuActionButton onClick={actions.onArchive}>
-          Archive
-        </MainMenuActionButton>
-        <MainMenuActionButton onClick={actions.onQuit}>
-          Quit
-        </MainMenuActionButton>
-      </div>
-      <nav aria-label="Menu variations" className="main-menu-variation-buttons">
-        {MAIN_MENU_VARIANT_OPTIONS.map((option) => (
-          <button
-            aria-label={`Show menu variation ${option.displayNumber}`}
-            aria-pressed={selectedVariant === option.id}
-            className={cn(
-              "main-menu-variation-button",
-              selectedVariant === option.id && "main-menu-variation-button--selected"
-            )}
-            key={option.id}
-            onClick={() => onSelectVariation(option.id)}
-            type="button"
-          >
-            {option.displayNumber}
-          </button>
-        ))}
-      </nav>
-    </MainMenuNavigation>
-  </MainMenuStage>
+}) => (
+  <nav aria-label="Menu variations" className="main-menu-variation-buttons">
+    {MAIN_MENU_VARIANT_OPTIONS.map((option) => (
+      <button
+        aria-label={`Show menu variation ${option.displayNumber}`}
+        aria-pressed={selectedVariant === option.id}
+        className={cn(
+          "main-menu-variation-button",
+          selectedVariant === option.id && "main-menu-variation-button--selected"
+        )}
+        key={option.id}
+        onClick={() => onSelectVariation(option.id)}
+        type="button"
+      >
+        {option.displayNumber}
+      </button>
+    ))}
+  </nav>
 );
