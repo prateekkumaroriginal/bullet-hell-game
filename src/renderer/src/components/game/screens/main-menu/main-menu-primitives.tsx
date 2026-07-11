@@ -5,6 +5,7 @@ import {
 } from "react";
 import { cn } from "@/lib/utils";
 import {
+  MAIN_MENU_VARIANT_IDS,
   MAIN_MENU_VARIATION_DEFINITIONS,
   type MainMenuVariantId
 } from "@/game/config/main-menu-config";
@@ -105,6 +106,38 @@ export const MinimalMainMenu = ({
       </MenuControl>
     </nav>
   </MenuFrame>
+);
+
+const FIRST_VARIATION_DISPLAY_NUMBER = 1;
+const VARIATION_BUTTON_LABEL_WIDTH = 2;
+
+export const MenuVariationSwitcher = ({
+  activeVariant,
+  onSelectVariation
+}: {
+  activeVariant: MainMenuVariantId;
+  onSelectVariation: (variant: MainMenuVariantId) => void;
+}) => (
+  <nav aria-label="Menu variations" className="menu-variation-switcher">
+    {MAIN_MENU_VARIANT_IDS.map((variantId, index) => (
+      <button
+        aria-label={`Show menu variation ${String(index + FIRST_VARIATION_DISPLAY_NUMBER).padStart(VARIATION_BUTTON_LABEL_WIDTH, "0")}`}
+        aria-pressed={activeVariant === variantId}
+        className={cn(
+          "menu-variation-switcher__button",
+          activeVariant === variantId && "menu-variation-switcher__button--selected"
+        )}
+        key={variantId}
+        onClick={() => onSelectVariation(variantId)}
+        type="button"
+      >
+        {String(index + FIRST_VARIATION_DISPLAY_NUMBER).padStart(
+          VARIATION_BUTTON_LABEL_WIDTH,
+          "0"
+        )}
+      </button>
+    ))}
+  </nav>
 );
 
 function handleMenuNavigationKeyDown(

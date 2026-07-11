@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SAVE_ERROR_DIALOG } from "@/game/config/screen-ui-config";
 import {
   DEFAULT_MAIN_MENU_VARIANT,
@@ -13,7 +13,10 @@ import {
   type ContinueTarget
 } from "@/game/save/continue-target-service";
 import { MainMenuVariant } from "./MainMenuVariants";
-import { MenuBackdrop } from "./main-menu/main-menu-primitives";
+import {
+  MenuBackdrop,
+  MenuVariationSwitcher
+} from "./main-menu/main-menu-primitives";
 import type { MainMenuActions } from "./main-menu/main-menu-types";
 import {
   continueActiveRun as emitContinueActiveRun,
@@ -24,7 +27,7 @@ import "./main-menu/main-menu.css";
 
 export const MainMenuScreen = () => {
   const [continueTarget, setContinueTarget] = useState<ContinueTarget | null>(null);
-  const [menuVariant] = useState<MainMenuVariantId>(() => {
+  const [menuVariant, setMenuVariant] = useState<MainMenuVariantId>(() => {
     if (typeof window === "undefined") {
       return DEFAULT_MAIN_MENU_VARIANT;
     }
@@ -89,10 +92,21 @@ export const MainMenuScreen = () => {
     },
     onQuit: quitToDesktop
   };
+  const selectVariation = useCallback((nextVariant: MainMenuVariantId) => {
+    setMenuVariant(nextVariant);
+
+    const nextLocation = new URL(window.location.href);
+    nextLocation.searchParams.set("menu", nextVariant);
+    window.history.replaceState(null, "", nextLocation);
+  }, []);
 
   return (
     <MenuBackdrop variant={menuVariant}>
       <MainMenuVariant actions={actions} variant={menuVariant} />
+      <MenuVariationSwitcher
+        activeVariant={menuVariant}
+        onSelectVariation={selectVariation}
+      />
     </MenuBackdrop>
   );
 };
