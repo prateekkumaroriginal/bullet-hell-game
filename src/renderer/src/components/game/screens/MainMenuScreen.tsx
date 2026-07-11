@@ -1,27 +1,33 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { SAVE_ERROR_DIALOG } from "@/game/config/screen-ui-config";
 import {
-  GAME_TITLE,
-  SAVE_ERROR_DIALOG,
-} from "@/game/config/screen-ui-config";
+  DEFAULT_MENU_VARIATION_ID,
+  getMenuVariationIdFromSearch,
+  MENU_VARIATION_KEY_BY_INDEX,
+  MENU_VARIATION_QUERY_PARAM,
+  type MenuVariationId
+} from "@/game/config/menu-variation-config";
 import { GAME_SESSION_PHASES } from "@/game/state/game-session-state";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
 import {
   clearCorruptedActiveRunSave,
   resolveContinueTarget,
-  type ContinueTarget,
+  type ContinueTarget
 } from "@/game/save/continue-target-service";
-import {
-  ScreenButton,
-  ScreenCenter,
-  ScreenMenuGrid,
-  ScreenTitle,
-} from "./ScreenPrimitives";
 import { continueActiveRun, quitToDesktop, startStage } from "./screen-actions";
+import { MainMenuVariation } from "./MainMenuVariations";
 
 export const MainMenuScreen = () => {
   const [continueTarget, setContinueTarget] = useState<ContinueTarget | null>(null);
+  const [variationId, setVariationId] = useState<MenuVariationId>(() => {
+    if (typeof window === "undefined") {
+      return DEFAULT_MENU_VARIATION_ID;
+    }
+
+    return getMenuVariationIdFromSearch(window.location.search);
+  });
   const setGameSessionPhase = useGameUiStore(
-    (state) => state.setGameSessionPhase,
+    (state) => state.setGameSessionPhase
   );
 
   useEffect(() => {
@@ -66,35 +72,54 @@ export const MainMenuScreen = () => {
   };
 
   const canContinue = continueTarget !== null;
+  const selectVariation = useCallback((nextVariationId: MenuVariationId) => {
+    setVariationId(nextVariationId);
+
+    const nextLocation = new URL(window.location.href);
+    nextLocation.searchParams.set(MENU_VARIATION_QUERY_PARAM, nextVariationId);
+    window.history.replaceState(null, "", nextLocation);
+  }, []);
+
+  useEffect(() => {
+    const handleVariationKeyDown = (event: KeyboardEvent) => {
+      const nextVariationId = MENU_VARIATION_KEY_BY_INDEX[event.key];
+
+      if (
+        !nextVariationId ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      selectVariation(nextVariationId);
+    };
+
+    window.addEventListener("keydown", handleVariationKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleVariationKeyDown);
+    };
+  }, [selectVariation]);
 
   return (
-    <ScreenCenter>
-      <div className="flex flex-col items-center gap-10">
-        <ScreenTitle variant="main">{GAME_TITLE}</ScreenTitle>
-        <ScreenMenuGrid variant="main">
-          {canContinue && (
-            <ScreenButton autoFocus onClick={handleContinue}>
-              CONTINUE
-            </ScreenButton>
-          )}
-          <ScreenButton
-            autoFocus={!canContinue}
-            onClick={() => {
-              setGameSessionPhase(GAME_SESSION_PHASES.STAGE_SELECT);
-            }}
-          >
-            PLAY
-          </ScreenButton>
-          <ScreenButton
-            onClick={() => {
-              setGameSessionPhase(GAME_SESSION_PHASES.ARCHIVE);
-            }}
-          >
-            ARCHIVE
-          </ScreenButton>
-          <ScreenButton onClick={quitToDesktop}>QUIT</ScreenButton>
-        </ScreenMenuGrid>
-      </div>
-    </ScreenCenter>
+    <MainMenuVariation
+      canContinue={canContinue}
+      handlers={{
+        onArchive: () => {
+          setGameSessionPhase(GAME_SESSION_PHASES.ARCHIVE);
+        },
+        onContinue: handleContinue,
+        onPlay: () => {
+          setGameSessionPhase(GAME_SESSION_PHASES.STAGE_SELECT);
+        },
+        onQuit: quitToDesktop
+      }}
+      onSelectVariation={selectVariation}
+      variationId={variationId}
+    />
   );
 };

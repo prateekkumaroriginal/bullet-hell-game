@@ -68,12 +68,25 @@ export const ScreenTitle = ({
   <h1 className={cn(screenTitleVariants({ variant }), className)}>{children}</h1>
 );
 
-export const ScreenCenter = ({ children }: { children: ReactNode }) => (
+export const ScreenCenter = ({
+  children,
+  className,
+  contentClassName
+}: {
+  children: ReactNode;
+  className?: string;
+  contentClassName?: string;
+}) => (
   <section
-    className="relative z-10 grid h-full place-items-center px-6 py-10"
+    className={cn(
+      "relative z-10 grid h-full place-items-center px-6 py-10",
+      className
+    )}
     onKeyDown={handleScreenNavigationKeyDown}
   >
-    <div className="flex flex-col items-center">{children}</div>
+    <div className={cn("flex flex-col items-center", contentClassName)}>
+      {children}
+    </div>
   </section>
 );
 
