@@ -3,6 +3,7 @@ import {
   emitGameplayCommand,
   GAMEPLAY_COMMANDS,
 } from "@/game/events/gameplay-commands";
+import { quitToDesktop } from "./screens/screen-actions";
 import { SCREEN_BACKDROP } from "@/game/config/screen-ui-config";
 import {
   GAME_SESSION_PHASES,
@@ -81,6 +82,11 @@ export const GameScreens = () => {
         return;
       }
 
+      if (gamePhase === GAME_SESSION_PHASES.IDLE) {
+        quitToDesktop();
+        return;
+      }
+
       if (gamePhase === GAME_SESSION_PHASES.PAUSED) {
         emitGameplayCommand(GAMEPLAY_COMMANDS.RESUME_GAME, undefined);
         return;
@@ -106,13 +112,14 @@ export const GameScreens = () => {
   }
 
   const ActiveScreen = SCREEN_COMPONENTS[activeScreen];
+  const shouldShowScreenBackdrop = activeScreen !== OVERLAY_SCREENS.MAIN;
 
   return (
     <div
       className="absolute inset-0 overflow-hidden text-zinc-100"
       style={{ zIndex: SCREEN_BACKDROP.Z_INDEX }}
     >
-      <ScreenBackdrop />
+      {shouldShowScreenBackdrop && <ScreenBackdrop />}
       <ActiveScreen />
     </div>
   );

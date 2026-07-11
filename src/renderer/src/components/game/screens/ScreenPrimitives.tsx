@@ -69,11 +69,26 @@ export const ScreenTitle = ({
 );
 
 export const ScreenCenter = ({ children }: { children: ReactNode }) => (
+  <ScreenNavigationRegion className="grid place-items-center px-6 py-10">
+    <div className="flex flex-col items-center">{children}</div>
+  </ScreenNavigationRegion>
+);
+
+export const ScreenNavigationRegion = ({
+  "aria-label": ariaLabel,
+  children,
+  className
+}: {
+  "aria-label"?: string;
+  children: ReactNode;
+  className?: string;
+}) => (
   <section
-    className="relative z-10 grid h-full place-items-center px-6 py-10"
+    aria-label={ariaLabel}
+    className={cn("relative z-10 h-full", className)}
     onKeyDown={handleScreenNavigationKeyDown}
   >
-    <div className="flex flex-col items-center">{children}</div>
+    {children}
   </section>
 );
 

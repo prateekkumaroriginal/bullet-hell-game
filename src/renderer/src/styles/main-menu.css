@@ -1,0 +1,730 @@
+.main-menu-stage {
+  --main-menu-stage-min-block-size: 100dvh;
+  --main-menu-stage-overlay-opacity: 0.52;
+  --main-menu-navigation-padding: clamp(1.5rem, 5vw, 4.5rem);
+  --main-menu-navigation-gap: clamp(1rem, 3vw, 2rem);
+  --main-menu-title-font-size: clamp(3rem, 10vw, 7rem);
+  --main-menu-title-letter-spacing: 0.18em;
+  --main-menu-title-line-height: 0.82;
+  --main-menu-title-inset: clamp(1.5rem, 5vw, 4.5rem);
+  --main-menu-title-shadow-blur: 2rem;
+  --main-menu-action-min-block-size: 3.25rem;
+  --main-menu-action-font-size: 0.86rem;
+  --main-menu-action-padding: 0.85rem 1.1rem;
+  --main-menu-action-gap: 0.6rem;
+  --main-menu-action-letter-spacing: 0.16em;
+  --main-menu-action-icon-size: 1.1rem;
+  --main-menu-action-transition-duration: 160ms;
+  --main-menu-action-focus-outline: 2px;
+  --main-menu-action-focus-offset: 0.2rem;
+  --main-menu-action-hover-shadow-blur: 1.5rem;
+  --main-menu-switch-hover-translate: -0.2rem;
+  --main-menu-switch-size: 2.25rem;
+  --main-menu-switch-gap: 0.45rem;
+  --main-menu-switch-inset: 1.25rem;
+  --main-menu-switch-font-size: 0.62rem;
+  --main-menu-reduced-motion-duration: 1ms;
+  --main-menu-flight-grid-gap: clamp(0.7rem, 1.5vw, 1.5rem);
+  --main-menu-flight-grid-padding: clamp(2rem, 8vw, 8rem);
+  --main-menu-flight-grid-columns: repeat(3, minmax(0, 1fr));
+  --main-menu-flight-grid-rows: repeat(3, minmax(0, 1fr));
+  --main-menu-flight-play-grid-area: 2 / 2 / 3 / 3;
+  --main-menu-flight-continue-grid-area: 2 / 1 / 3 / 2;
+  --main-menu-flight-archive-grid-area: 1 / 3 / 2 / 4;
+  --main-menu-flight-quit-grid-area: 3 / 3 / 4 / 4;
+  --main-menu-flight-action-min-block-size: 6.5rem;
+  --main-menu-flight-action-clip-path: polygon(0 0, 86% 0, 100% 50%, 86% 100%, 0 100%, 14% 50%);
+  --main-menu-flight-action-hover-transform: translateX(0.5rem);
+  --main-menu-flight-reticle-size: clamp(11rem, 24vw, 22rem);
+  --main-menu-flight-reticle-border: 1px solid rgb(166 236 255 / 0.18);
+  --main-menu-flight-reticle-shadow-blur: 3rem;
+  --main-menu-black-field-gap: clamp(0.75rem, 2vw, 1.5rem);
+  --main-menu-black-field-padding: clamp(1rem, 4vw, 4rem);
+  --main-menu-black-field-columns: repeat(4, minmax(0, 1fr));
+  --main-menu-black-field-rows: repeat(3, minmax(0, 1fr));
+  --main-menu-black-play-grid-area: 2 / 2 / 3 / 4;
+  --main-menu-black-continue-grid-area: 1 / 1 / 2 / 3;
+  --main-menu-black-archive-grid-area: 3 / 1 / 4 / 3;
+  --main-menu-black-quit-grid-area: 3 / 3 / 4 / 5;
+  --main-menu-black-seal-size: clamp(7rem, 17vw, 13rem);
+  --main-menu-black-seal-clip-path: polygon(50% 0, 92% 8%, 100% 50%, 92% 92%, 50% 100%, 8% 92%, 0 50%, 8% 8%);
+  --main-menu-black-seal-play-transform: rotate(-4deg) scale(1.08);
+  --main-menu-black-seal-continue-transform: rotate(7deg);
+  --main-menu-black-seal-archive-transform: rotate(-8deg);
+  --main-menu-black-seal-quit-transform: rotate(5deg);
+  --main-menu-black-seal-hover-transform: rotate(0deg) scale(1.08);
+  --main-menu-black-stamp-size: clamp(15rem, 36vw, 32rem);
+  --main-menu-black-seal-padding: 1rem;
+  --main-menu-derelict-fragment-gap: clamp(0.4rem, 1vw, 1rem);
+  --main-menu-derelict-fragment-padding: clamp(1rem, 6vw, 6rem);
+  --main-menu-derelict-fragment-columns: repeat(12, minmax(0, 1fr));
+  --main-menu-derelict-fragment-rows: repeat(6, minmax(0, 1fr));
+  --main-menu-derelict-play-grid-area: 2 / 6 / 4 / 13;
+  --main-menu-derelict-continue-grid-area: 1 / 2 / 3 / 7;
+  --main-menu-derelict-archive-grid-area: 4 / 1 / 6 / 6;
+  --main-menu-derelict-quit-grid-area: 5 / 8 / 7 / 13;
+  --main-menu-derelict-fragment-min-block-size: 4.5rem;
+  --main-menu-derelict-play-clip-path: polygon(0 12%, 96% 0, 100% 78%, 5% 100%);
+  --main-menu-derelict-continue-clip-path: polygon(4% 0, 100% 12%, 91% 100%, 0 82%);
+  --main-menu-derelict-archive-clip-path: polygon(0 18%, 94% 0, 100% 84%, 8% 100%);
+  --main-menu-derelict-quit-clip-path: polygon(5% 0, 100% 18%, 94% 100%, 0 78%);
+  --main-menu-derelict-action-hover-transform: translateX(0.45rem) rotate(-1deg);
+  --main-menu-derelict-signal-size: clamp(12rem, 30vw, 28rem);
+  --main-menu-derelict-signal-rotation: -7deg;
+  --main-menu-derelict-horizontal-signal-inset: 4%;
+  --main-menu-derelict-horizontal-signal-start: 42%;
+  --main-menu-derelict-vertical-signal-height: 18rem;
+  --main-menu-derelict-vertical-signal-inset: 15%;
+  --main-menu-derelict-vertical-signal-start: 62%;
+  --main-menu-derelict-action-letter-spacing: 0.1em;
+  --main-menu-shipyard-surface-gap: clamp(0.65rem, 1.5vw, 1.25rem);
+  --main-menu-shipyard-surface-padding: clamp(1.5rem, 5vw, 5rem);
+  --main-menu-shipyard-surface-columns: repeat(3, minmax(0, 1fr));
+  --main-menu-shipyard-surface-rows: repeat(2, minmax(0, 1fr));
+  --main-menu-shipyard-play-grid-area: 1 / 2 / 3 / 4;
+  --main-menu-shipyard-continue-grid-area: 1 / 1 / 2 / 2;
+  --main-menu-shipyard-archive-grid-area: 2 / 1 / 3 / 2;
+  --main-menu-shipyard-quit-grid-area: 2 / 2 / 3 / 3;
+  --main-menu-shipyard-play-min-block-size: clamp(12rem, 42vh, 28rem);
+  --main-menu-shipyard-control-clip-path: polygon(0 7%, 91% 0, 100% 50%, 91% 100%, 0 93%, 8% 50%);
+  --main-menu-shipyard-play-transform: skewY(-2deg);
+  --main-menu-shipyard-play-hover-transform: skewY(-2deg) translateY(-0.45rem);
+  --main-menu-shipyard-rail-inset: 16%;
+  --main-menu-shipyard-rail-skew: -2deg;
+  --main-menu-shipyard-play-font-size: clamp(1rem, 2vw, 1.4rem);
+  --main-menu-shipyard-action-hover-translate: -0.35rem;
+  --main-menu-elevator-gate-gap: clamp(0.55rem, 1.5vw, 1.25rem);
+  --main-menu-elevator-gate-padding: clamp(1.5rem, 5vw, 5rem);
+  --main-menu-elevator-gate-rows: repeat(4, minmax(0, 1fr));
+  --main-menu-elevator-gate-height: clamp(4rem, 9vh, 6.5rem);
+  --main-menu-elevator-continue-width: 46%;
+  --main-menu-elevator-play-width: 82%;
+  --main-menu-elevator-archive-width: 62%;
+  --main-menu-elevator-quit-width: 36%;
+  --main-menu-elevator-play-transform: translateX(8%);
+  --main-menu-elevator-archive-transform: translateX(24%);
+  --main-menu-elevator-hover-transform: translateX(2%);
+  --main-menu-elevator-archive-hover-translate: 18%;
+  --main-menu-elevator-rail-inset: 14%;
+  --main-menu-elevator-rail-border: 1px solid rgb(248 250 250 / 0.27);
+  --main-menu-elevator-action-letter-spacing: 0.22em;
+  --main-menu-responsive-surface-min-block-size: 30rem;
+  --main-menu-responsive-black-seal-size: min(24vw, 10rem);
+  align-items: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  isolation: isolate;
+  justify-content: center;
+  min-block-size: var(--main-menu-stage-min-block-size);
+  overflow: hidden;
+  position: relative;
+}
+
+.main-menu-stage::before {
+  background-color: rgb(0 0 0 / var(--main-menu-stage-overlay-opacity));
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.main-menu-stage__shade {
+  display: none;
+}
+
+.main-menu-navigation {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--main-menu-navigation-gap);
+  inline-size: 100%;
+  min-block-size: var(--main-menu-stage-min-block-size);
+  overflow: hidden;
+  padding: var(--main-menu-navigation-padding);
+  position: relative;
+  z-index: 1;
+}
+
+.main-menu-title {
+  color: #fff;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: var(--main-menu-title-font-size);
+  letter-spacing: var(--main-menu-title-letter-spacing);
+  line-height: var(--main-menu-title-line-height);
+  pointer-events: none;
+  position: absolute;
+  text-shadow: 0 0 var(--main-menu-title-shadow-blur) var(--menu-accent);
+  z-index: 3;
+}
+
+.main-menu-action {
+  align-items: center;
+  background-color: rgb(0 0 0 / 0.68);
+  border: 1px solid color-mix(in srgb, var(--menu-accent) 78%, transparent);
+  border-radius: 0;
+  color: #fff;
+  display: inline-flex;
+  font-size: var(--main-menu-action-font-size);
+  font-weight: 800;
+  gap: var(--main-menu-action-gap);
+  justify-content: center;
+  letter-spacing: var(--main-menu-action-letter-spacing);
+  min-block-size: var(--main-menu-action-min-block-size);
+  padding: var(--main-menu-action-padding);
+  text-transform: uppercase;
+  transition:
+    background-color var(--main-menu-action-transition-duration) ease,
+    box-shadow var(--main-menu-action-transition-duration) ease,
+    transform var(--main-menu-action-transition-duration) ease;
+}
+
+.main-menu-action svg {
+  block-size: var(--main-menu-action-icon-size);
+  flex: none;
+  inline-size: var(--main-menu-action-icon-size);
+}
+
+.main-menu-action:hover,
+.main-menu-action:focus-visible {
+  background-color: var(--menu-accent);
+  box-shadow: 0 0 var(--main-menu-action-hover-shadow-blur) var(--menu-accent);
+  color: #071014;
+}
+
+.main-menu-action:focus-visible,
+.main-menu-variation-button:focus-visible {
+  outline: var(--main-menu-action-focus-outline) solid var(--menu-accent);
+  outline-offset: var(--main-menu-action-focus-offset);
+}
+
+.main-menu-variation-buttons {
+  display: flex;
+  gap: var(--main-menu-switch-gap);
+  inset-block-end: var(--main-menu-switch-inset);
+  inset-inline-end: var(--main-menu-switch-inset);
+  position: absolute;
+  z-index: 5;
+}
+
+.main-menu-variation-button {
+  align-items: center;
+  background-color: rgb(0 0 0 / 0.56);
+  border: 1px solid rgb(255 255 255 / 0.42);
+  color: #fff;
+  display: inline-flex;
+  font: inherit;
+  font-size: var(--main-menu-switch-font-size);
+  font-weight: 800;
+  inline-size: var(--main-menu-switch-size);
+  justify-content: center;
+  min-block-size: var(--main-menu-switch-size);
+  transition:
+    background-color var(--main-menu-action-transition-duration) ease,
+    color var(--main-menu-action-transition-duration) ease,
+    transform var(--main-menu-action-transition-duration) ease;
+}
+
+.main-menu-variation-button:hover,
+.main-menu-variation-button:focus-visible,
+.main-menu-variation-button--selected {
+  background-color: var(--menu-accent);
+  border-color: #fff;
+  color: #061014;
+  transform: translateY(var(--main-menu-switch-hover-translate));
+}
+
+/* Starship Flight Deck: a cross-shaped cockpit control bank. */
+
+.main-menu-flight-deck .main-menu-title {
+  inset-block-start: var(--main-menu-title-inset);
+  inset-inline-start: var(--main-menu-title-inset);
+}
+
+.flight-deck__cockpit {
+  display: grid;
+  flex: 1;
+  gap: var(--main-menu-flight-grid-gap);
+  grid-template-columns: var(--main-menu-flight-grid-columns);
+  grid-template-rows: var(--main-menu-flight-grid-rows);
+  min-block-size: 0;
+  padding: var(--main-menu-flight-grid-padding);
+  position: relative;
+}
+
+.flight-deck__cockpit::before,
+.flight-deck__cockpit::after {
+  border: var(--main-menu-flight-reticle-border);
+  content: "";
+  inset: 50%;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.flight-deck__cockpit::before {
+  block-size: var(--main-menu-flight-reticle-size);
+  border-radius: 50%;
+  inline-size: var(--main-menu-flight-reticle-size);
+}
+
+.flight-deck__cockpit::after {
+  block-size: 1px;
+  inline-size: var(--main-menu-flight-reticle-size);
+  background-color: var(--menu-accent);
+  box-shadow: 0 0 var(--main-menu-flight-reticle-shadow-blur) var(--menu-accent);
+}
+
+.flight-deck__action {
+  min-block-size: var(--main-menu-flight-action-min-block-size);
+  position: relative;
+  z-index: 1;
+}
+
+.flight-deck__action--play {
+  background-color: rgb(10 51 67 / 0.76);
+  clip-path: var(--main-menu-flight-action-clip-path);
+  grid-area: var(--main-menu-flight-play-grid-area);
+  transform: scale(1.18);
+}
+
+.flight-deck__action--continue {
+  clip-path: var(--main-menu-flight-action-clip-path);
+  grid-area: var(--main-menu-flight-continue-grid-area);
+}
+
+.flight-deck__action--archive {
+  clip-path: var(--main-menu-flight-action-clip-path);
+  grid-area: var(--main-menu-flight-archive-grid-area);
+}
+
+.flight-deck__action--quit {
+  clip-path: var(--main-menu-flight-action-clip-path);
+  grid-area: var(--main-menu-flight-quit-grid-area);
+}
+
+.flight-deck__action:hover,
+.flight-deck__action:focus-visible {
+  transform: var(--main-menu-flight-action-hover-transform);
+}
+
+.flight-deck__action--play:hover,
+.flight-deck__action--play:focus-visible {
+  transform: scale(1.28);
+}
+
+.main-menu-flight-deck .main-menu-variation-buttons {
+  inset-block-end: var(--main-menu-switch-inset);
+  inset-inline-end: var(--main-menu-switch-inset);
+}
+
+/* Black-market Bounty Terminal: four contract seals orbit the title. */
+
+.main-menu-black-market .main-menu-title {
+  inset: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+.black-market__seal-field {
+  display: grid;
+  flex: 1;
+  gap: var(--main-menu-black-field-gap);
+  grid-template-columns: var(--main-menu-black-field-columns);
+  grid-template-rows: var(--main-menu-black-field-rows);
+  min-block-size: 0;
+  padding: var(--main-menu-black-field-padding);
+  position: relative;
+}
+
+.black-market__seal-field::before {
+  border: 1px solid rgb(240 173 78 / 0.26);
+  border-radius: 50%;
+  content: "";
+  inset: 50%;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  block-size: var(--main-menu-black-stamp-size);
+  inline-size: var(--main-menu-black-stamp-size);
+}
+
+.black-market__seal {
+  align-self: center;
+  aspect-ratio: 1;
+  background-color: rgb(19 13 4 / 0.76);
+  border-color: rgb(240 173 78 / 0.7);
+  border-radius: 50%;
+  clip-path: var(--main-menu-black-seal-clip-path);
+  flex-direction: column;
+  justify-self: center;
+  min-block-size: 0;
+  padding: var(--main-menu-black-seal-padding);
+  position: relative;
+  width: var(--main-menu-black-seal-size);
+  z-index: 1;
+}
+
+.black-market__seal--play {
+  grid-area: var(--main-menu-black-play-grid-area);
+  transform: var(--main-menu-black-seal-play-transform);
+}
+
+.black-market__seal--continue {
+  grid-area: var(--main-menu-black-continue-grid-area);
+  transform: var(--main-menu-black-seal-continue-transform);
+}
+
+.black-market__seal--archive {
+  grid-area: var(--main-menu-black-archive-grid-area);
+  transform: var(--main-menu-black-seal-archive-transform);
+}
+
+.black-market__seal--quit {
+  grid-area: var(--main-menu-black-quit-grid-area);
+  transform: var(--main-menu-black-seal-quit-transform);
+}
+
+.black-market__seal:hover,
+.black-market__seal:focus-visible {
+  transform: var(--main-menu-black-seal-hover-transform);
+}
+
+.main-menu-black-market .main-menu-variation-buttons {
+  inset-block-end: var(--main-menu-switch-inset);
+  inset-inline-start: var(--main-menu-switch-inset);
+}
+
+/* Derelict Station Distress Broadcast: fractured signal fragments. */
+
+.main-menu-derelict-station .main-menu-title {
+  inset-block-start: var(--main-menu-title-inset);
+  inset-inline-end: var(--main-menu-title-inset);
+  text-align: end;
+}
+
+.derelict-station__fragments {
+  display: grid;
+  flex: 1;
+  gap: var(--main-menu-derelict-fragment-gap);
+  grid-template-columns: var(--main-menu-derelict-fragment-columns);
+  grid-template-rows: var(--main-menu-derelict-fragment-rows);
+  min-block-size: 0;
+  padding: var(--main-menu-derelict-fragment-padding);
+  position: relative;
+}
+
+.derelict-station__fragments::before,
+.derelict-station__fragments::after {
+  background-color: rgb(255 94 98 / 0.55);
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  transform: rotate(var(--main-menu-derelict-signal-rotation));
+}
+
+.derelict-station__fragments::before {
+  block-size: 1px;
+  inset-inline: var(--main-menu-derelict-horizontal-signal-inset);
+  inset-block-start: var(--main-menu-derelict-horizontal-signal-start);
+}
+
+.derelict-station__fragments::after {
+  block-size: var(--main-menu-derelict-vertical-signal-height);
+  inline-size: 1px;
+  inset-block: var(--main-menu-derelict-vertical-signal-inset);
+  inset-inline-start: var(--main-menu-derelict-vertical-signal-start);
+}
+
+.derelict-station__fragment {
+  min-block-size: var(--main-menu-derelict-fragment-min-block-size);
+  position: relative;
+  z-index: 1;
+}
+
+.derelict-station__fragment--play {
+  clip-path: var(--main-menu-derelict-play-clip-path);
+  grid-area: var(--main-menu-derelict-play-grid-area);
+}
+
+.derelict-station__fragment--continue {
+  clip-path: var(--main-menu-derelict-continue-clip-path);
+  grid-area: var(--main-menu-derelict-continue-grid-area);
+}
+
+.derelict-station__fragment--archive {
+  clip-path: var(--main-menu-derelict-archive-clip-path);
+  grid-area: var(--main-menu-derelict-archive-grid-area);
+}
+
+.derelict-station__fragment--quit {
+  clip-path: var(--main-menu-derelict-quit-clip-path);
+  grid-area: var(--main-menu-derelict-quit-grid-area);
+}
+
+.derelict-station__fragment:hover,
+.derelict-station__fragment:focus-visible {
+  transform: var(--main-menu-derelict-action-hover-transform);
+}
+
+.main-menu-derelict-station .main-menu-action {
+  border-color: rgb(255 255 255 / 0.8);
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: var(--main-menu-derelict-action-letter-spacing);
+}
+
+.main-menu-derelict-station .main-menu-variation-buttons {
+  inset-block-end: var(--main-menu-switch-inset);
+  inset-inline-end: var(--main-menu-switch-inset);
+}
+
+/* Neon Shipyard Launch Bay: the primary action is a launch gantry. */
+
+.main-menu-shipyard .main-menu-title {
+  inset-block-start: var(--main-menu-title-inset);
+  inset-inline-start: var(--main-menu-title-inset);
+  letter-spacing: 0.26em;
+}
+
+.shipyard__launch-surface {
+  display: grid;
+  flex: 1;
+  gap: var(--main-menu-shipyard-surface-gap);
+  grid-template-columns: var(--main-menu-shipyard-surface-columns);
+  grid-template-rows: var(--main-menu-shipyard-surface-rows);
+  min-block-size: 0;
+  padding: var(--main-menu-shipyard-surface-padding);
+  position: relative;
+}
+
+.shipyard__launch-surface::before {
+  border-block: 1px solid rgb(255 60 174 / 0.35);
+  content: "";
+  inset-block: var(--main-menu-shipyard-rail-inset);
+  inset-inline: 0;
+  pointer-events: none;
+  position: absolute;
+  transform: skewY(var(--main-menu-shipyard-rail-skew));
+}
+
+.shipyard__launch-control {
+  min-block-size: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.shipyard__launch-control--play {
+  background-color: rgb(52 4 43 / 0.82);
+  clip-path: var(--main-menu-shipyard-control-clip-path);
+  flex-direction: column;
+  font-size: var(--main-menu-shipyard-play-font-size);
+  grid-area: var(--main-menu-shipyard-play-grid-area);
+  min-block-size: var(--main-menu-shipyard-play-min-block-size);
+  transform: var(--main-menu-shipyard-play-transform);
+}
+
+.shipyard__launch-control--continue {
+  clip-path: var(--main-menu-shipyard-control-clip-path);
+  grid-area: var(--main-menu-shipyard-continue-grid-area);
+}
+
+.shipyard__launch-control--archive {
+  clip-path: var(--main-menu-shipyard-control-clip-path);
+  grid-area: var(--main-menu-shipyard-archive-grid-area);
+}
+
+.shipyard__launch-control--quit {
+  clip-path: var(--main-menu-shipyard-control-clip-path);
+  grid-area: var(--main-menu-shipyard-quit-grid-area);
+}
+
+.shipyard__launch-control:hover,
+.shipyard__launch-control:focus-visible {
+  transform: translateY(var(--main-menu-shipyard-action-hover-translate));
+}
+
+.shipyard__launch-control--play:hover,
+.shipyard__launch-control--play:focus-visible {
+  transform: var(--main-menu-shipyard-play-hover-transform);
+}
+
+.main-menu-shipyard .main-menu-variation-buttons {
+  inset-block-end: var(--main-menu-switch-inset);
+  inset-inline-start: var(--main-menu-switch-inset);
+}
+
+/* Orbital Elevator Clearance: staggered horizontal access gates. */
+
+.main-menu-orbital-elevator .main-menu-title {
+  inset-block-start: var(--main-menu-title-inset);
+  inset-inline-end: var(--main-menu-title-inset);
+  text-align: end;
+}
+
+.orbital-elevator__gates {
+  display: grid;
+  flex: 1;
+  gap: var(--main-menu-elevator-gate-gap);
+  grid-template-rows: var(--main-menu-elevator-gate-rows);
+  min-block-size: 0;
+  padding: var(--main-menu-elevator-gate-padding) 0;
+  position: relative;
+}
+
+.orbital-elevator__gates::before {
+  border-block: var(--main-menu-elevator-rail-border);
+  content: "";
+  inset-block: var(--main-menu-elevator-rail-inset);
+  inset-inline: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.orbital-elevator__gate {
+  align-self: center;
+  block-size: var(--main-menu-elevator-gate-height);
+  justify-content: space-between;
+  min-block-size: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.orbital-elevator__gate--continue {
+  inline-size: var(--main-menu-elevator-continue-width);
+  justify-self: start;
+}
+
+.orbital-elevator__gate--play {
+  background-color: rgb(61 14 18 / 0.8);
+  inline-size: var(--main-menu-elevator-play-width);
+  justify-self: center;
+  transform: var(--main-menu-elevator-play-transform);
+}
+
+.orbital-elevator__gate--archive {
+  inline-size: var(--main-menu-elevator-archive-width);
+  justify-self: end;
+  transform: var(--main-menu-elevator-archive-transform);
+}
+
+.orbital-elevator__gate--quit {
+  inline-size: var(--main-menu-elevator-quit-width);
+  justify-self: start;
+}
+
+.orbital-elevator__gate:hover,
+.orbital-elevator__gate:focus-visible {
+  transform: var(--main-menu-elevator-hover-transform);
+}
+
+.orbital-elevator__gate--play:hover,
+.orbital-elevator__gate--play:focus-visible {
+  transform: var(--main-menu-elevator-hover-transform);
+}
+
+.orbital-elevator__gate--archive:hover,
+.orbital-elevator__gate--archive:focus-visible {
+  transform: translateX(var(--main-menu-elevator-archive-hover-translate));
+}
+
+.main-menu-orbital-elevator .main-menu-action {
+  border-radius: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: var(--main-menu-elevator-action-letter-spacing);
+}
+
+.main-menu-orbital-elevator .main-menu-variation-buttons {
+  inset-block-end: var(--main-menu-switch-inset);
+  inset-inline-start: var(--main-menu-switch-inset);
+}
+
+@media (max-width: 58rem) {
+  .main-menu-stage {
+    --main-menu-navigation-padding: 1.25rem;
+    --main-menu-title-font-size: clamp(2.5rem, 14vw, 5rem);
+    --main-menu-title-inset: 1.25rem;
+    --main-menu-flight-grid-padding: 1.5rem;
+    --main-menu-black-field-padding: 1.5rem;
+    --main-menu-derelict-fragment-padding: 1rem;
+    --main-menu-shipyard-surface-padding: 1.5rem;
+    --main-menu-elevator-gate-padding: 1.5rem 0;
+  }
+
+  .flight-deck__cockpit,
+  .black-market__seal-field,
+  .derelict-station__fragments,
+  .shipyard__launch-surface {
+    min-block-size: var(--main-menu-responsive-surface-min-block-size);
+  }
+
+  .main-menu-black-market .main-menu-title,
+  .main-menu-derelict-station .main-menu-title,
+  .main-menu-orbital-elevator .main-menu-title {
+    white-space: normal;
+  }
+
+  .black-market__seal {
+    width: var(--main-menu-responsive-black-seal-size);
+  }
+}
+
+@media (max-width: 40rem) {
+  .main-menu-stage {
+    --main-menu-navigation-padding: 1rem;
+    --main-menu-switch-inset: 0.75rem;
+    --main-menu-switch-size: 2rem;
+  }
+
+  .main-menu-title {
+    letter-spacing: 0.1em;
+  }
+
+  .flight-deck__cockpit {
+    --main-menu-flight-grid-columns: repeat(2, minmax(0, 1fr));
+    --main-menu-flight-grid-rows: repeat(3, minmax(0, 1fr));
+    --main-menu-flight-play-grid-area: 2 / 1 / 3 / 3;
+    --main-menu-flight-continue-grid-area: 1 / 1 / 2 / 2;
+    --main-menu-flight-archive-grid-area: 3 / 1 / 4 / 2;
+    --main-menu-flight-quit-grid-area: 3 / 2 / 4 / 3;
+  }
+
+  .black-market__seal-field {
+    --main-menu-black-field-columns: repeat(2, minmax(0, 1fr));
+    --main-menu-black-field-rows: repeat(3, minmax(0, 1fr));
+    --main-menu-black-play-grid-area: 2 / 1 / 3 / 3;
+    --main-menu-black-continue-grid-area: 1 / 1 / 2 / 2;
+    --main-menu-black-archive-grid-area: 3 / 1 / 4 / 2;
+    --main-menu-black-quit-grid-area: 3 / 2 / 4 / 3;
+  }
+
+  .derelict-station__fragments {
+    --main-menu-derelict-fragment-columns: repeat(6, minmax(0, 1fr));
+    --main-menu-derelict-fragment-rows: repeat(6, minmax(0, 1fr));
+    --main-menu-derelict-play-grid-area: 2 / 2 / 4 / 7;
+    --main-menu-derelict-continue-grid-area: 1 / 1 / 3 / 5;
+    --main-menu-derelict-archive-grid-area: 4 / 1 / 6 / 5;
+    --main-menu-derelict-quit-grid-area: 5 / 3 / 7 / 7;
+  }
+
+  .shipyard__launch-surface {
+    --main-menu-shipyard-surface-columns: repeat(2, minmax(0, 1fr));
+    --main-menu-shipyard-surface-rows: repeat(3, minmax(0, 1fr));
+    --main-menu-shipyard-play-grid-area: 1 / 1 / 3 / 3;
+    --main-menu-shipyard-continue-grid-area: 3 / 1 / 4 / 2;
+    --main-menu-shipyard-archive-grid-area: 3 / 2 / 4 / 3;
+    --main-menu-shipyard-quit-grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .orbital-elevator__gate--play {
+    inline-size: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main-menu-action,
+  .main-menu-variation-button {
+    transition: none;
+  }
+}
