@@ -112,7 +112,7 @@ export const GameScreens = () => {
       className="absolute inset-0 overflow-hidden text-zinc-100"
       style={{ zIndex: SCREEN_BACKDROP.Z_INDEX }}
     >
-      <ScreenBackdrop />
+      {activeScreen !== OVERLAY_SCREENS.MAIN && <ScreenBackdrop />}
       <ActiveScreen />
     </div>
   );

@@ -121,7 +121,7 @@ export const StageDivider = ({ label }: { label: string }) => (
   </div>
 );
 
-function handleScreenNavigationKeyDown(
+export function handleScreenNavigationKeyDown(
   event: KeyboardEvent<HTMLElement>,
 ): void {
   if (!MENU_NAVIGATION_KEYS.has(event.key)) {
