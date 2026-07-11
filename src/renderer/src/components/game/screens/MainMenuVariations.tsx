@@ -1,11 +1,13 @@
-import { type CSSProperties } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 import { GAME_TITLE } from "@/game/config/screen-ui-config";
 import {
   getMenuVariationDefinition,
   MENU_VARIATION_DEFINITIONS,
+  MENU_VARIATION_IDS,
   type MenuVariationId
 } from "@/game/config/menu-variation-config";
-import { ScreenButton, ScreenCenter, ScreenMenuGrid, ScreenTitle } from "./ScreenPrimitives";
+import { cn } from "@/lib/utils";
+import { ScreenButton, ScreenCenter } from "./ScreenPrimitives";
 import "./main-menu-variations.css";
 
 type MenuCssStyle = CSSProperties & Record<`--${string}`, string>;
@@ -24,6 +26,28 @@ type MainMenuVariationProps = {
   variationId: MenuVariationId;
 };
 
+type MenuActionProps = {
+  autoFocus?: boolean;
+  children: ReactNode;
+  className?: string;
+  onClick: () => void;
+};
+
+const MenuAction = ({
+  autoFocus,
+  children,
+  className,
+  onClick
+}: MenuActionProps) => (
+  <ScreenButton
+    autoFocus={autoFocus}
+    className={cn("menu-action", className)}
+    onClick={onClick}
+  >
+    {children}
+  </ScreenButton>
+);
+
 const MenuVariationSwitcher = ({
   variationId,
   onSelectVariation
@@ -36,11 +60,11 @@ const MenuVariationSwitcher = ({
       <button
         aria-label={`Show menu variation ${definition.index}`}
         aria-pressed={variationId === definition.id}
-        className={
-          variationId === definition.id
-            ? "menu-variation__switch-button menu-variation__switch-button--selected"
-            : "menu-variation__switch-button"
-        }
+        className={cn(
+          "menu-variation__switch-button",
+          variationId === definition.id &&
+            "menu-variation__switch-button--selected"
+        )}
         key={definition.id}
         onClick={() => onSelectVariation(definition.id)}
         type="button"
@@ -51,6 +75,198 @@ const MenuVariationSwitcher = ({
   </nav>
 );
 
+const MenuTitle = ({ className }: { className?: string }) => (
+  <h1 className={cn("menu-layout__title", className)}>{GAME_TITLE}</h1>
+);
+
+const SpaceportLayout = ({
+  canContinue,
+  handlers
+}: MainMenuVariationProps) => (
+  <div className="menu-layout menu-layout--spaceport">
+    <MenuTitle />
+    <div className="menu-actions menu-actions--spaceport">
+      {canContinue ? (
+        <MenuAction
+          autoFocus
+          className="menu-action--continue"
+          onClick={handlers.onContinue}
+        >
+          CONTINUE
+        </MenuAction>
+      ) : null}
+      <MenuAction
+        autoFocus={!canContinue}
+        className="menu-action--play"
+        onClick={handlers.onPlay}
+      >
+        PLAY
+      </MenuAction>
+      <MenuAction
+        className="menu-action--archive"
+        onClick={handlers.onArchive}
+      >
+        ARCHIVE
+      </MenuAction>
+      <MenuAction className="menu-action--quit" onClick={handlers.onQuit}>
+        QUIT
+      </MenuAction>
+    </div>
+  </div>
+);
+
+const SalvageLayout = ({
+  canContinue,
+  handlers
+}: MainMenuVariationProps) => (
+  <div className="menu-layout menu-layout--salvage">
+    <MenuTitle />
+    <div className="menu-actions menu-actions--salvage">
+      {canContinue ? (
+        <MenuAction
+          autoFocus
+          className="menu-action--continue"
+          onClick={handlers.onContinue}
+        >
+          CONTINUE
+        </MenuAction>
+      ) : null}
+      <MenuAction
+        autoFocus={!canContinue}
+        className="menu-action--play"
+        onClick={handlers.onPlay}
+      >
+        PLAY
+      </MenuAction>
+      <MenuAction
+        className="menu-action--archive"
+        onClick={handlers.onArchive}
+      >
+        ARCHIVE
+      </MenuAction>
+      <MenuAction className="menu-action--quit" onClick={handlers.onQuit}>
+        QUIT
+      </MenuAction>
+    </div>
+  </div>
+);
+
+const AnomalyLayout = ({
+  canContinue,
+  handlers
+}: MainMenuVariationProps) => (
+  <div className="menu-layout menu-layout--anomaly">
+    <MenuTitle />
+    <div className="menu-actions menu-actions--anomaly">
+      {canContinue ? (
+        <MenuAction
+          autoFocus
+          className="menu-action--continue"
+          onClick={handlers.onContinue}
+        >
+          CONTINUE
+        </MenuAction>
+      ) : null}
+      <MenuAction
+        autoFocus={!canContinue}
+        className="menu-action--play"
+        onClick={handlers.onPlay}
+      >
+        PLAY
+      </MenuAction>
+      <MenuAction
+        className="menu-action--archive"
+        onClick={handlers.onArchive}
+      >
+        ARCHIVE
+      </MenuAction>
+      <MenuAction className="menu-action--quit" onClick={handlers.onQuit}>
+        QUIT
+      </MenuAction>
+    </div>
+  </div>
+);
+
+const WarfrontLayout = ({
+  canContinue,
+  handlers
+}: MainMenuVariationProps) => (
+  <div className="menu-layout menu-layout--warfront">
+    <MenuTitle />
+    <div className="menu-actions menu-actions--warfront">
+      {canContinue ? (
+        <MenuAction
+          autoFocus
+          className="menu-action--continue"
+          onClick={handlers.onContinue}
+        >
+          CONTINUE
+        </MenuAction>
+      ) : null}
+      <MenuAction
+        autoFocus={!canContinue}
+        className="menu-action--play"
+        onClick={handlers.onPlay}
+      >
+        PLAY
+      </MenuAction>
+      <MenuAction
+        className="menu-action--archive"
+        onClick={handlers.onArchive}
+      >
+        ARCHIVE
+      </MenuAction>
+      <MenuAction className="menu-action--quit" onClick={handlers.onQuit}>
+        QUIT
+      </MenuAction>
+    </div>
+  </div>
+);
+
+const TempleLayout = ({
+  canContinue,
+  handlers
+}: MainMenuVariationProps) => (
+  <div className="menu-layout menu-layout--temple">
+    <MenuTitle />
+    <div className="menu-actions menu-actions--temple">
+      {canContinue ? (
+        <MenuAction
+          autoFocus
+          className="menu-action--continue"
+          onClick={handlers.onContinue}
+        >
+          CONTINUE
+        </MenuAction>
+      ) : null}
+      <MenuAction
+        autoFocus={!canContinue}
+        className="menu-action--play"
+        onClick={handlers.onPlay}
+      >
+        PLAY
+      </MenuAction>
+      <MenuAction
+        className="menu-action--archive"
+        onClick={handlers.onArchive}
+      >
+        ARCHIVE
+      </MenuAction>
+      <MenuAction className="menu-action--quit" onClick={handlers.onQuit}>
+        QUIT
+      </MenuAction>
+    </div>
+  </div>
+);
+
+const MENU_LAYOUT_BY_ID = {
+  [MENU_VARIATION_IDS.SPACEPORT]: SpaceportLayout,
+  [MENU_VARIATION_IDS.SALVAGE]: SalvageLayout,
+  [MENU_VARIATION_IDS.ANOMALY]: AnomalyLayout,
+  [MENU_VARIATION_IDS.WARFRONT]: WarfrontLayout,
+  [MENU_VARIATION_IDS.TEMPLE]: TempleLayout
+} as const satisfies Record<MenuVariationId, typeof SpaceportLayout>;
+
 export const MainMenuVariation = ({
   canContinue,
   handlers,
@@ -58,6 +274,7 @@ export const MainMenuVariation = ({
   variationId
 }: MainMenuVariationProps) => {
   const definition = getMenuVariationDefinition(variationId);
+  const Layout = MENU_LAYOUT_BY_ID[variationId];
   const style: MenuCssStyle = {
     "--menu-accent": definition.theme.accent,
     "--menu-accent-bright": definition.theme.accentBright
@@ -73,22 +290,16 @@ export const MainMenuVariation = ({
         src={definition.artUrl}
       />
       <div aria-hidden="true" className="menu-variation__veil" />
-      <ScreenCenter className="menu-variation__content" contentClassName="menu-variation__stack">
-        <ScreenTitle className="menu-variation__title" variant="main">
-          {GAME_TITLE}
-        </ScreenTitle>
-        <ScreenMenuGrid className="menu-variation__actions" variant="main">
-          {canContinue ? (
-            <ScreenButton autoFocus onClick={handlers.onContinue}>
-              Continue
-            </ScreenButton>
-          ) : null}
-          <ScreenButton autoFocus={!canContinue} onClick={handlers.onPlay}>
-            Play
-          </ScreenButton>
-          <ScreenButton onClick={handlers.onArchive}>Archive</ScreenButton>
-          <ScreenButton onClick={handlers.onQuit}>Quit</ScreenButton>
-        </ScreenMenuGrid>
+      <ScreenCenter
+        className="menu-variation__content"
+        contentClassName="menu-variation__inner"
+      >
+        <Layout
+          canContinue={canContinue}
+          handlers={handlers}
+          onSelectVariation={onSelectVariation}
+          variationId={variationId}
+        />
       </ScreenCenter>
       <MenuVariationSwitcher
         onSelectVariation={onSelectVariation}

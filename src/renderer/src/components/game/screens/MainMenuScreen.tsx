@@ -3,6 +3,7 @@ import { SAVE_ERROR_DIALOG } from "@/game/config/screen-ui-config";
 import {
   DEFAULT_MENU_VARIATION_ID,
   getMenuVariationIdFromSearch,
+  MENU_VARIATION_KEY_BY_INDEX,
   MENU_VARIATION_QUERY_PARAM,
   type MenuVariationId
 } from "@/game/config/menu-variation-config";
@@ -78,6 +79,31 @@ export const MainMenuScreen = () => {
     nextLocation.searchParams.set(MENU_VARIATION_QUERY_PARAM, nextVariationId);
     window.history.replaceState(null, "", nextLocation);
   }, []);
+
+  useEffect(() => {
+    const handleVariationKeyDown = (event: KeyboardEvent) => {
+      const nextVariationId = MENU_VARIATION_KEY_BY_INDEX[event.key];
+
+      if (
+        !nextVariationId ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      selectVariation(nextVariationId);
+    };
+
+    window.addEventListener("keydown", handleVariationKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleVariationKeyDown);
+    };
+  }, [selectVariation]);
 
   return (
     <MainMenuVariation
