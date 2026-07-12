@@ -5,6 +5,7 @@ import iceCathedralBackgroundUrl from "../../../../../../assets/menu/main-menu-i
 import orbitalCityBackgroundUrl from "../../../../../../assets/menu/main-menu-orbital-city.png?url";
 import redSingularityBackgroundUrl from "../../../../../../assets/menu/main-menu-red-singularity.png?url";
 import ringGateBackgroundUrl from "../../../../../../assets/menu/main-menu-ring-gate.png?url";
+import spaceSilverDreamBackgroundUrl from "../../../../../../assets/menu/main-menu-space-silver-dream.png?url";
 import { Button } from "@/components/ui/button";
 import {
   GAME_TITLE,
@@ -12,6 +13,8 @@ import {
   MAIN_MENU_STYLES,
   MAIN_MENU_VARIANT_DIRECTION,
   MAIN_MENU_VARIANTS,
+  SPACE_SILVER_DREAM_BORDER,
+  SPACE_SILVER_DREAM_VARIANT_ID,
   SAVE_ERROR_DIALOG,
 } from "@/game/config/screen-ui-config";
 import { GAME_SESSION_PHASES } from "@/game/state/game-session-state";
@@ -35,16 +38,75 @@ const MAIN_MENU_BACKGROUND_URLS = [
   eclipseWarshipBackgroundUrl,
   iceCathedralBackgroundUrl,
   orbitalCityBackgroundUrl,
-  redSingularityBackgroundUrl
+  redSingularityBackgroundUrl,
+  spaceSilverDreamBackgroundUrl
 ] as const;
 
 type MainMenuButtonProps = ComponentProps<typeof ScreenButton> & {
+  hasMetallicBorder: boolean;
   variantClassName: string;
+};
+
+const SpaceSilverDreamBorder = () => {
+  return (
+    <svg
+      aria-hidden="true"
+      className={SPACE_SILVER_DREAM_BORDER.CLASS_NAME}
+      focusable="false"
+      preserveAspectRatio="none"
+      viewBox={SPACE_SILVER_DREAM_BORDER.VIEW_BOX}
+    >
+      <polygon
+        className={SPACE_SILVER_DREAM_BORDER.GLOW_CLASS_NAME}
+        fill="none"
+        points={SPACE_SILVER_DREAM_BORDER.POLYGON_POINTS}
+        stroke={SPACE_SILVER_DREAM_BORDER.GLOW_COLOR}
+        strokeWidth={SPACE_SILVER_DREAM_BORDER.GLOW_STROKE_WIDTH}
+        strokeLinejoin="miter"
+        vectorEffect="non-scaling-stroke"
+      />
+      <polygon
+        className={SPACE_SILVER_DREAM_BORDER.STEEL_CLASS_NAME}
+        fill="none"
+        points={SPACE_SILVER_DREAM_BORDER.POLYGON_POINTS}
+        stroke={SPACE_SILVER_DREAM_BORDER.STEEL_COLOR}
+        strokeWidth={SPACE_SILVER_DREAM_BORDER.STEEL_STROKE_WIDTH}
+        strokeLinejoin="miter"
+        vectorEffect="non-scaling-stroke"
+      />
+      <polygon
+        className={SPACE_SILVER_DREAM_BORDER.SILVER_CLASS_NAME}
+        fill="none"
+        points={SPACE_SILVER_DREAM_BORDER.POLYGON_POINTS}
+        stroke={SPACE_SILVER_DREAM_BORDER.SILVER_COLOR}
+        strokeWidth={SPACE_SILVER_DREAM_BORDER.SILVER_STROKE_WIDTH}
+        strokeLinejoin="miter"
+        vectorEffect="non-scaling-stroke"
+      />
+      <path
+        className={SPACE_SILVER_DREAM_BORDER.TOP_LEFT_SHINE_CLASS_NAME}
+        d={SPACE_SILVER_DREAM_BORDER.TOP_LEFT_SHINE_PATH}
+        fill="none"
+        stroke={SPACE_SILVER_DREAM_BORDER.TOP_LEFT_SHINE_COLOR}
+        strokeWidth={SPACE_SILVER_DREAM_BORDER.SHINE_STROKE_WIDTH}
+        vectorEffect="non-scaling-stroke"
+      />
+      <path
+        className={SPACE_SILVER_DREAM_BORDER.BOTTOM_RIGHT_GLOW_CLASS_NAME}
+        d={SPACE_SILVER_DREAM_BORDER.BOTTOM_RIGHT_GLOW_PATH}
+        fill="none"
+        stroke={SPACE_SILVER_DREAM_BORDER.BOTTOM_RIGHT_GLOW_COLOR}
+        strokeWidth={SPACE_SILVER_DREAM_BORDER.SHINE_STROKE_WIDTH}
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
 };
 
 const MainMenuButton = ({
   children,
   className,
+  hasMetallicBorder,
   variantClassName,
   ...props
 }: MainMenuButtonProps) => (
@@ -52,6 +114,7 @@ const MainMenuButton = ({
     {...props}
     className={cn(MAIN_MENU_STYLES.BUTTON, variantClassName, className)}
   >
+    {hasMetallicBorder ? <SpaceSilverDreamBorder /> : null}
     <span className={MAIN_MENU_STYLES.BUTTON_LABEL}>{children}</span>
   </ScreenButton>
 );
@@ -108,6 +171,8 @@ export const MainMenuScreen = () => {
 
   const canContinue = continueTarget !== null;
   const activeVariant = MAIN_MENU_VARIANTS[activeVariantIndex];
+  const hasMetallicButtonBorder =
+    activeVariant.ID === SPACE_SILVER_DREAM_VARIANT_ID;
 
   const changeVariant = (
     direction: (typeof MAIN_MENU_VARIANT_DIRECTION)[keyof typeof MAIN_MENU_VARIANT_DIRECTION]
@@ -122,6 +187,7 @@ export const MainMenuScreen = () => {
   return (
     <section
       className={cn(MAIN_MENU_STYLES.SCREEN, activeVariant.SCREEN)}
+      data-menu-variant={activeVariant.ID}
       onKeyDown={handleScreenNavigationKeyDown}
     >
       <img
@@ -141,6 +207,7 @@ export const MainMenuScreen = () => {
           {canContinue && (
             <MainMenuButton
               autoFocus
+              hasMetallicBorder={hasMetallicButtonBorder}
               onClick={handleContinue}
               variantClassName={activeVariant.BUTTON}
             >
@@ -149,6 +216,7 @@ export const MainMenuScreen = () => {
           )}
           <MainMenuButton
             autoFocus={!canContinue}
+            hasMetallicBorder={hasMetallicButtonBorder}
             onClick={() => {
               setGameSessionPhase(GAME_SESSION_PHASES.STAGE_SELECT);
             }}
@@ -157,6 +225,7 @@ export const MainMenuScreen = () => {
             PLAY
           </MainMenuButton>
           <MainMenuButton
+            hasMetallicBorder={hasMetallicButtonBorder}
             onClick={() => {
               setGameSessionPhase(GAME_SESSION_PHASES.ARCHIVE);
             }}
@@ -165,6 +234,7 @@ export const MainMenuScreen = () => {
             ARCHIVE
           </MainMenuButton>
           <MainMenuButton
+            hasMetallicBorder={hasMetallicButtonBorder}
             onClick={quitToDesktop}
             variantClassName={activeVariant.BUTTON}
           >
