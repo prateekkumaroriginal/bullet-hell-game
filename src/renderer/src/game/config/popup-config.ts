@@ -27,6 +27,7 @@ export const POPUP_IDS = {
   ENEMY_CHASER: "enemy.chaser.first-seen",
   ENEMY_RUSHER: "enemy.rusher.first-seen",
   ENEMY_TANK: "enemy.tank.first-seen",
+  ENEMY_TRIJAL: "enemy.trijal.boss.first-seen",
   SKILL_RAPID_FIRE: "skill.rapid-fire.picked",
   SKILL_HEAVY_SHOT: "skill.heavy-shot.picked",
   SKILL_FLEET_FOOTED: "skill.fleet-footed.picked",
@@ -40,6 +41,7 @@ type EnemyPopupId = (typeof POPUP_IDS)[
   | "ENEMY_CHASER"
   | "ENEMY_RUSHER"
   | "ENEMY_TANK"
+  | "ENEMY_TRIJAL"
 ];
 
 type SkillPopupId = (typeof POPUP_IDS)[
@@ -63,7 +65,8 @@ export const POPUP_VISUALS = {
   CONTROLS: "controls",
   CHASER: "chaser",
   RUSHER: "rusher",
-  TANK: "tank"
+  TANK: "tank",
+  TRIJAL: "trijal"
 } as const;
 
 export type PopupVisual =
@@ -72,7 +75,8 @@ export type PopupVisual =
 export const ENEMY_TYPE_BY_POPUP_VISUAL = {
   [POPUP_VISUALS.CHASER]: ENEMY_TYPE_IDS.CHASER,
   [POPUP_VISUALS.RUSHER]: ENEMY_TYPE_IDS.RUSHER,
-  [POPUP_VISUALS.TANK]: ENEMY_TYPE_IDS.TANK
+  [POPUP_VISUALS.TANK]: ENEMY_TYPE_IDS.TANK,
+  [POPUP_VISUALS.TRIJAL]: ENEMY_TYPE_IDS.TRIJAL
 } as const satisfies Partial<Record<PopupVisual, EnemyTypeId>>;
 
 export const POPUP_METADATA_ICONS = {
@@ -110,7 +114,7 @@ const createEnemyPopupDefinition = (
   return {
     id,
     mode: POPUP_MODES.MODAL,
-    eyebrow: "Enemy Intel",
+    eyebrow: enemyTypeId === ENEMY_TYPE_IDS.TRIJAL ? "Boss Intel" : "Enemy Intel",
     title: enemy.name,
     body: enemy.intel.description,
     presentation: {
@@ -180,6 +184,11 @@ export const POPUP_DEFINITIONS = {
     ENEMY_TYPE_IDS.TANK,
     POPUP_VISUALS.TANK
   ),
+  [POPUP_IDS.ENEMY_TRIJAL]: createEnemyPopupDefinition(
+    POPUP_IDS.ENEMY_TRIJAL,
+    ENEMY_TYPE_IDS.TRIJAL,
+    POPUP_VISUALS.TRIJAL
+  ),
   [POPUP_IDS.SKILL_RAPID_FIRE]: createSkillPopupDefinition(
     POPUP_IDS.SKILL_RAPID_FIRE,
     SKILL_IDS.RAPID_FIRE
@@ -206,6 +215,7 @@ export const ENEMY_POPUP_ID_BY_TYPE = {
   [ENEMY_TYPE_IDS.CHASER]: POPUP_IDS.ENEMY_CHASER,
   [ENEMY_TYPE_IDS.RUSHER]: POPUP_IDS.ENEMY_RUSHER,
   [ENEMY_TYPE_IDS.TANK]: POPUP_IDS.ENEMY_TANK,
+  [ENEMY_TYPE_IDS.TRIJAL]: POPUP_IDS.ENEMY_TRIJAL
 } as const satisfies Record<EnemyTypeId, EnemyPopupId>;
 
 export const SKILL_POPUP_ID_BY_SKILL = {
