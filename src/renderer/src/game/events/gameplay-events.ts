@@ -19,7 +19,8 @@ export const GAMEPLAY_EVENTS = {
   WAVE_CHANGED: "wave:changed",
   WAVE_ANNOUNCEMENT_CHANGED: "wave:announcement-changed",
   SKILL_ACQUIRED: "skill:acquired",
-  ENEMY_DISCOVERED: "enemy:discovered"
+  ENEMY_DISCOVERED: "enemy:discovered",
+  BOSS_CHANGED: "boss:changed"
 } as const;
 
 export type GameplayEventName = (typeof GAMEPLAY_EVENTS)[keyof typeof GAMEPLAY_EVENTS];
@@ -28,6 +29,13 @@ export type PlayerHealthChangedPayload = {
   current: number;
   max: number;
 };
+
+export type BossChangedPayload = {
+  name: string;
+  current: number;
+  max: number;
+  isEnraged: boolean;
+} | null;
 
 export type PlayerProgressionChangedPayload = {
   level: number;
@@ -95,6 +103,7 @@ export type EnemyDiscoveredPayload = {
 };
 
 export type GameplayEventPayloads = {
+  [GAMEPLAY_EVENTS.BOSS_CHANGED]: BossChangedPayload;
   [GAMEPLAY_EVENTS.GAME_STARTED]: GameStartedPayload;
   [GAMEPLAY_EVENTS.GAME_PAUSED]: undefined;
   [GAMEPLAY_EVENTS.GAME_RESUMED]: undefined;

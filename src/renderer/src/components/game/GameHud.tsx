@@ -6,6 +6,7 @@ import {
   PLAYER_EXPERIENCE_TO_LEVEL_STEP,
 } from "@/game/config/experience-config";
 import { WAVE_ANNOUNCEMENT_DURATION_MS } from "@/game/config/wave-config";
+import { BOSS_HUD_CLASSES, TRIJAL_BOSS } from "@/game/config/boss-config";
 import { useGameUiStore } from "@/game/state/use-game-ui-store";
 
 const HEALTH_PERCENT_MULTIPLIER = 100;
@@ -26,6 +27,35 @@ const WAVE_ANNOUNCEMENT_TEXT_SHADOW =
   "0 0 3px rgba(255,255,255,0.95), 0 0 10px rgba(255,22,54,0.98), 0 0 26px rgba(155,0,22,0.92), 0 0 54px rgba(80,0,8,0.78)";
 const WAVE_ANNOUNCEMENT_ARC_FILTER =
   "drop-shadow(0 0 3px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(255,22,54,0.98)) drop-shadow(0 0 28px rgba(120,0,14,0.92))";
+
+const BossHealthBar = () => {
+  const boss = useGameUiStore((state) => state.boss);
+
+  if (!boss) {
+    return null;
+  }
+
+  const healthPercent = Math.max(0, boss.current / boss.max * TRIJAL_BOSS.healthPercentMultiplier);
+
+  return (
+    <section aria-label={`${boss.name} boss fight`} className={BOSS_HUD_CLASSES.panel}>
+      <div className={BOSS_HUD_CLASSES.content}>
+        <div className={BOSS_HUD_CLASSES.header}>
+          <span className={BOSS_HUD_CLASSES.name}>{boss.name}</span>
+          <span className={boss.isEnraged ? BOSS_HUD_CLASSES.enragedPhase : BOSS_HUD_CLASSES.phase}>
+            {boss.isEnraged ? "Overdrive" : "Boss fight"}
+          </span>
+          <span>{boss.current} / {boss.max}</span>
+        </div>
+        <Progress
+          aria-label={`${boss.name} health`}
+          className={boss.isEnraged ? BOSS_HUD_CLASSES.enragedHealth : BOSS_HUD_CLASSES.health}
+          value={healthPercent}
+        />
+      </div>
+    </section>
+  );
+};
 
 export const GameHud = () => {
   const playerHealth = useGameUiStore((state) => state.playerHealth);
@@ -65,6 +95,7 @@ export const GameHud = () => {
 
   return (
     <div className="pointer-events-none absolute inset-0 z-10 text-white">
+      <BossHealthBar />
       <section className="absolute left-7 top-12 flex w-[min(38rem,calc(100vw-3.5rem))] items-center gap-6 max-md:left-4 max-md:top-4 max-md:w-[min(24rem,calc(100vw-2rem))] max-md:gap-4">
         <div className="relative grid size-20 shrink-0 place-items-center rounded-full border border-emerald-300/40 bg-emerald-950/35 shadow-[0_0_28px_rgba(94,242,168,0.34),inset_0_0_24px_rgba(94,242,168,0.14)] max-md:size-14">
           <div className="absolute inset-1 rounded-full border border-emerald-300/20" />

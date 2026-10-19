@@ -12,6 +12,7 @@ import {
   type EnemyTypeId
 } from "../config/enemy-config";
 import { MILLISECONDS_PER_SECOND } from "../config/time-config";
+import { TRIJAL_BOSS } from "../config/boss-config";
 import { COLLISION_CATEGORIES, type CollisionCategory } from "../config/collision-config";
 import { ArenaBounds } from "./ArenaBounds";
 import { type PlayerGameObject } from "./PlayerController";
@@ -87,7 +88,12 @@ export class EnemyPool {
 
     const enemy = this.enemies[enemyIndex];
     const enemyDefinition = ENEMY_DEFINITIONS[enemyTypeId];
-    const spawnPosition = this.getRandomEdgeSpawnPosition(enemyDefinition.radius);
+    const spawnPosition = enemyTypeId === ENEMY_TYPE_IDS.TRIJAL
+      ? this.spawnPosition.set(
+          this.arenaBounds.width * TRIJAL_BOSS.spawnXFraction,
+          this.arenaBounds.height * TRIJAL_BOSS.spawnYFraction
+        )
+      : this.getRandomEdgeSpawnPosition(enemyDefinition.radius);
 
     this.applyEnemyDefinition(enemy, enemyDefinition);
     enemy.spawnId = this.nextSpawnId;
@@ -291,8 +297,10 @@ export class EnemyPool {
     for (const enemy of this.activeEnemies) {
       this.setEnemySpritePosition(enemy);
       enemy.spriteView.setRotation(
-        Phaser.Math.Angle.Between(enemy.x, enemy.y, player.x, player.y) +
-          enemy.spriteDefinition.forwardRotationOffsetRadians
+        enemy.spriteDefinition.rotateToFacePlayer
+          ? Phaser.Math.Angle.Between(enemy.x, enemy.y, player.x, player.y) +
+            enemy.spriteDefinition.forwardRotationOffsetRadians
+          : 0
       );
     }
   }

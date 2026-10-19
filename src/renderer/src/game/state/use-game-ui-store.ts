@@ -30,6 +30,7 @@ import {
   type SkillSelectionStartedPayload,
   type SkillsChangedPayload,
   type PlayerHealthChangedPayload,
+  type BossChangedPayload,
   type PlayerProgressionChangedPayload,
   type WaveAnnouncementChangedPayload,
   type WaveChangedPayload,
@@ -47,6 +48,8 @@ export type PopupUiState = {
 };
 
 export type GameUiState = {
+  boss: BossChangedPayload;
+  setBoss: (boss: BossChangedPayload) => void;
   gameSession: GameSessionState;
   stageProgress: StageProgressState;
   playerHealth: PlayerHealthState;
@@ -108,6 +111,8 @@ const INITIAL_POPUP_STATE: PopupUiState = {
 };
 
 export const useGameUiStore = create<GameUiState>((set) => ({
+  boss: null,
+  setBoss: (boss) => set({ boss }),
   gameSession: INITIAL_GAME_SESSION_STATE,
   stageProgress: INITIAL_STAGE_PROGRESS_STATE,
   playerHealth: INITIAL_PLAYER_HEALTH,
@@ -234,6 +239,7 @@ export const useGameUiStore = create<GameUiState>((set) => ({
   },
   resetGameUiState: () => {
     set({
+      boss: null,
       gameSession: INITIAL_GAME_SESSION_STATE,
       playerHealth: INITIAL_PLAYER_HEALTH,
       playerProgression: INITIAL_PLAYER_PROGRESSION,

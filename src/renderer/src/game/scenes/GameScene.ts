@@ -43,6 +43,7 @@ import {
 import { AimController } from "../systems/AimController";
 import { ArenaBounds } from "../systems/ArenaBounds";
 import { ArenaRenderer } from "../systems/ArenaRenderer";
+import { BossController } from "../systems/BossController";
 import { EnemyController } from "../systems/EnemyController";
 import { ExperienceOrbPool } from "../systems/ExperienceOrbPool";
 import { type GameplayController } from "../systems/GameplayController";
@@ -62,6 +63,7 @@ export class GameScene extends Phaser.Scene {
   private arenaRenderer?: ArenaRenderer;
   private aimController?: AimController;
   private enemyController?: EnemyController;
+  private bossController?: BossController;
   private experienceOrbPool?: ExperienceOrbPool;
   private playerController?: PlayerController;
   private playerProgressionController?: PlayerProgressionController;
@@ -337,6 +339,12 @@ export class GameScene extends Phaser.Scene {
       arenaBounds,
       () => this.getPlayerControllerOrThrow().gameObject,
     );
+    this.bossController = new BossController(
+      this,
+      arenaBounds,
+      this.enemyController,
+      this.playerController
+    );
     this.experienceOrbPool = new ExperienceOrbPool(
       this,
       () => this.getSkillRuntimeModifiers(),
@@ -375,6 +383,7 @@ export class GameScene extends Phaser.Scene {
       this.aimController,
       this.weaponController,
       this.enemyController,
+      this.bossController,
       this.experienceOrbPool,
       this.waveController,
     );
@@ -560,6 +569,7 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
+    this.bossController?.update(delta);
     this.enemyController.resolvePlayerContact(this.playerController);
 
     if (this.experienceOrbPool && this.playerProgressionController) {
@@ -665,6 +675,7 @@ export class GameScene extends Phaser.Scene {
     this.skillController = undefined;
     this.experienceOrbPool = undefined;
     this.enemyController = undefined;
+    this.bossController = undefined;
     this.aimController = undefined;
     this.playerProgressionController = undefined;
     this.playerController = undefined;

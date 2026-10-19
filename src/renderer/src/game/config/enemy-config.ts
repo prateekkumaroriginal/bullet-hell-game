@@ -8,6 +8,9 @@ import rusherPreviewUrl from "../../../../../assets/enemies/previews/rusher-prev
 import rusherTextureUrl from "../../../../../assets/enemies/rusher.png?url";
 import tankPreviewUrl from "../../../../../assets/enemies/previews/tank-preview.png?url";
 import tankTextureUrl from "../../../../../assets/enemies/tank.png?url";
+import rivalTextureUrl from "../../../../../assets/enemies/rival.png?url";
+import rivalPreviewUrl from "../../../../../assets/enemies/previews/rival-preview.png?url";
+import { TRIJAL_BOSS } from "./boss-config";
 
 export { ENEMY_TYPE_IDS, type EnemyTypeId };
 
@@ -46,6 +49,7 @@ export type EnemySpriteDefinition = {
   frameRate: number;
   repeat: number;
   displaySize: number;
+  rotateToFacePlayer: boolean;
   forwardRotationOffsetRadians: number;
 };
 
@@ -94,6 +98,21 @@ export const ENEMY_DEFINITIONS = {
     maxHealth: 6,
     experienceOrbCount: 3,
     experienceValuePerOrb: 1
+  },
+  [ENEMY_TYPE_IDS.TRIJAL]: {
+    id: ENEMY_TYPE_IDS.TRIJAL,
+    name: TRIJAL_BOSS.name,
+    intel: {
+      description: "Trijal guards the end of Stage 1. Dodge his cyan pulse rings and aimed volleys. At half health he enters Overdrive, firing faster pink shots. Keep moving through the gaps and aim at his hover pod.",
+      speed: "Slow",
+      behavior: "Pulse rings and volleys",
+      threat: "Boss"
+    },
+    radius: TRIJAL_BOSS.radius,
+    moveSpeed: TRIJAL_BOSS.moveSpeed,
+    maxHealth: TRIJAL_BOSS.maxHealth,
+    experienceOrbCount: TRIJAL_BOSS.experienceOrbCount,
+    experienceValuePerOrb: TRIJAL_BOSS.experienceValuePerOrb
   }
 } as const satisfies Record<EnemyTypeId, EnemyDefinition>;
 
@@ -110,6 +129,7 @@ export const ENEMY_SPRITE_DEFINITIONS = {
     frameRate: 8,
     repeat: -1,
     displaySize: 48,
+    rotateToFacePlayer: true,
     forwardRotationOffsetRadians: Math.PI / 2
   },
   [ENEMY_TYPE_IDS.RUSHER]: {
@@ -124,6 +144,7 @@ export const ENEMY_SPRITE_DEFINITIONS = {
     frameRate: 12,
     repeat: -1,
     displaySize: 50,
+    rotateToFacePlayer: true,
     forwardRotationOffsetRadians: Math.PI / 2
   },
   [ENEMY_TYPE_IDS.TANK]: {
@@ -138,6 +159,22 @@ export const ENEMY_SPRITE_DEFINITIONS = {
     frameRate: 8,
     repeat: -1,
     displaySize: 84,
+    rotateToFacePlayer: true,
     forwardRotationOffsetRadians: Math.PI / 2
+  },
+  [ENEMY_TYPE_IDS.TRIJAL]: {
+    textureKey: "rival",
+    textureUrl: rivalTextureUrl,
+    previewUrl: rivalPreviewUrl,
+    animationKey: "rival-hover",
+    frameWidth: TRIJAL_BOSS.frameSize,
+    frameHeight: TRIJAL_BOSS.frameSize,
+    frameStart: 0,
+    frameEnd: 0,
+    frameRate: 1,
+    repeat: -1,
+    displaySize: TRIJAL_BOSS.displaySize,
+    rotateToFacePlayer: false,
+    forwardRotationOffsetRadians: 0
   }
 } as const satisfies Record<EnemyTypeId, EnemySpriteDefinition>;

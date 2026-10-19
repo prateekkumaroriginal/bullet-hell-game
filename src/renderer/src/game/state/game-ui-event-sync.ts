@@ -17,6 +17,10 @@ import { showPopupOnce } from "./popup-ui-service";
 import { useGameUiStore } from "./use-game-ui-store";
 
 export function bindGameUiStoreToGameplayEvents(): () => void {
+  const removeBossListener = onGameplayEvent(
+    GAMEPLAY_EVENTS.BOSS_CHANGED,
+    (boss) => useGameUiStore.getState().setBoss(boss)
+  );
   const removeGameStartedListener = onGameplayEvent(
     GAMEPLAY_EVENTS.GAME_STARTED,
     (gameSession) => {
@@ -153,6 +157,7 @@ export function bindGameUiStoreToGameplayEvents(): () => void {
     },
   );
   return () => {
+    removeBossListener();
     removeGameStartedListener();
     removeGameOverListener();
     removeGamePausedListener();

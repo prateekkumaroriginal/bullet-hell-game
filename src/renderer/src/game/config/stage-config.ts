@@ -32,8 +32,8 @@ export const STAGE_DEFINITIONS = [
         spawnCooldownMs: 800,
       },
       {
-        spawns: [{ enemyTypeId: ENEMY_TYPE_IDS.CHASER, count: 10 }],
-        spawnCooldownMs: 700,
+        spawns: [{ enemyTypeId: ENEMY_TYPE_IDS.TRIJAL, count: 1 }],
+        spawnCooldownMs: 700
       },
     ],
   },

@@ -56,7 +56,7 @@ const EnemyPreview = ({
 
   return (
     <img
-      aria-label={`${enemyDefinition.id} enemy`}
+      aria-label={`${enemyDefinition.name} enemy`}
       className="h-full w-full object-contain"
       draggable={false}
       role="img"

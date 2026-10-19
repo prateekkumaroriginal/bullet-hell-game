@@ -1,7 +1,9 @@
 export const ENEMY_TYPE_IDS = {
   CHASER: "chaser",
   RUSHER: "rusher",
-  TANK: "tank"
+  TANK: "tank",
+  // Preserve the discovered-enemy ID stored by earlier versions.
+  TRIJAL: "rival"
 } as const;
 
 export type EnemyTypeId = (typeof ENEMY_TYPE_IDS)[keyof typeof ENEMY_TYPE_IDS];
